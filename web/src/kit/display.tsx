@@ -303,14 +303,17 @@ export function CopyButton({ text, label = "Copy", className, size = 24 }: { tex
 
 /**
  * A service or template icon. Known technologies (an icon key, an /icons/ path or an image name)
- * render the official logo; anything else shows a custom icon URL, then a glyph for the source kind.
+ * render the official logo; anything else shows a custom icon URL, then the favicon of its domain,
+ * then a glyph for the source kind.
  */
-export function ServiceIcon({ icon, source, image, size = 20 }: { icon?: string | null; source?: string; image?: string | null; size?: number }) {
-  const [broken, setBroken] = useState(false);
+export function ServiceIcon({ icon, source, image, domain, size = 20 }: { icon?: string | null; source?: string; image?: string | null; domain?: string; size?: number }) {
+  const [broken, setBroken] = useState<string[]>([]);
+  // Creating a service saves these as its icon, so they say nothing about the service.
+  if (icon === "docker" || icon === "github") icon = undefined;
   if (hasBrandIcon(icon)) return <BrandIcon name={icon} size={size} />;
   if (hasBrandIcon(image)) return <BrandIcon name={image} size={size} />;
-  const src = icon ? iconUrl(icon) : undefined;
-  if (src && !broken) return <img src={src} alt="" width={size} height={size} onError={() => setBroken(true)} className="shrink-0 object-contain" style={{ width: size, height: size }} />;
+  const src = [icon ? iconUrl(icon) : undefined, domain && `https://${domain}/favicon.ico`].find((u) => u && !broken.includes(u));
+  if (src) return <img src={src} alt="" referrerPolicy="no-referrer" width={size} height={size} onError={() => setBroken((b) => [...b, src])} className="shrink-0 object-contain drop-shadow-[0_0_1px_rgb(0_0_0/0.6)]" style={{ width: size, height: size }} />;
   if (source === "image") return <BrandIcon name="docker" size={size} />;
   if (source === "cron") return <BrandIcon name={null} fallback="clock" size={size} />;
   if (source === "repo" || source === "github" || source === undefined) return <BrandIcon name="github" size={size} />;

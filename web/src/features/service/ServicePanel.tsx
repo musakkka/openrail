@@ -72,7 +72,7 @@ export default function ServicePanel({ eid, sid, tab, onTab, onClose, onOpenDepl
     <div role="dialog" aria-label={s ? `Service ${s.config.name}` : "Service"} className="flex h-full min-h-0 flex-col">
       <header className="shrink-0 px-4 pt-6 sm:px-12 sm:pt-12">
         <div className="flex h-[34px] items-center gap-4">
-          {s ? <ServiceIcon icon={s.config.icon} image={s.config.source.image} source={sourceKind(s)} size={32} /> : <Skeleton w={32} h={32} className="rounded-md" />}
+          {s ? <ServiceIcon icon={s.config.icon} image={s.config.source.image} source={sourceKind(s)} domain={s.domains[0]?.domain} size={32} /> : <Skeleton w={32} h={32} className="rounded-md" />}
           {s ? <Name s={s} eid={eid} onService={svc.setData} /> : <Skeleton w={160} h={24} />}
           <span className="flex-1" />
           <IconButton label="Close panel" size={34} onClick={onClose} className="text-foreground"><X size={16} /></IconButton>

@@ -18,8 +18,9 @@ export type Tag = "New" | "Edited" | "Removed" | undefined;
 export function NodeIcon({ s, size = 24 }: { s: Service; size?: number }) {
   const cfg = s.staged || s.config;
   const src = cfg.source.type;
-  if (!cfg.icon && (src === "empty" || src === "upload")) return <Terminal size={size} strokeWidth={2} className="shrink-0 text-foreground" aria-hidden />;
-  return <ServiceIcon icon={cfg.icon} source={src === "github" ? "repo" : src} image={cfg.source.image} size={size} />;
+  const domain = s.domains[0]?.domain;
+  if (!cfg.icon && !domain && (src === "empty" || src === "upload")) return <Terminal size={size} strokeWidth={2} className="shrink-0 text-foreground" aria-hidden />;
+  return <ServiceIcon icon={cfg.icon} source={src === "github" ? "repo" : src} image={cfg.source.image} domain={domain} size={size} />;
 }
 
 /** "in 4 minutes", "in 2 months". */

@@ -6,6 +6,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"regexp"
 	"sort"
 
 	"github.com/musakkka/5050cloud/internal/cp/core/changes"
@@ -18,6 +19,9 @@ import (
 )
 
 // ---------------------------------------------------------------- listing
+
+// internalHost finds a private name in a plain value such as http://api.internal:3000.
+var internalHost = regexp.MustCompile(`([a-z0-9][a-z0-9-]*)\.internal(?:$|[^a-z0-9.-])`)
 
 // renameRewrites lists the variable values a staged rename rewrites.
 func renameRewrites(b *bundle, vs varSets, oldName, newName string) []api.DiffEntry {
@@ -540,13 +544,20 @@ func (c *Core) Canvas(ctx context.Context, envID string) (api.Canvas, error) {
 	}
 	vs := groupVars(rows)
 	cv := api.Canvas{Project: b.prj, Environment: b.env, Services: []api.Service{}, Edges: []api.Edge{}, Presence: c.presence.list(envID)}
-	byName := map[string]string{}
+	byName, byPrivate := map[string]string{}, map[string]string{}
 	for _, in := range b.insts {
 		cfg, _ := stagedConfig(in, b.cs)
 		byName[cfg.Name] = in.ServiceID
 		byName[in.Config.Name] = in.ServiceID
+		byPrivate[changes.PrivateName(cfg)] = in.ServiceID
 	}
 	seen := map[string]bool{}
+	link := func(from, to string) {
+		if to != "" && to != from && !seen[from+">"+to] {
+			seen[from+">"+to] = true
+			cv.Edges = append(cv.Edges, api.Edge{Source: from, Target: to})
+		}
+	}
 	for _, in := range b.insts {
 		cv.Services = append(cv.Services, c.serviceView(ctx, b, in))
 		cur := vs.of(in.ServiceID)
@@ -555,10 +566,10 @@ func (c *Core) Canvas(ctx context.Context, envID string) (api.Canvas, error) {
 		}
 		for _, v := range cur {
 			for _, svc := range vars.ReferencedServices(v.Value) {
-				if t, ok := byName[svc]; ok && t != in.ServiceID && !seen[in.ServiceID+">"+t] {
-					seen[in.ServiceID+">"+t] = true
-					cv.Edges = append(cv.Edges, api.Edge{Source: in.ServiceID, Target: t})
-				}
+				link(in.ServiceID, byName[svc])
+			}
+			for _, m := range internalHost.FindAllStringSubmatch(v.Value, -1) {
+				link(in.ServiceID, byPrivate[m[1]])
 			}
 		}
 	}

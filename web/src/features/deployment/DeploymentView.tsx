@@ -71,7 +71,7 @@ export default function DeploymentView({ did, service, serviceName, tab, onTab, 
     <div className="flex h-full min-h-0 flex-col">
       <header className="px-4 pt-6 sm:px-12 sm:pt-10">
         <div className="flex h-[34px] min-w-0 items-center gap-3">
-          <ServiceIcon icon={service?.config.icon} image={src?.image} source={service?.kind === "cron" ? "cron" : src?.type === "image" ? "image" : src?.type === "github" ? "github" : "cli"} size={24} />
+          <ServiceIcon icon={service?.config.icon} image={src?.image} domain={service?.domains[0]?.domain} source={service?.kind === "cron" ? "cron" : src?.type === "image" ? "image" : src?.type === "github" ? "github" : "cli"} size={24} />
           <button type="button" onClick={onBack} title="Back to the service"
             className="max-w-[40%] truncate text-h3 font-semibold text-foreground transition-colors duration-150 hover:text-fg-2">{name || <Skeleton w={80} h={18} />}</button>
           <span aria-hidden className="text-lg font-bold text-line">/</span>

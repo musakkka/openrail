@@ -27,7 +27,7 @@ export default function Danger({ project, env, admin }: { project: T.Project; en
             : services.length === 0 ? <div className="p-6 text-center text-body text-fg-2">No services in this environment.</div>
             : services.map((s, i) => (
               <div key={s.id} className={cx("flex h-[59px] items-center gap-3 px-4 transition-colors hover:bg-tint-hover", i > 0 && "border-t border-surface-hover")}>
-                <ServiceIcon icon={s.config.icon} image={s.config.source.image} source={s.config.source.type} size={24} />
+                <ServiceIcon icon={s.config.icon} image={s.config.source.image} source={s.config.source.type} domain={s.domains[0]?.domain} size={24} />
                 <span className="min-w-0 flex-1 truncate text-lead text-foreground">{s.config.name}</span>
                 {s.stagedAction === "delete" ? <span className="text-caption text-warn">Staged for deletion</span> : <Button variant="danger-outline" onClick={() => setSvc(s)}>Remove</Button>}
               </div>

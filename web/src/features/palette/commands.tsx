@@ -94,7 +94,7 @@ export function buildCommands(x: Ctx): Cmd[] {
   const out: Cmd[] = [];
   const services = proj?.canvas?.services || [];
   const name = (s: Service) => (s.staged || s.config).name;
-  const svcIcon = (s: Service) => <ServiceIcon icon={s.config.icon} image={s.config.source?.image} source={s.config.source?.type} size={20} />;
+  const svcIcon = (s: Service) => <ServiceIcon icon={s.config.icon} image={s.config.source?.image} source={s.config.source?.type} domain={s.domains?.[0]?.domain} size={20} />;
   const sel = services.find((s) => s.id === serviceId);
   const path = (rest: string) => (proj ? proj.withEnv(`/project/${proj.pid}${rest}`) : "/");
   const svcPath = (s: Service, tab = "") => path(`/service/${encodeURIComponent(s.id)}${tab}`);

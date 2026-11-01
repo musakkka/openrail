@@ -30,7 +30,7 @@ export function NewItemModal({ eid, services, initial, onSave, onClose }: {
   const metricOpts: ComboOption[] = METRIC_TYPES.map((t) => ({ value: t.id, label: t.label, icon: <t.icon size={20} strokeWidth={1.75} className="shrink-0 text-fg-2" /> }));
   const serviceOpts: ComboOption[] = [
     { value: "", label: "(All services)" },
-    ...services.map((s) => ({ value: s.id, label: s.config.name, icon: <ServiceIcon icon={s.config.icon} source={s.config.source.type} size={20} /> })),
+    ...services.map((s) => ({ value: s.id, label: s.config.name, icon: <ServiceIcon icon={s.config.icon} source={s.config.source.type} domain={s.domains[0]?.domain} size={20} /> })),
   ];
   const pickMetric = (v: string) => {
     setMetric(v as WidgetMetric);

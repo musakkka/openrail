@@ -116,7 +116,7 @@ function Flow() {
   const [resetAsk, setResetAsk] = useState(false);
   const [compose, setCompose] = useState<string>();
   const [showEdges, setShowEdges] = useState<boolean>(() => readPref("5050.canvas.connections", true));
-  const [layer, setLayerState] = useState<Layer>(() => readPref("5050.canvas.layer", "traffic"));
+  const [layer, setLayerState] = useState<Layer>(() => readPref("5050.canvas.layer", "references"));
   const [showPos, setShowPos] = useState(false);
   const [collapsed, setCollapsed] = useState<string[]>(() => readPref(`5050.collapsed.${pid}`, []));
   const [colours, setColours] = useState<Record<string, GroupColour>>(() => readPref(`5050.canvas.colours.${pid}`, {}));
