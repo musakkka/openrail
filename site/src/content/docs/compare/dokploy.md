@@ -1,13 +1,13 @@
 ---
-title: 5050cloud and Dokploy
-description: Dokploy runs on Docker Swarm; 5050cloud runs its own agent on plain Docker with a WireGuard mesh and needs no external registry.
+title: openrail and Dokploy
+description: Dokploy runs on Docker Swarm; openrail runs its own agent on plain Docker with a WireGuard mesh and needs no external registry.
 ---
 
-Dokploy runs on Docker Swarm; 5050cloud runs its own agent on plain Docker with a WireGuard mesh and needs no external registry.
+Dokploy runs on Docker Swarm; openrail runs its own agent on plain Docker with a WireGuard mesh and needs no external registry.
 
 Facts as of 2026-10-22, from Dokploy's docs.
 
-| | 5050cloud | Dokploy |
+| | openrail | Dokploy |
 |---|---|---|
 | License | AGPL-3.0 server, MIT CLI | Apache-2.0 plus a proprietary directory |
 | Runs on | Docker with its own agent | Docker Swarm |

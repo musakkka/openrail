@@ -4,7 +4,7 @@ package build
 
 // Pins for everything the builder runs (docs/SPEC.md 8.2 step 11). Each
 // version was at least two weeks old when it was pinned. Upgrading a pin is a
-// 5050cloud release, never a silent change on a host.
+// openrail release, never a silent change on a host.
 //
 // Railpack ships as a CLI (run on the host to write the build plan) and a
 // BuildKit frontend image (run inside BuildKit to turn the plan into an

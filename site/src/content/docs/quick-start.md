@@ -1,9 +1,9 @@
 ---
 title: Quick start
-description: Install 5050cloud on a Linux VM, open the console, deploy a GitHub repo and add Postgres.
+description: Install openrail on a Linux VM, open the console, deploy a GitHub repo and add Postgres.
 ---
 
-Install 5050cloud on a Linux VM, open the console, deploy a GitHub repo and add Postgres.
+Install openrail on a Linux VM, open the console, deploy a GitHub repo and add Postgres.
 
 ## What you need
 
@@ -36,7 +36,7 @@ Every answer is also a flag or a `FIFTY_*` environment variable; see [Install](/
 The installer sets up Docker, the control plane (`5050d`), the agent, Caddy for HTTPS and a private registry. It finishes with a one-time setup link:
 
 ```text
-5050cloud v0.1.0 is ready.
+openrail v0.1.0 is ready.
 
   Open this link to create your account (valid 24 hours, works once):
   https://console-ab12.203-0-113-10.sslip.io/setup?token=...
@@ -83,5 +83,5 @@ The canvas now draws a line from your app to Postgres, the dashed lines below.
 
 - [Your domains](/docs/guides/console-domain) and [Custom domains and HTTPS](/docs/guides/custom-domains).
 - [Backups bucket](/docs/guides/backups-bucket): turn on database backups.
-- [Set up the CLI](/docs/guides/cli-setup): `5050 up` from your laptop.
+- [Set up the CLI](/docs/guides/cli-setup): `openrail up` from your laptop.
 - [Production checklist](/docs/production-checklist).

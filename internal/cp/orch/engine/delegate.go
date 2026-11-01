@@ -5,10 +5,10 @@ package engine
 import (
 	"context"
 
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/internal/cp/orch/hub"
-	"github.com/musakkka/5050cloud/internal/cp/orch/sched"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/internal/cp/orch/hub"
+	"github.com/musakkka/openrail/internal/cp/orch/sched"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // Data routes forward to WP2b's data.Service (internal/cp/orch/README.md).

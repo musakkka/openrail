@@ -15,7 +15,7 @@ Join another Linux VM with one command to run more replicas, databases or builds
 
 ## Create the join command
 
-1. In the console, go to **Settings**, **Hosts** and select **Add host**. Or run `5050 host add` on your laptop.
+1. In the console, go to **Settings**, **Hosts** and select **Add host**. Or run `openrail host add` on your laptop.
 2. Optional: type a **Name**. When it is empty, the machine's host name is used.
 3. Tick the **Roles** the host should have: `app` (the default), `ingress`, `data`, `build`.
 4. Select **Create join command** and copy it.
@@ -71,13 +71,13 @@ Each host in **Settings**, **Hosts** has a menu:
 - **Edit name and roles** changes the name, the roles and **Memory kept free for the system (MB)**.
 - **Remove host** revokes its credentials. Drain it first.
 
-From the CLI: `5050 host list`, `5050 host drain HOST` and `5050 host maintenance HOST on`.
+From the CLI: `openrail host list`, `openrail host drain HOST` and `openrail host maintenance HOST on`.
 
 ## What success looks like
 
 - The new VM printed "This host joined the install."
 - **Settings**, **Hosts** shows it **Online** with the roles you ticked.
-- `5050 host list` lists it.
+- `openrail host list` lists it.
 - With 2 replicas of a service, responses come from both hosts.
 
 ## Next steps

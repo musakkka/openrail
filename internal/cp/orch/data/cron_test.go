@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/internal/cp/orch/data/fakerunner"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/internal/cp/orch/data/fakerunner"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 func (e *testEnv) addCron(schedule, overlap string) string {

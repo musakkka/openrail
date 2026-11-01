@@ -85,8 +85,8 @@ jobs:
           VERSION: ${{ needs.version.outputs.version }}
           PRERELEASE: ${{ needs.version.outputs.prerelease }}
         run: |
-          tags="ghcr.io/musakkka/5050-cli:$VERSION"
-          if [ "$PRERELEASE" = false ]; then tags="$tags,ghcr.io/musakkka/5050-cli:latest"; fi
+          tags="ghcr.io/musakkka/openrail-cli:$VERSION"
+          if [ "$PRERELEASE" = false ]; then tags="$tags,ghcr.io/musakkka/openrail-cli:latest"; fi
           echo "tags=$tags" >> "$GITHUB_OUTPUT"
       - uses: docker/build-push-action@v6.15.0
         with:

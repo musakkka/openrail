@@ -120,4 +120,4 @@ export function redeployLabel(s: Pick<Service, "activeDeployment" | "config">): 
 
 /** The GitHub issue link for "Report a missing command". */
 export const missingCommandUrl = (q: string) =>
-  `https://github.com/musakkka/5050cloud/issues/new?labels=palette&title=${encodeURIComponent(`Missing command: ${q}`)}`;
+  `https://github.com/musakkka/openrail/issues/new?labels=palette&title=${encodeURIComponent(`Missing command: ${q}`)}`;

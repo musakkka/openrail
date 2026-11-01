@@ -167,8 +167,8 @@ else
 fi
 
 # --- 7. CLI license boundary (docs/SPEC.md 5.2)
-if [ -d cmd/5050 ]; then
-	bad=$(go list -deps ./cmd/5050 | grep -E '/internal/(cp|agent|upgrade)|/web$' || true)
+if [ -d cmd/openrail ]; then
+	bad=$(go list -deps ./cmd/openrail | grep -E '/internal/(cp|agent|upgrade)|/web$' || true)
 	if [ -n "$bad" ]; then
 		fail "the MIT CLI imports AGPL packages:
 $bad"
@@ -176,7 +176,7 @@ $bad"
 		ok "the CLI imports nothing from internal/cp, internal/agent, internal/upgrade or web"
 	fi
 else
-	echo "note  cmd/5050 does not exist yet; license boundary check skipped"
+	echo "note  cmd/openrail does not exist yet; license boundary check skipped"
 fi
 
 # --- 8. contract stubs

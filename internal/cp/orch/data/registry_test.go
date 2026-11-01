@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // TestRegistryGCSequencing checks 9.6: pause the build queue, switch the

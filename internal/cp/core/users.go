@@ -10,12 +10,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/auth"
-	"github.com/musakkka/5050cloud/internal/cp/core/fail"
-	"github.com/musakkka/5050cloud/internal/cp/core/ids"
-	"github.com/musakkka/5050cloud/internal/cp/core/mail"
-	"github.com/musakkka/5050cloud/internal/cp/core/store"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/core/auth"
+	"github.com/musakkka/openrail/internal/cp/core/fail"
+	"github.com/musakkka/openrail/internal/cp/core/ids"
+	"github.com/musakkka/openrail/internal/cp/core/mail"
+	"github.com/musakkka/openrail/internal/cp/core/store"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // Session and token lifetimes (9.15).
@@ -254,14 +254,14 @@ func (c *Core) EndSession(ctx context.Context, sessionHash string) error {
 // TokenActor authenticates an API token.
 func (c *Core) TokenActor(ctx context.Context, secret string) (Actor, error) {
 	if !auth.LooksLikeAPIToken(secret) {
-		return Actor{}, fail.Unauthorized("The API token is not valid. Create a new one in Account > Tokens or run `5050 login`.")
+		return Actor{}, fail.Unauthorized("The API token is not valid. Create a new one in Account > Tokens or run `openrail login`.")
 	}
 	var id, uid, name, scope, env string
 	var exp, last int64
 	err := c.st.Reader.QueryRowContext(ctx, `SELECT id, user_id, name, scope, environment_id, expires_at, last_used FROM api_tokens WHERE secret_hash = ?`,
 		auth.HashToken(secret)).Scan(&id, &uid, &name, &scope, &env, &exp, &last)
 	if store.NoRows(err) {
-		return Actor{}, fail.Unauthorized("The API token is not valid or was deleted. Create a new one in Account > Tokens or run `5050 login`.")
+		return Actor{}, fail.Unauthorized("The API token is not valid or was deleted. Create a new one in Account > Tokens or run `openrail login`.")
 	}
 	if err != nil {
 		return Actor{}, err
@@ -482,7 +482,7 @@ func (c *Core) TOTPSetup(ctx context.Context, a Actor) (api.TOTPSetupResponse, e
 		return api.TOTPSetupResponse{}, fail.Conflict("Two-factor authentication is already on. Turn it off first to set up a new device.")
 	}
 	in, _ := c.installRow(ctx, c.st.Reader)
-	secret, url, err := auth.NewTOTP("5050cloud "+in.Name, row.Email)
+	secret, url, err := auth.NewTOTP("openrail "+in.Name, row.Email)
 	if err != nil {
 		return api.TOTPSetupResponse{}, err
 	}
@@ -784,13 +784,13 @@ func (c *Core) CLIAuthApprove(ctx context.Context, a Actor, code string) error {
 		var exp int64
 		err := tx.QueryRowContext(ctx, `SELECT status, expires_at FROM cli_auth WHERE code = ?`, auth.NormalizeCode(code)).Scan(&status, &exp)
 		if store.NoRows(err) {
-			return fail.NotFound("The code %s is not valid. Run `5050 login` again.", auth.NormalizeCode(code))
+			return fail.NotFound("The code %s is not valid. Run `openrail login` again.", auth.NormalizeCode(code))
 		}
 		if err != nil {
 			return err
 		}
 		if exp < c.Now() {
-			return fail.Conflict("The code has expired. Run `5050 login` again.")
+			return fail.Conflict("The code has expired. Run `openrail login` again.")
 		}
 		if status != "pending" {
 			return fail.Conflict("This code was already used.")

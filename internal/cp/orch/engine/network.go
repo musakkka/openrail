@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/orch/hub"
-	"github.com/musakkka/5050cloud/internal/cp/orch/routes"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/cp/orch/hub"
+	"github.com/musakkka/openrail/internal/cp/orch/routes"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // NetworkChanged recomputes routes, TCP proxies, DNS and egress after

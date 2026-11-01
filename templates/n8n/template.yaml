@@ -5,7 +5,7 @@ tagline: Workflow automation you host yourself, backed by Postgres.
 description: >-
   n8n with its own Postgres. Workflows, credentials and executions live in the
   database; N8N_ENCRYPTION_KEY protects stored credentials, so keep it safe.
-docs: https://5050cloud.com/docs/templates/n8n
+docs: https://openrail.app/docs/templates/n8n
 icon: n8n.svg
 category: app
 inputs:

@@ -14,8 +14,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/agent/core/engine"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/agent/core/engine"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // healthServer answers with the status in code, recording the request.
@@ -67,7 +67,7 @@ func TestHealthHTTPPassSendsHeaders(t *testing.T) {
 	_, c, _ := runChecker(t, ta, webReplica(ip, port, "/health"))
 	waitFor(t, "healthy", func() bool { st, ok := c.lastStatus(t, "rep_w"); return ok && st.State == "healthy" })
 	r := <-seen
-	if r.Host != "api.example.com" || r.Header.Get("X-Forwarded-Proto") != "https" || r.Header.Get("User-Agent") != "5050cloud-healthcheck" || r.URL.Path != "/health" {
+	if r.Host != "api.example.com" || r.Header.Get("X-Forwarded-Proto") != "https" || r.Header.Get("User-Agent") != "openrail-healthcheck" || r.URL.Path != "/health" {
 		t.Fatalf("probe request %s %v %s", r.Host, r.Header, r.URL.Path)
 	}
 }

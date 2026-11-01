@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // JobOutcome is a job result together with the dispatch error.
@@ -36,7 +36,7 @@ func toolMount(name string) proto.Mount {
 	return proto.Mount{Kind: "tool", Source: name, Target: toolDir + name, ReadOnly: true}
 }
 
-// volumeName is the Docker volume of a 5050 volume (docs/SPEC.md 9.12).
+// volumeName is the Docker volume of an openrail volume (docs/SPEC.md 9.12).
 func volumeName(volID string) string { return "5050-" + volID }
 
 // runJob dispatches a job and logs its lines at debug level.

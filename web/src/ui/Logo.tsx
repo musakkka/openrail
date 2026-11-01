@@ -6,5 +6,5 @@ import { Logo } from "../kit/Logo";
 export default Logo;
 
 export function Wordmark() {
-  return <span className="text-[15px] font-semibold tracking-tight">5050<span className="text-gray-500">cloud</span></span>;
+  return <span className="text-[15px] font-semibold tracking-tight">openrail</span>;
 }

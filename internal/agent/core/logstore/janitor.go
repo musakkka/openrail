@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Usage reports what the janitor found and did.

@@ -1,4 +1,4 @@
-module github.com/musakkka/5050cloud
+module github.com/musakkka/openrail
 
 go 1.26.0
 

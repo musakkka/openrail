@@ -1,6 +1,6 @@
 # tygo turns pkg/api into web/src/api/types.gen.ts. Run `make gen-ts`.
 packages:
-  - path: "github.com/musakkka/5050cloud/pkg/api"
+  - path: "github.com/musakkka/openrail/pkg/api"
     output_path: "web/src/api/types.gen.ts"
     # routes.go is the Go route table (interface{} values); the mocks
     # generator reads it instead.

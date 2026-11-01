@@ -14,7 +14,7 @@ const server = http.createServer((req, res) => {
   res.writeHead(200, { "content-type": "application/json" });
   res.end(
     JSON.stringify({
-      message: process.env.GREETING || "Hello from 5050cloud",
+      message: process.env.GREETING || "Hello from openrail",
       started,
       path: req.url,
     }) + "\n",

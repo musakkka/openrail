@@ -8,7 +8,7 @@ Give a service a generated HTTPS name with no DNS setup, or put it on your own d
 ## Generated domains
 
 1. On the canvas, open the service, then **Settings**, **Networking**.
-2. Under **Public domains**, select **Generate Domain**. Or run `5050 domain` in a linked folder.
+2. Under **Public domains**, select **Generate Domain**. Or run `openrail domain` in a linked folder.
 
 The name looks like `web-k3x9.203-0-113-10.sslip.io`, or `web-k3x9.apps.example.com` when the install has [its own base domain](/docs/guides/console-domain). It works at once with a valid certificate.
 
@@ -23,7 +23,7 @@ The name looks like `web-k3x9.203-0-113-10.sslip.io`, or `web-k3x9.apps.example.
 From the CLI, in a linked folder:
 
 ```sh
-5050 domain shop.example.com --port 3000
+openrail domain shop.example.com --port 3000
 ```
 
 The console shows the DNS records to create, each with a copy button, and the CLI prints them.
@@ -44,7 +44,7 @@ At your DNS provider, create one of these for each name. For a host at `203.0.11
 - With two ingress hosts, create one A record per ingress host's IP. The console lists one A record for each.
 - At the apex the console adds a note to the CNAME: use it only where your provider supports CNAME flattening or an ALIAS record.
 - `www` and the apex are two domains: add each one to the service.
-- Remove any AAAA record on the name that points somewhere else. Let's Encrypt checks over IPv6 first when an AAAA record exists, and 5050cloud is IPv4 only. The console tells you when it finds one.
+- Remove any AAAA record on the name that points somewhere else. Let's Encrypt checks over IPv6 first when an AAAA record exists, and openrail is IPv4 only. The console tells you when it finds one.
 
 Check the record from your laptop before you wait on the console:
 
@@ -58,7 +58,7 @@ It must print your host's IP (for an A record) or the generated name and then th
 
 The domain's status moves through:
 
-1. **Waiting for DNS.** 5050cloud checks the name through public resolvers (1.1.1.1, then 8.8.8.8) every 30 seconds for the first 10 minutes, then every 10 minutes. Select **Check** to check now. No certificate is requested yet, so a name added before its record exists costs nothing.
+1. **Waiting for DNS.** openrail checks the name through public resolvers (1.1.1.1, then 8.8.8.8) every 30 seconds for the first 10 minutes, then every 10 minutes. Select **Check** to check now. No certificate is requested yet, so a name added before its record exists costs nothing.
 2. **Issuing certificate.** DNS points at your host; Let's Encrypt is validating it over port 80.
 3. **Error.** The certificate could not be issued. The console shows the reason the certificate authority gave, in red.
 4. **Active.** The console shows "Certificate valid until" a date. Certificates renew on their own about a month before they expire.
@@ -66,9 +66,9 @@ The domain's status moves through:
 From the CLI:
 
 ```sh
-5050 domain status shop.example.com
-5050 domain list
-5050 domain shop.example.com --wait
+openrail domain status shop.example.com
+openrail domain list
+openrail domain shop.example.com --wait
 ```
 
 `--wait` follows the domain until it is active or its certificate fails, for up to 5 minutes.
@@ -85,15 +85,15 @@ If a domain is still on **Issuing certificate** after five minutes:
 6. Then select **Retry certificate**, or run:
 
 ```sh
-5050 domain certificate retry shop.example.com
+openrail domain certificate retry shop.example.com
 ```
 
 **Retry certificate** is hidden while the domain waits for DNS, because a retry then would only fail again.
 
 ## Change the port or remove a domain
 
-- **Port**: edit it in the domain's row, or run `5050 domain update shop.example.com --port 8080`.
-- **Remove**: select **Delete**, or run `5050 domain delete shop.example.com`. The name stops being served within seconds.
+- **Port**: edit it in the domain's row, or run `openrail domain update shop.example.com --port 8080`.
+- **Remove**: select **Delete**, or run `openrail domain delete shop.example.com`. The name stops being served within seconds.
 
 ## What is not supported
 
@@ -107,7 +107,7 @@ The full list for this release is on [Honest limits](/docs/reference/honest-limi
 
 - The domain shows **Active** and "Certificate valid until" a date about 90 days away.
 - `curl -I https://shop.example.com` returns your app's response with no certificate warning.
-- `5050 domain list` lists the domain as active.
+- `openrail domain list` lists the domain as active.
 
 ## Next steps
 

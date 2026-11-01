@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 // Makes the site's pictures and recordings from the brand repo's real console
-// captures (5050cloud-brand/screens). Run it after the captures change; its
+// captures (openrail-brand/screens). Run it after the captures change; its
 // output in public/media and data/media.json is committed, so `npm run build`
 // stays dependency-free.
 //
-//   node scripts/media.mjs [--brand ../5050cloud-brand]
+//   node scripts/media.mjs [--brand ../openrail-brand]
 //   node scripts/media.mjs --stills        (console stills only)
 //   node scripts/media.mjs --hero-only     (the hero loop, its poster and phone still only)
-//   node scripts/media.mjs --demo ../5050cloud-demo/out --reviewed
+//   node scripts/media.mjs --demo ../openrail-demo/out --reviewed
 //
 // Needs ffmpeg with libsvtav1 (AVIF) and the Chromium that the brand repo's
 // playwright-core installs (WebP, because this ffmpeg has no WebP encoder).
@@ -31,14 +31,14 @@ const arg = (name, dflt) => {
   const i = process.argv.indexOf(name);
   return i > 0 ? process.argv[i + 1] : dflt;
 };
-const BRAND = resolve(arg('--brand', join(SITE, '..', '5050cloud-brand')));
-// The hero loop: a HERO=1 render from the demo pipeline (5050cloud-demo:
+const BRAND = resolve(arg('--brand', join(SITE, '..', 'openrail-brand')));
+// The hero loop: a HERO=1 render from the demo pipeline (openrail-demo:
 // scripts/hero-frames.mjs, then HERO=1 node render.mjs --takes work/takes-hero
 // --out work/hero). It is install, deploy an image, add Postgres, reference its
 // URL, generate a domain and open it, recorded on a fresh VM in the console's
 // dark theme (its pink accent is the site's accent), with the sslip.io names
 // replaced by example.com names at capture time (HERO=1 node capture.mjs).
-const HERO = resolve(arg('--hero', join(SITE, '..', '5050cloud-demo', 'work', 'hero')));
+const HERO = resolve(arg('--hero', join(SITE, '..', 'openrail-demo', 'work', 'hero')));
 // The loop starts at the first console step: the install command is printed
 // as text right beside it, so the recording does not open on a terminal. The
 // poster is a frame from the middle of the loop (seconds into the encoded
@@ -280,20 +280,20 @@ async function demo() {
   if (!process.argv.includes('--reviewed')) {
     throw new Error('Watch the whole render first: it must show no private hostname, IP, sslip.io name, token or account name. Then run again with --reviewed.');
   }
-  const need = ['5050cloud-demo.mp4', '5050cloud-demo.webm', 'poster.png'];
+  const need = ['openrail-demo.mp4', 'openrail-demo.webm', 'poster.png'];
   for (const f of need) if (!existsSync(join(dir, f))) throw new Error(`${dir} has no ${f}: the render is not finished`);
   const out = join(SITE, 'public/demo');
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { recursive: true });
-  for (const v of ['5050cloud-demo.mp4', '5050cloud-demo.webm']) {
+  for (const v of ['openrail-demo.mp4', 'openrail-demo.webm']) {
     const { duration } = probe(join(dir, v));
     if (!(duration > 30)) throw new Error(`${v} is ${duration} s long: the render is not finished`);
     if (statSync(join(dir, v)).size > 16 * 1024 * 1024) throw new Error(`${v} is over 16 MB; encode a 1280x720 copy first`);
     copyFileSync(join(dir, v), join(out, v));
   }
-  const vtt = ['5050cloud-demo.en.vtt', 'demo.en.vtt'].map((f) => join(dir, f)).find(existsSync);
+  const vtt = ['openrail-demo.en.vtt', 'demo.en.vtt'].map((f) => join(dir, f)).find(existsSync);
   if (!vtt) throw new Error('the render has no captions file');
-  copyFileSync(vtt, join(out, '5050cloud-demo.en.vtt'));
+  copyFileSync(vtt, join(out, 'openrail-demo.en.vtt'));
   if (existsSync(join(dir, 'chapters.vtt'))) copyFileSync(join(dir, 'chapters.vtt'), join(out, 'chapters.vtt'));
   mkdirSync(OUT, { recursive: true });
   const toWebp = [];
@@ -302,7 +302,7 @@ async function demo() {
   for (const f of readdirSync(saved).filter((n) => n.startsWith('demo-poster-'))) copyFileSync(join(saved, f), join(out, f.replace('demo-poster-', 'poster-')));
   for (const f of readdirSync(saved).filter((n) => n.startsWith('demo-poster-'))) rmSync(join(saved, f));
   await webp(toWebp.map(([png, w]) => [join(out, png.split('/').pop().replace('demo-poster-', 'poster-')), join(out, w.split('/').pop().replace('demo-poster-', 'poster-'))]));
-  writeFileSync(join(out, 'demo.json'), JSON.stringify({ poster: p, duration: probe(join(out, '5050cloud-demo.mp4')).duration }, null, 1) + '\n');
+  writeFileSync(join(out, 'demo.json'), JSON.stringify({ poster: p, duration: probe(join(out, 'openrail-demo.mp4')).duration }, null, 1) + '\n');
   console.log('Copied the demo into public/demo');
 }
 

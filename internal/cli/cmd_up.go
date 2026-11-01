@@ -14,7 +14,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 func terminal(s api.DeploymentStatus) bool {
@@ -126,7 +126,7 @@ func (a *App) cmdUp() *cobra.Command {
 				if a.JSON {
 					return a.printJSON(up)
 				}
-				a.printf("Deployment %s started. Follow it with `5050 logs %s`\n", up.DeploymentID, up.DeploymentID)
+				a.printf("Deployment %s started. Follow it with `openrail logs %s`\n", up.DeploymentID, up.DeploymentID)
 				return nil
 			}
 			return a.followDeployment(ctx, t, up.DeploymentID, !ci)
@@ -193,7 +193,7 @@ func (a *App) followDeployment(ctx context.Context, t *Target, did string, deplo
 	if u := serviceURL(&s); u != "" {
 		a.printf("Deployed: %s\n", u)
 	} else {
-		a.printf("Deployed: %s (no public domain yet; add one with `5050 domain`)\n", t.Service.Config.Name)
+		a.printf("Deployed: %s (no public domain yet; add one with `openrail domain`)\n", t.Service.Config.Name)
 	}
 	return nil
 }

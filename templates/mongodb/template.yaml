@@ -6,7 +6,7 @@ description: >-
   Official MongoDB image with a volume, a generated root user and Railway's
   variable names. With a backup bucket set, mongodump streams a compressed
   archive into restic every day.
-docs: https://5050cloud.com/docs/databases/mongodb
+docs: https://openrail.app/docs/databases/mongodb
 icon: mongodb.svg
 category: database
 majorVersions: ["8.0"]

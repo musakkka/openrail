@@ -58,7 +58,7 @@ formatters:
   settings:
     goimports:
       local-prefixes:
-        - github.com/musakkka/5050cloud
+        - github.com/musakkka/openrail
   exclusions:
     paths:
       - web/node_modules

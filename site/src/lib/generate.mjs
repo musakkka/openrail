@@ -87,12 +87,12 @@ export function apiPage(root) {
   const routes = parseRoutes(src);
   const desc = specDescriptions(spec);
   const out = [];
-  out.push('The 5050cloud REST API serves everything the console and the CLI do, with the same roles and audit log.');
+  out.push('The openrail REST API serves everything the console and the CLI do, with the same roles and audit log.');
   out.push('');
   out.push('## Basics');
   out.push('');
   out.push('- Base URL: `https://<your console domain>/api/v1`. Health endpoints `/healthz` and `/readyz` sit at the root.');
-  out.push('- Authentication: `Authorization: Bearer 5050_...` with an API token from **Account > Tokens** or `5050 login`. Browser sessions use the `5050_session` cookie and must send the header `X-5050-CSRF: 1` on every request that changes state.');
+  out.push('- Authentication: `Authorization: Bearer 5050_...` with an API token from **Account > Tokens** or `openrail login`. Browser sessions use the `5050_session` cookie and must send the header `X-5050-CSRF: 1` on every request that changes state.');
   out.push('- Scopes: an `account` token acts as its user. An `environment` token can deploy, read logs and set variables in one environment.');
   out.push('- Roles: Public needs no login. Viewer, Member, Admin and Owner are the install roles; a project grant can replace the install role for one project.');
   out.push('- Errors are JSON `{code, message, field?}` with the codes `unauthorized`, `forbidden`, `not_found`, `conflict`, `validation`, `rate_limited`, `unavailable` (also read-only mode) and `internal`.');
@@ -183,9 +183,9 @@ export function serviceSettingsPage(root) {
   const out = [];
   out.push('Every setting a service has, with its default and the Railway setting it matches.');
   out.push('');
-  out.push('Settings live in the service panel under **Settings**. Edits are staged until you press **Deploy**. A field set by a config file (`railway.json`, `5050.yaml`) shows a file icon and cannot be edited in the console; see [Config as code](/docs/guides/config-as-code).');
+  out.push('Settings live in the service panel under **Settings**. Edits are staged until you press **Deploy**. A field set by a config file (`railway.json`, `openrail.yaml`) shows a file icon and cannot be edited in the console; see [Config as code](/docs/guides/config-as-code).');
   out.push('');
-  out.push('The JSON names below are the ones the API, `5050 environment edit --service-config` and `5050.yaml` use.');
+  out.push('The JSON names below are the ones the API, `openrail environment edit --service-config` and `openrail.yaml` use.');
   out.push('');
   out.push('| Field | Type | Default and notes | Railway |');
   out.push('|---|---|---|---|');
@@ -239,7 +239,7 @@ export function cliPages() {
     out.push(c.railway || `\`railway ${c.name}\` works the same way through the [railway alias](/docs/cli/railway-alias).`);
     out.push('');
     out.push('Every command also accepts the [global options](/docs/cli/global-options).');
-    return { slug: `docs/cli/${c.slug || c.name}`, title: `5050 ${c.name}`, description: c.summary, md: out.join('\n'), name: c.name };
+    return { slug: `docs/cli/${c.slug || c.name}`, title: `openrail ${c.name}`, description: c.summary, md: out.join('\n'), name: c.name };
   });
 }
 
@@ -289,7 +289,7 @@ export function templatePages(root) {
       }
     }
     if (!top.id || !top.docs) continue;
-    const slug = top.docs.replace(/^https:\/\/5050cloud\.com\//, '').replace(/\/$/, '');
+    const slug = top.docs.replace(/^https:\/\/openrail\.com\//, '').replace(/\/$/, '');
     const out = [];
     out.push(`${top.tagline || top.name}`);
     out.push('');
@@ -297,9 +297,9 @@ export function templatePages(root) {
     out.push('## Deploy');
     out.push('');
     if (top.category === 'database' || slug.startsWith('docs/databases/')) {
-      out.push(`On the canvas, select **+ Create**, then **Database** or **Template**, then **${top.name}**. Or run \`5050 deploy --template ${top.id}\`.`);
+      out.push(`On the canvas, select **+ Create**, then **Database** or **Template**, then **${top.name}**. Or run \`openrail deploy --template ${top.id}\`.`);
     } else {
-      out.push(`On the canvas, select **+ Create**, then **Template**, then **${top.name}**. Or run \`5050 deploy --template ${top.id}\`.`);
+      out.push(`On the canvas, select **+ Create**, then **Template**, then **${top.name}**. Or run \`openrail deploy --template ${top.id}\`.`);
     }
     out.push('');
     out.push('## Services it creates');

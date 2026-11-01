@@ -9,13 +9,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/musakkka/5050cloud/internal/cp/core"
-	"github.com/musakkka/5050cloud/internal/cp/core/auth"
-	"github.com/musakkka/5050cloud/internal/cp/core/fail"
-	"github.com/musakkka/5050cloud/internal/cp/core/ids"
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/version"
+	"github.com/musakkka/openrail/internal/cp/core"
+	"github.com/musakkka/openrail/internal/cp/core/auth"
+	"github.com/musakkka/openrail/internal/cp/core/fail"
+	"github.com/musakkka/openrail/internal/cp/core/ids"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/version"
 )
 
 type orchestrator = cpapi.Orchestrator
@@ -582,7 +582,7 @@ func (s *Server) table() map[string]handler {
 		return rawBody{"application/yaml", b}, nil
 	})
 	add("POST /imports/railway", func(x *Ctx) (any, error) {
-		return nil, fail.Unavailable("Import from Railway is not available in this build yet. Use a Docker Compose import or `5050 import compose`, and copy variables with `railway variables --json`.")
+		return nil, fail.Unavailable("Import from Railway is not available in this build yet. Use a Docker Compose import or `openrail import compose`, and copy variables with `railway variables --json`.")
 	})
 	add("POST /environments/{eid}/imports/compose", func(x *Ctx) (any, error) {
 		b, err := x.text(1 << 20)
@@ -618,7 +618,7 @@ func (s *Server) table() map[string]handler {
 	return m
 }
 
-// uploadsDir is where `5050 up` tarballs wait for the orchestrator.
+// uploadsDir is where `openrail up` tarballs wait for the orchestrator.
 func (s *Server) uploadsDir() string { return filepath.Join(s.C.File().DataDir, "uploads") }
 
 func (s *Server) upload(x *Ctx) (any, error) {

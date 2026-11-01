@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/musakkka/5050cloud/internal/cp/core"
-	"github.com/musakkka/5050cloud/internal/cp/core/config"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/core"
+	"github.com/musakkka/openrail/internal/cp/core/config"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // ballastSize is the file deleted to free space when the disk fills (6.4, 6.6).

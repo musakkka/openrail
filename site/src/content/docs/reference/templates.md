@@ -1,9 +1,9 @@
 ---
 title: Templates
-description: The database and app templates that ship with 5050cloud v0.1.
+description: The database and app templates that ship with openrail v0.1.
 ---
 
-The database and app templates that ship with 5050cloud v0.1.
+The database and app templates that ship with openrail v0.1.
 
 ## Databases
 
@@ -35,5 +35,5 @@ Images are pinned per release. Template manifests live in `templates/` in the re
 
 ## Next steps
 
-- [Templates and the Deploy on 5050cloud button](/docs/guides/templates)
+- [Templates and the Deploy on openrail button](/docs/guides/templates)
 - [Writing a template](/docs/contribute/writing-a-template)

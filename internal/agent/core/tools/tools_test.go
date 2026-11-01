@@ -17,7 +17,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 func sum(b []byte) string { h := sha256.Sum256(b); return hex.EncodeToString(h[:]) }

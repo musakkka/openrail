@@ -24,7 +24,7 @@ This needs a [backups bucket](/docs/guides/backups-bucket). The original is neve
 2. Select **Restore** next to a backup, or **Restore to a point in time** for Postgres.
 3. In **Restore to a copy**, pick the backup or the time, then the environment and host for the copy.
 4. Select **Restore**. A new service named `<name>-restored-YYYYMMDD-HHMM` starts with its own volume.
-5. Select **Open the copy** and check the data, for example with `5050 connect Postgres-restored-20261022-1400`.
+5. Select **Open the copy** and check the data, for example with `openrail connect Postgres-restored-20261022-1400`.
 6. When it is right, select **Promote a copy**, pick the copy and select **Promote**.
 
 The copy takes the original's name, so `${{Postgres.DATABASE_URL}}` now points at it. The original becomes `<name>-old-<stamp>` and stops, services that reference it redeploy, and backups start on the promoted copy. Details are in [Backups and restore](/docs/guides/backups).
@@ -65,7 +65,7 @@ Rebuilding a dead control host on a new VM with all hosts reconnecting is not su
 
 A manual recovery today looks like this:
 
-1. Install 5050cloud on a fresh VM with the [one-line install](/docs/guides/install).
+1. Install openrail on a fresh VM with the [one-line install](/docs/guides/install).
 2. Point the console and base domain records at the new VM.
 3. In **Settings**, **Backups**, enter the same bucket and keys.
 4. Recreate each database service with the same name, then restore its newest backup into it from the bucket.

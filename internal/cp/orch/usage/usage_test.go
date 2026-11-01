@@ -5,7 +5,7 @@ package usage
 import (
 	"testing"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 func TestEstimate(t *testing.T) {

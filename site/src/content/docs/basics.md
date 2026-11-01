@@ -1,23 +1,23 @@
 ---
 title: The basics
-description: 5050cloud organises your apps into projects, environments, services and deployments, the same way Railway does, and runs them on hosts you own.
+description: openrail organises your apps into projects, environments, services and deployments, the same way Railway does, and runs them on hosts you own.
 ---
 
-5050cloud organises your apps into projects, environments, services and deployments, the same way Railway does, and runs them on hosts you own.
+openrail organises your apps into projects, environments, services and deployments, the same way Railway does, and runs them on hosts you own.
 
 ## Projects
 
 ![The project canvas: web, api with 3 replicas, a cron job, a worker, Postgres grouped with PgBouncer, Redis, docs and search, joined by dashed reference lines](shot:canvas "A project on the canvas. Dashed lines are variable references between services.")
 
-A project is a canvas of services that belong together, such as an API, a web app, a worker and their databases. Create one from the dashboard with **New project** or with `5050 init`.
+A project is a canvas of services that belong together, such as an API, a web app, a worker and their databases. Create one from the dashboard with **New project** or with `openrail init`.
 
 ## Environments
 
-Every project starts with a `production` environment. Add more (for example `staging`) from the environment menu at the top of the canvas or with `5050 environment new staging --duplicate production`. Each environment has its own services, variables, domains and private network. Environments cannot reach each other's services.
+Every project starts with a `production` environment. Add more (for example `staging`) from the environment menu at the top of the canvas or with `openrail environment new staging --duplicate production`. Each environment has its own services, variables, domains and private network. Environments cannot reach each other's services.
 
 ## Services
 
-A service runs one thing: code from a GitHub repo, a Docker image, a directory uploaded with `5050 up`, or a database template. A service has settings (source, build, deploy, networking), variables, an optional volume and domains. Services are **web** (they take traffic), **worker** (no port) or **cron** (run on a schedule).
+A service runs one thing: code from a GitHub repo, a Docker image, a directory uploaded with `openrail up`, or a database template. A service has settings (source, build, deploy, networking), variables, an optional volume and domains. Services are **web** (they take traffic), **worker** (no port) or **cron** (run on a schedule).
 
 ## Deployments
 
@@ -33,7 +33,7 @@ Edits to settings and variables are staged first. A banner shows how many change
 
 ## Hosts
 
-A host is a Linux VM running the 5050cloud agent. The first host also runs the control plane and the console. Add more with one command; see [Add a host](/docs/guides/add-a-host). Hosts have roles:
+A host is a Linux VM running the openrail agent. The first host also runs the control plane and the console. Add more with one command; see [Add a host](/docs/guides/add-a-host). Hosts have roles:
 
 | Role | What it does |
 |---|---|

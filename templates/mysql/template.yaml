@@ -6,7 +6,7 @@ description: >-
   Official MySQL 8.4 image with a volume, a generated root password and
   Railway's variable names. Backups are not part of v0.1; the docs show a
   mysqldump cron service you can add.
-docs: https://5050cloud.com/docs/databases/mysql
+docs: https://openrail.app/docs/databases/mysql
 icon: mysql.svg
 category: database
 majorVersions: ["8.4"]

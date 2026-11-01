@@ -14,11 +14,11 @@ import (
 
 	"github.com/coder/websocket"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/auth"
-	"github.com/musakkka/5050cloud/internal/cp/core/fail"
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/version"
+	"github.com/musakkka/openrail/internal/cp/core/auth"
+	"github.com/musakkka/openrail/internal/cp/core/fail"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/version"
 )
 
 const pEnv = "/environments/{eid}"

@@ -6,7 +6,7 @@ description: >-
   The Postgres template with the PostGIS image: the same backups,
   point-in-time restore and settings. Run CREATE EXTENSION postgis, or Enable
   it in the Data tab. The upstream image is published for amd64 hosts only.
-docs: https://5050cloud.com/docs/databases/postgis
+docs: https://openrail.app/docs/databases/postgis
 icon: postgis.svg
 category: database
 majorVersions: ["17", "18"]

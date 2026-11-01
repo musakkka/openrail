@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/auth"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/core/auth"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // postFrom posts JSON with the headers a request from that address and page has.

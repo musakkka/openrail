@@ -17,10 +17,10 @@ import (
 	"github.com/coder/websocket"
 	_ "modernc.org/sqlite"
 
-	"github.com/musakkka/5050cloud/internal/cp/orch/fakeconfig"
-	"github.com/musakkka/5050cloud/internal/cp/secretbox"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/cp/orch/fakeconfig"
+	"github.com/musakkka/openrail/internal/cp/secretbox"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // TestJoinAndConnect runs the real orchestrator with fakeconfig and one

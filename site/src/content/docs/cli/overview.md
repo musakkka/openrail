@@ -1,9 +1,9 @@
 ---
 title: CLI overview
-description: The `5050` CLI deploys, inspects and manages your services from a terminal or CI, and also answers to `railway`.
+description: The `openrail` CLI deploys, inspects and manages your services from a terminal or CI, and also answers to `railway`.
 ---
 
-The `5050` CLI deploys, inspects and manages your services from a terminal or CI, and also answers to `railway`.
+The `openrail` CLI deploys, inspects and manages your services from a terminal or CI, and also answers to `railway`.
 
 ## Install
 
@@ -13,15 +13,15 @@ The CLI installs on macOS, Linux and Windows (Windows builds are experimental). 
 curl -fsSL {{GET}} | sh -s -- --cli
 ```
 
-It goes to `/usr/local/bin` when that is writable (or you run it as root), else to `~/.local/bin`. Run `5050 alias install` to also answer to `railway`. Release archives for every platform are on the GitHub Releases page.
+It goes to `/usr/local/bin` when that is writable (or you run it as root), else to `~/.local/bin`. Run `openrail alias install` to also answer to `railway`. Release archives for every platform are on the GitHub Releases page.
 
 ## Log in and deploy
 
 ```sh
-5050 login https://console.example.com
+openrail login https://console.example.com
 cd my-app
-5050 init -n my-app
-5050 up --new
+openrail init -n my-app
+openrail up --new
 ```
 
 ## Commands

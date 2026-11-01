@@ -42,8 +42,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // ---------------------------------------------------------------- shared types
@@ -112,7 +112,7 @@ type DeployInput struct {
 	Trigger   string // see api.Deployment.Trigger
 	Actor     string
 	Message   string
-	// Exactly one source selector: Commit (git), UploadPath (5050 up tarball
+	// Exactly one source selector: Commit (git), UploadPath (openrail up tarball
 	// on local disk, moved into the orchestrator's data dir), or neither
 	// (image services, or "latest" which the orchestrator resolves with
 	// git ls-remote / the GitHub API).

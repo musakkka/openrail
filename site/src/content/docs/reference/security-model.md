@@ -1,9 +1,9 @@
 ---
 title: Security model
-description: How 5050cloud protects the console, the hosts, your secrets and your builds.
+description: How openrail protects the console, the hosts, your secrets and your builds.
 ---
 
-How 5050cloud protects the console, the hosts, your secrets and your builds.
+How openrail protects the console, the hosts, your secrets and your builds.
 
 | Area | Rule |
 |---|---|

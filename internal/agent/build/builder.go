@@ -20,9 +20,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/agent/agentapi"
-	"github.com/musakkka/5050cloud/pkg/manifest"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/agent/agentapi"
+	"github.com/musakkka/openrail/pkg/manifest"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Options configure the builder. DataDir, DockerHost and Tools are wired by
@@ -39,7 +39,7 @@ type Options struct {
 	// Without it the bridge must already exist.
 	Network agentapi.Network
 	// HostToken returns the agent's current host token, used to download
-	// `5050 up` uploads (BuildJob.TarballURL).
+	// `openrail up` uploads (BuildJob.TarballURL).
 	HostToken func() string
 	// Images returns HostConfig.Images. The builder reads "buildkit",
 	// "railpack-frontend" and "dockerhub-mirror" (host:port of a Docker Hub

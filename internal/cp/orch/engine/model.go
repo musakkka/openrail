@@ -9,8 +9,8 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/musakkka/5050cloud/internal/cp/orch/hub"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/orch/hub"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // depRow is one o_deployments record.

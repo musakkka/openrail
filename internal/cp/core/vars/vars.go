@@ -15,8 +15,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/fail"
-	"github.com/musakkka/5050cloud/internal/cp/core/ids"
+	"github.com/musakkka/openrail/internal/cp/core/fail"
+	"github.com/musakkka/openrail/internal/cp/core/ids"
 )
 
 // MaxValueBytes is the largest value accepted (64 KiB).

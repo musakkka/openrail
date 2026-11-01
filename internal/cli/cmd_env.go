@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 	"sigs.k8s.io/yaml"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // dotPatch turns "deploy.startCommand" and a value into a nested merge patch.
@@ -50,7 +50,7 @@ func (a *App) relink(l func(*Link)) error {
 	}
 	link, dir, ok := cfg.FindLink(a.cwd())
 	if !ok {
-		return errors.New("this directory is not linked. Run `5050 link` first")
+		return errors.New("this directory is not linked. Run `openrail link` first")
 	}
 	l(&link)
 	cfg.Links[dir] = link

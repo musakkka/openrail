@@ -15,13 +15,13 @@ Run one process per vCPU in each replica so single-threaded runtimes like Node u
 
 ## Node
 
-When the start command is `node [flags] <file>` (directly, or as the `start` script that `npm start` runs), 5050cloud runs your app in Node cluster mode: N processes sharing one port. The panel shows "Runs N Node processes sharing port P (cluster mode)". Your code needs no change.
+When the start command is `node [flags] <file>` (directly, or as the `start` script that `npm start` runs), openrail runs your app in Node cluster mode: N processes sharing one port. The panel shows "Runs N Node processes sharing port P (cluster mode)". Your code needs no change.
 
 Work that must run once (a scheduler, a migration) should check `CLUSTER_WORKER`: it is unset or `1` in exactly one process.
 
 ## Other runtimes
 
-5050cloud sets `WEB_CONCURRENCY=N` and `FIFTY_PROCESSES=N`. Many servers read `WEB_CONCURRENCY`:
+openrail sets `WEB_CONCURRENCY=N` and `FIFTY_PROCESSES=N`. Many servers read `WEB_CONCURRENCY`:
 
 | Server | How it uses it |
 |---|---|
@@ -40,7 +40,7 @@ Memory use grows with each process. Raise the memory limit when you raise Proces
 
 ## The measured result
 
-Measured on 2026-10-23 on 5050cloud 0.1.1, on one 8 vCPU VM with 4 physical cores (Ubuntu 24.04, 32 GB), with `oha` on the same VM through the HTTPS proxy, 32 connections, median of 3 runs of 30 s:
+Measured on 2026-10-23 on openrail 0.1.1, on one 8 vCPU VM with 4 physical cores (Ubuntu 24.04, 32 GB), with `oha` on the same VM through the HTTPS proxy, 32 connections, median of 3 runs of 30 s:
 
 | Work per request | One process | Use all cores | On / off |
 |---|---|---|---|

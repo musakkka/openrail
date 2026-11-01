@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// Package compose maps a docker-compose.yml to 5050cloud services
+// Package compose maps a docker-compose.yml to openrail services
 // (docs/SPEC.md 9.22): images or builds, commands, environment, ports,
 // named volumes, depends_on, deploy.replicas, health checks and restart
 // policies. Well-known database images become templates. Everything it
@@ -20,7 +20,7 @@ import (
 
 	"sigs.k8s.io/yaml"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // Error is a problem with the file as a whole.
@@ -31,9 +31,9 @@ func (e *Error) Error() string { return e.Msg }
 // Item is one line of the import report.
 type Item = api.ImportItem
 
-// Service is one compose service mapped to a 5050cloud service.
+// Service is one compose service mapped to an openrail service.
 type Service struct {
-	// Name is the compose name, made valid for 5050cloud.
+	// Name is the compose name, made valid for openrail.
 	Name string
 	// Config is the service config to stage. For template services only
 	// Name, Template and TemplateVersion matter.
@@ -103,7 +103,7 @@ func Parse(data []byte, o Options) (*Project, error) {
 		switch k {
 		case "services", "volumes", "version", "name":
 		default:
-			p.Skipped = append(p.Skipped, Item{Kind: "setting", Name: k, Detail: "Top-level " + k + " is not used by 5050cloud: services of one environment already share a private network."})
+			p.Skipped = append(p.Skipped, Item{Kind: "setting", Name: k, Detail: "Top-level " + k + " is not used by openrail: services of one environment already share a private network."})
 		}
 	}
 	namedVolumes := map[string]bool{}
@@ -190,7 +190,7 @@ var handledKeys = map[string]bool{
 }
 
 var skipReasons = map[string]string{
-	"container_name": "5050cloud names containers itself.",
+	"container_name": "openrail names containers itself.",
 	"networks":       "Services of one environment share a private network; reach them at <name>.internal.",
 	"network_mode":   "Containers always use their environment's private network.",
 	"privileged":     "Privileged containers are not allowed.",
@@ -198,8 +198,8 @@ var skipReasons = map[string]string{
 	"devices":        "Host devices are not available to services.",
 	"links":          "Services reach each other at <name>.internal.",
 	"extra_hosts":    "Custom host entries are not supported.",
-	"labels":         "Container labels are managed by 5050cloud.",
-	"logging":        "Logs are collected by 5050cloud.",
+	"labels":         "Container labels are managed by openrail.",
+	"logging":        "Logs are collected by openrail.",
 	"profiles":       "Every service is imported.",
 	"secrets":        "Use sealed variables instead.",
 	"configs":        "Put configuration in variables or the image.",
@@ -377,7 +377,7 @@ func mapService(composeName, name string, raw map[string]any, namedVolumes map[s
 		if p := healthPath(hc["test"]); p != "" {
 			cfg.Deploy.HealthcheckPath = p
 		} else if d, _ := hc["disable"].(bool); !d {
-			skip("healthcheck", "Only HTTP health checks that call a path are imported; 5050cloud checks the port otherwise.")
+			skip("healthcheck", "Only HTTP health checks that call a path are imported; openrail checks the port otherwise.")
 		}
 	}
 	// restart

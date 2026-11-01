@@ -14,7 +14,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // TCP proxy settings (docs/SPEC.md 8.4, 9.11).

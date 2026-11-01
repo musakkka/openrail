@@ -6,7 +6,7 @@ description: >-
   Plausible Community Edition with Postgres for accounts and ClickHouse for
   events. Registration is open until you create the first account; set
   DISABLE_REGISTRATION to true afterwards.
-docs: https://5050cloud.com/docs/templates/plausible
+docs: https://openrail.app/docs/templates/plausible
 icon: plausible.svg
 category: app
 inputs:
@@ -20,7 +20,7 @@ inputs:
     label: TOTP vault key
     description: >-
       Encrypts two-factor secrets: the Base64 form of 32 random bytes without
-      its final "=" (5050cloud adds it). The generated value is already in
+      its final "=" (openrail adds it). The generated value is already in
       that form.
     generate: secret(43, "AEIMQUYcgkosw048")
     required: true

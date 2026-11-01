@@ -1,12 +1,12 @@
 ---
 title: Upgrading and host maintenance
 nav: Upgrades
-description: Upgrade 5050cloud with one command that reverts itself if the new version is unhealthy, and take hosts out for OS work without downtime.
+description: Upgrade openrail with one command that reverts itself if the new version is unhealthy, and take hosts out for OS work without downtime.
 ---
 
-Upgrade 5050cloud with one command that reverts itself if the new version is unhealthy, and take hosts out for OS work without downtime.
+Upgrade openrail with one command that reverts itself if the new version is unhealthy, and take hosts out for OS work without downtime.
 
-> **Beta:** Upgrading with `5050 upgrade` works in 0.1.0 but is not yet covered by the end-to-end tests. See [Honest limits](/docs/reference/honest-limits#beta).
+> **Beta:** Upgrading with `openrail upgrade` works in 0.1.0 but is not yet covered by the end-to-end tests. See [Honest limits](/docs/reference/honest-limits#beta).
 
 ## Before you upgrade
 
@@ -22,7 +22,7 @@ sudo 5050d backup-state --out /root/state-before-upgrade.db.age
 Pick one:
 
 - In the console, **Settings**, **Upgrades**, select **Upgrade now**.
-- From your laptop: `5050 upgrade`.
+- From your laptop: `openrail upgrade`.
 - On the control host: `sudo 5050d upgrade`.
 
 Add `--version vX.Y.Z` to the commands to pick a release. Then:
@@ -77,10 +77,10 @@ Security updates install automatically. Kernel updates that need a reboot show o
 
 ## Host maintenance
 
-1. In **Settings**, **Hosts**, open the host's menu and select **Start maintenance**, or run `5050 host maintenance HOST on`.
+1. In **Settings**, **Hosts**, open the host's menu and select **Start maintenance**, or run `openrail host maintenance HOST on`.
 2. Replicas without volumes move to other hosts; the rest stop in reverse dependency order (apps before their databases).
 3. Upgrade Docker or the kernel and reboot.
-4. Select **End maintenance**, or run `5050 host maintenance HOST off`. Services start again in dependency order.
+4. Select **End maintenance**, or run `openrail host maintenance HOST off`. Services start again in dependency order.
 
 For rolling reboots across hosts, do one host at a time and wait for **Online** before the next. Services with a volume on that host are down while it is in maintenance.
 

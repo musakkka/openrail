@@ -15,12 +15,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/agent/core"
-	"github.com/musakkka/5050cloud/internal/agent/core/engine"
-	"github.com/musakkka/5050cloud/internal/agent/core/statecache"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/proto"
-	"github.com/musakkka/5050cloud/pkg/version"
+	"github.com/musakkka/openrail/internal/agent/core"
+	"github.com/musakkka/openrail/internal/agent/core/engine"
+	"github.com/musakkka/openrail/internal/agent/core/statecache"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/proto"
+	"github.com/musakkka/openrail/pkg/version"
 )
 
 // joinParams are the inputs of join and rejoin.

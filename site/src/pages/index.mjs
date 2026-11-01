@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // The landing page (docs/SPEC.md 14.1, reference/design/site-rules.md). It is
 // built around the real product: the hero is a recording of install, deploy,
-// Postgres, a variable reference and a domain on a fresh VM (5050cloud-demo),
-// and the console screenshots come from 5050cloud-brand/screens, both through
+// Postgres, a variable reference and a domain on a fresh VM (openrail-demo),
+// and the console screenshots come from openrail-brand/screens, both through
 // scripts/media.mjs.
 // Claims come from claims.json by id; prices from data/pricing.json; the
 // all-cores figures from data/benchmark.json. Nothing here is drawn to look
@@ -44,9 +44,9 @@ export function demoSection(r, demo) {
     </div>
     <div class="mat demo-body">
       <video class="demo-video" controls muted playsinline preload="none" poster="${posterSrc}" width="${p.ratio[0]}" height="${p.ratio[1]}">
-        <source src="${r('/demo/5050cloud-demo.mp4')}" type="video/mp4">
-        <source src="${r('/demo/5050cloud-demo.webm')}" type="video/webm">
-        <track kind="captions" src="${r('/demo/5050cloud-demo.en.vtt')}" srclang="en" label="English" default>
+        <source src="${r('/demo/openrail-demo.mp4')}" type="video/mp4">
+        <source src="${r('/demo/openrail-demo.webm')}" type="video/webm">
+        <track kind="captions" src="${r('/demo/openrail-demo.en.vtt')}" srclang="en" label="English" default>
         ${demo.chapters ? `<track kind="chapters" src="${r('/demo/chapters.vtt')}" srclang="en" label="Chapters">` : ''}
       </video>
     </div>
@@ -116,7 +116,7 @@ export function landing({ shell, rel, claims, pricing, bench, media, report, dem
     { id: 'canvas', tab: 'Canvas', shot: 'canvas', text: 'Every service of a project on one canvas. Dashed lines are variable references; changes wait in one bar until you deploy them.', alt: 'The canvas of the orbit project: web, api with 3 replicas, a cron job, a crashed worker, Postgres grouped with PgBouncer, Redis, docs with one staged change and search deploying, joined by dashed reference lines', doc: ['/docs/basics', 'The basics'] },
     { id: 'create', tab: 'Add menu', shot: 'palette', text: 'Add a GitHub repo, a database, a template, a Docker image, an empty service or a volume from one menu.', alt: 'The Add menu open on the canvas, listing GitHub Repo, Template, Database, Docker Image, Empty Service, Volume and Import Compose File', doc: ['/docs/guides/deploy-docker-image', 'Deploy a Docker image'] },
     { id: 'metrics', tab: 'Metrics', shot: 'metrics', text: 'CPU, memory, network, HTTP requests, error rate and response time for each service, with every deploy marked on the charts.', alt: 'The Metrics tab of the api service: CPU per replica over the last week with a deploy marker, and the top of the memory chart', doc: ['/docs/basics', 'The basics'] },
-    { id: 'scale', tab: 'Replicas and all cores', shot: 'scale', text: 'Set Replicas and 5050cloud runs that many copies behind its proxy. Use all cores runs a Node service started with node server.js as one process per vCPU; other runtimes get WEB_CONCURRENCY.', alt: 'The Scale settings of the api service: CPU and memory limits per replica, the memory reservation, and Use all cores switched on under Processes', doc: ['/docs/guides/use-all-cores', 'Use all cores'] },
+    { id: 'scale', tab: 'Replicas and all cores', shot: 'scale', text: 'Set Replicas and openrail runs that many copies behind its proxy. Use all cores runs a Node service started with node server.js as one process per vCPU; other runtimes get WEB_CONCURRENCY.', alt: 'The Scale settings of the api service: CPU and memory limits per replica, the memory reservation, and Use all cores switched on under Processes', doc: ['/docs/guides/use-all-cores', 'Use all cores'] },
   ];
   const tabs = tour.map((t, i) => `<a class="tab" id="t-${t.id}" href="#p-${t.id}" role="tab" aria-controls="p-${t.id}" aria-selected="${i === 0}">${e(t.tab)}</a>`).join('');
   const benchLine = bench
@@ -138,8 +138,8 @@ export function landing({ shell, rel, claims, pricing, bench, media, report, dem
   const costRows = [
     { who: 'railway', name: 'Railway, steady load', note: 'all of it in use around the clock', monthly: steadyRail },
     { who: 'railway', name: 'Railway, typical load', note: 'about 1.6 vCPU and 6 GB on average', monthly: typical },
-    { who: 'vm', name: 'Hetzner CCX33 with 5050cloud', note: '8 dedicated vCPU, 32 GB: the fair match for steady load', monthly: dedicated.monthly + add },
-    { who: 'vm', name: 'Hetzner CPX42 with 5050cloud', note: '8 shared vCPU, 16 GB: may be throttled under constant load', monthly: shared.monthly + add },
+    { who: 'vm', name: 'Hetzner CCX33 with openrail', note: '8 dedicated vCPU, 32 GB: the fair match for steady load', monthly: dedicated.monthly + add },
+    { who: 'vm', name: 'Hetzner CPX42 with openrail', note: '8 shared vCPU, 16 GB: may be throttled under constant load', monthly: shared.monthly + add },
   ];
   const costMax = Math.max(...costRows.map((x) => x.monthly));
   const costBars = costRows
@@ -251,25 +251,25 @@ ${demoSection(r, demo)}
 <section id="railway" class="habits" aria-labelledby="habits-h">
   <div class="wrap">
     <h2 id="habits-h">Bring your Railway habits</h2>
-    <p class="habits-lead">${say('alias')}. After <code>5050 alias install</code>, the commands you type today deploy to your own console.</p>
+    <p class="habits-lead">${say('alias')}. After <code>openrail alias install</code>, the commands you type today deploy to your own console.</p>
     <div class="habits-grid">
       <div class="table split-table stack-table habits-table">
         <table>
           <caption>Install the CLI on your laptop with <code class="nw">${e(INSTALL_CLI)}</code>. <a href="${r('/docs/coming-from-railway')}">Coming from Railway</a> lists every difference.</caption>
-          <thead><tr><th scope="col">On Railway</th><th scope="col">On 5050cloud</th></tr></thead>
+          <thead><tr><th scope="col">On Railway</th><th scope="col">On openrail</th></tr></thead>
           <tbody>
-            <tr><td data-label="On Railway"><code>railway up</code></td><td data-label="On 5050cloud"><code>railway up</code>, or <code>5050 up</code></td></tr>
-            <tr><td data-label="On Railway"><code>railway link</code></td><td data-label="On 5050cloud"><code>railway link</code></td></tr>
-            <tr><td data-label="On Railway"><code>\${{Postgres.DATABASE_URL}}</code></td><td data-label="On 5050cloud"><code>\${{Postgres.DATABASE_URL}}</code></td></tr>
-            <tr><td data-label="On Railway"><code>railway.json</code> in the repo</td><td data-label="On 5050cloud">${say('railway-json')}</td></tr>
-            <tr><td data-label="On Railway">Railpack builds</td><td data-label="On 5050cloud">Railpack builds, or your Dockerfile</td></tr>
-            <tr><td data-label="On Railway">Import a project</td><td data-label="On 5050cloud">By hand in 0.1.0: <a href="${r('/docs/guides/import-from-railway')}">move a project</a></td></tr>
+            <tr><td data-label="On Railway"><code>railway up</code></td><td data-label="On openrail"><code>railway up</code>, or <code>openrail up</code></td></tr>
+            <tr><td data-label="On Railway"><code>railway link</code></td><td data-label="On openrail"><code>railway link</code></td></tr>
+            <tr><td data-label="On Railway"><code>\${{Postgres.DATABASE_URL}}</code></td><td data-label="On openrail"><code>\${{Postgres.DATABASE_URL}}</code></td></tr>
+            <tr><td data-label="On Railway"><code>railway.json</code> in the repo</td><td data-label="On openrail">${say('railway-json')}</td></tr>
+            <tr><td data-label="On Railway">Railpack builds</td><td data-label="On openrail">Railpack builds, or your Dockerfile</td></tr>
+            <tr><td data-label="On Railway">Import a project</td><td data-label="On openrail">By hand in 0.1.0: <a href="${r('/docs/guides/import-from-railway')}">move a project</a></td></tr>
           </tbody>
         </table>
       </div>
       <figure class="habits-shot">
         <div class="shot-frame">${shot(r, media, 'variables', { alt: 'The Variables tab of the api service: DATABASE_URL open for editing with the value ${{Postgres.DATABASE_URL}}, then NODE_ENV, REDIS_URL, a sealed SESSION_SECRET and WEB_ORIGIN with hidden values', sizes: half })}</div>
-        <figcaption>The same reference syntax in the 5050cloud console: <code>DATABASE_URL</code> follows Postgres wherever it runs. <a href="${r('/docs/guides/variables')}">Variables</a></figcaption>
+        <figcaption>The same reference syntax in the openrail console: <code>DATABASE_URL</code> follows Postgres wherever it runs. <a href="${r('/docs/guides/variables')}">Variables</a></figcaption>
       </figure>
     </div>
   </div>
@@ -286,7 +286,7 @@ ${demoSection(r, demo)}
           <li>More than one host: joining hosts, the private WireGuard network, a second ingress host.</li>
           <li>Replicas spread across hosts.</li>
           <li>Database backups to an S3-compatible bucket, and restoring them.</li>
-          <li>Upgrades with <code>5050 upgrade</code> and their automatic revert.</li>
+          <li>Upgrades with <code>openrail upgrade</code> and their automatic revert.</li>
         </ul>
       </div>
     </div>
@@ -315,7 +315,7 @@ ${demoSection(r, demo)}
 <section id="open" class="open" aria-labelledby="open-h">
   <div class="wrap open-grid">
     <h2 id="open-h">Open source, no lock-in</h2>
-    <p class="statement">The server is AGPL-3.0; the CLI, templates and installer are MIT. Every deployment is a standard Docker image, databases are ordinary containers, and <code>5050 config pull</code> writes your services to one file.</p>
+    <p class="statement">The server is AGPL-3.0; the CLI, templates and installer are MIT. Every deployment is a standard Docker image, databases are ordinary containers, and <code>openrail config pull</code> writes your services to one file.</p>
     <ul class="open-links">
       <li><a href="${REPO}" rel="noopener">View on GitHub</a><span>The server, CLI, installer and templates in one repository.</span></li>
       <li><a href="${REPO}/releases/tag/v0.1.0" rel="noopener">Release v0.1.0</a><span>The server for Linux on amd64 and arm64, the CLI for Linux, macOS and Windows, and signed checksums.</span></li>
@@ -332,7 +332,7 @@ ${demoSection(r, demo)}
       <details><summary>What do I need?</summary><p>A Linux VM with a public IPv4 address, ports 80 and 443 open, and root access. Ubuntu 24.04 is tested, on amd64 or arm64. 2 vCPU and 4 GB of RAM is a comfortable start.</p></details>
       <details><summary>Do I need a domain?</summary><p>No. Without one, the console and your services get sslip.io names with real certificates. Add your own domain at install time or later, per service.</p></details>
       <details><summary>Is it a fork of Railway?</summary><p>No. It is an independent project that follows Railway's ideas and names so your projects and habits move over. It is not affiliated with Railway. Builds use Railpack, Railway's open-source builder.</p></details>
-      <details><summary>Can I use my Docker Compose file?</summary><p>Yes. <code>5050 import compose docker-compose.yml</code> stages its services, variables, ports and volumes for you to review and deploy.</p></details>
+      <details><summary>Can I use my Docker Compose file?</summary><p>Yes. <code>openrail import compose docker-compose.yml</code> stages its services, variables, ports and volumes for you to review and deploy.</p></details>
     </div>
   </div>
 </section>
@@ -348,8 +348,8 @@ ${demoSection(r, demo)}
 
   return shell({
     slug: '',
-    title: "5050cloud: Railway's workflow on your own servers",
-    description: 'Open source and self-hosted. Install 5050cloud on a Linux VM and deploy apps and databases from a canvas, the way you do on Railway. You pay only for the VM.',
+    title: "openrail: Railway's workflow on your own servers",
+    description: 'Open source and self-hosted. Install openrail on a Linux VM and deploy apps and databases from a canvas, the way you do on Railway. You pay only for the VM.',
     main,
     bodyClass: 'home',
     head: `<link rel="preload" as="image" href="${r('/media/hero-poster-1280.webp')}" media="(min-width: 721px)" fetchpriority="high">`,

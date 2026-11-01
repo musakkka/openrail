@@ -931,7 +931,7 @@
     "One web service and one Postgres, one environment",
     "Average use: web 0.02 vCPU and 0.25 GB, Postgres 0.02 vCPU and 0.25 GB (idle case); light case 0.1 vCPU and 0.5 GB each",
     "1 GB volume; 5 GB egress (idle) or 10 GB (light)",
-    "5050cloud needs one VM with at least 2 GB RAM (our assumption; the control plane footprint is not measured yet)"
+    "openrail needs one VM with at least 2 GB RAM (our assumption; the control plane footprint is not measured yet)"
    ],
    "railway": [
     {
@@ -1054,7 +1054,7 @@
     "5 people deploying",
     "Production: 3 services, Postgres, Redis averaging 2 vCPU / 6 GB; one staging environment averaging 0.3 vCPU / 2 GB",
     "40 GB volumes, 300 GB egress",
-    "No PR preview environments, because 5050cloud v0.1 does not have them; Railway with two previews running on average adds about $24"
+    "No PR preview environments, because openrail v0.1 does not have them; Railway with two previews running on average adds about $24"
    ],
    "railway": [
     {
@@ -1095,7 +1095,7 @@
      "monthly": 108
     }
    ],
-   "verdict": "Seats are not the difference: Railway Pro and 5050cloud both charge $0 per seat. The gap is compute ($147 vs $79 to $120) and what the team gives up: PR environments, SSO and managed ops."
+   "verdict": "Seats are not the difference: Railway Pro and openrail both charge $0 per seat. The gap is compute ($147 vs $79 to $120) and what the team gives up: PR environments, SSO and managed ops."
   }
  ],
  "railwayIncludes": [
@@ -1109,7 +1109,7 @@
   "Vultr bandwidth overage and Hetzner live stock could not be confirmed",
   "OVH no-commitment prices not captured",
   "DigitalOcean General Purpose prices not in the static page",
-  "5050cloud control-plane overhead not measured",
+  "openrail control-plane overhead not measured",
   "No CPU benchmark comparing a Railway vCPU to a shared or dedicated VM vCPU"
  ]
 }

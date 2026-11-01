@@ -9,7 +9,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // streamBuffer is how many bytes a stream buffers from the agent before the

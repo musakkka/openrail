@@ -1,10 +1,10 @@
 ---
 title: Private mode
 nav: Private mode
-description: Run a 5050cloud host with no open inbound ports, with public traffic coming through a Cloudflare tunnel and SSH turned off.
+description: Run an openrail host with no open inbound ports, with public traffic coming through a Cloudflare tunnel and SSH turned off.
 ---
 
-Run a 5050cloud host with no open inbound ports. Public traffic comes through a Cloudflare tunnel that the host dials out to, and SSH is turned off.
+Run an openrail host with no open inbound ports. Public traffic comes through a Cloudflare tunnel that the host dials out to, and SSH is turned off.
 
 ## What this does and does not do
 
@@ -62,7 +62,7 @@ If any check fails, the install stops with an error, and SSH and every other por
 
 - **Firewall.** nftables drops all inbound and forwarded traffic except loopback, established connections, `wg5050` and what containers send out. Forwarded traffic matters because Docker publishes ports by forwarding, so a `docker run -p` you start by hand stays unreachable too. The rules cover IPv4 and IPv6.
 - **Boot order.** The firewall loads before the network comes up, and Docker does not start without it. The agent checks it when it starts and every 30 seconds. If it is missing, the agent loads it again and puts a note on the host in the console for a day.
-- **Containers and the host.** From a container, the host answers only DNS and the build registry, and only on 5050cloud's own bridges. A service you run on the host and bind to `0.0.0.0` stays out of a container's reach, on any port but 53 and 5000.
+- **Containers and the host.** From a container, the host answers only DNS and the build registry, and only on openrail's own bridges. A service you run on the host and bind to `0.0.0.0` stays out of a container's reach, on any port but 53 and 5000.
 - **Metadata and IPv6.** No container reaches the cloud metadata address or Azure's WireServer (168.63.129.16, DNS on port 53 stays open), unless its service turned on metadata access, and no container gets forwarded IPv6. Both are in the rules loaded at boot, so they do not wait for the agent.
 - **Caddy** binds `127.0.0.1:80`, serves plain HTTP by host name and orders no certificates. Cloudflare holds the certificates.
 - **WireGuard.** UDP 51820 is open only to the public addresses of joined hosts. The agent adds and removes them as hosts join and leave. On a single host it is closed to everyone.
@@ -92,11 +92,11 @@ Each host needs a public IPv4 address that other hosts can use. A host behind NA
 
 ## What stops working
 
-- **TCP proxies and Public Access on databases.** They need a public port. The console and the API refuse them. Use `5050 connect` from your machine instead.
+- **TCP proxies and Public Access on databases.** They need a public port. The console and the API refuse them. Use `openrail connect` from your machine instead.
 - **`sslip.io` and `nip.io` names.** Refused in the installer, the API and the console.
 - **Direct connections to your host's IP address.** Everything goes through your domain and Cloudflare.
 - **Non-HTTP traffic from the internet**, which a tunnel with a public hostname does not carry here.
-- **Custom domains without a step in Cloudflare.** A custom domain shows as active straight away, but also needs its own public hostname on the tunnel. 5050cloud does not touch your Cloudflare account, so it cannot add it or check it.
+- **Custom domains without a step in Cloudflare.** A custom domain shows as active straight away, but also needs its own public hostname on the tunnel. openrail does not touch your Cloudflare account, so it cannot add it or check it.
 - **A Cloudflare outage or a suspended account** takes your apps and console offline, with nothing to fall back on.
 - **`--restore`** cannot be combined with `--private` yet.
 
@@ -104,7 +104,7 @@ Each host needs a public IPv4 address that other hosts can use. A host behind NA
 
 ## How to get back in
 
-The console shell and `5050 ssh` open a shell **inside a running service**. They do not reach the host. Use them for your apps.
+The console shell and `openrail ssh` open a shell **inside a running service**. They do not reach the host. Use them for your apps.
 
 For the host itself, use your cloud provider's serial console or run-command. On Azure:
 

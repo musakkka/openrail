@@ -1,4 +1,4 @@
-# 5050cloud v0.1 build spec
+# openrail v0.1 build spec
 
 Status: revision 2, 2026-10-22, after the DX, scale and build critiques; M0 landed the same day
 (results in 19.0). Audience: the builder and
@@ -10,7 +10,7 @@ this file disagree, either the code is wrong or this file gets a reviewed change
 this revision makes (section 5.4), a pinned `go.mod`, a working `Makefile`, a generated
 `web/src/api/types.gen.ts` and new hashes in `docs/contracts.sha256`.
 
-Inputs this spec is based on: `reference/5050cloud-architecture.md` (draft architecture),
+Inputs this spec is based on: `reference/openrail-architecture.md` (draft architecture),
 `docs/research/railway-docs.md`, `docs/research/railway-ui.md`, `docs/research/competitors.md`,
 `docs/research/reuse.md`, and the console in `reference/console-web`.
 
@@ -51,7 +51,7 @@ from our own fleet. `make check-public` enforces this (section 17).
 
 ## 1. Goals and the release bar
 
-5050cloud gives you Railway's developer experience on Linux servers you own. v0.1 is the first
+openrail gives you Railway's developer experience on Linux servers you own. v0.1 is the first
 public release. It must be something a stranger can install, use for a real app, scale to a second
 server and trust with a database.
 
@@ -68,21 +68,21 @@ server and trust with a database.
 | R7 | "Use all cores": a single-threaded Node service gets at least 1.6x the throughput on a 2 vCPU non-burstable VM with Processes set to auto | E20 |
 | R8 | Health checks, restart on crash, failure diagnosis in one sentence, old version keeps serving when a deploy fails | E9, E10 |
 | R9 | Postgres, Redis, MySQL and MongoDB in one click; scheduled backups to any S3-compatible bucket for Postgres, Redis, MongoDB and volumes; restore to a copy; promote | E5, E15 |
-| R10 | Control-plane state backup, continuous replication to a bucket, restore on the same or a new VM; `5050 upgrade` with automatic rollback when the new version is unhealthy | E16, E17, E28, E29 |
-| R11 | CLI `5050` (and the `railway` alias) with `login`, `init`, `link`, `up`, `logs`, `run`, `shell`, `ssh`, `variables`, `domain`, `connect`, `add` | E13 |
+| R10 | Control-plane state backup, continuous replication to a bucket, restore on the same or a new VM; `openrail upgrade` with automatic rollback when the new version is unhealthy | E16, E17, E28, E29 |
+| R11 | CLI `openrail` (and the `railway` alias) with `login`, `init`, `link`, `up`, `logs`, `run`, `shell`, `ssh`, `variables`, `domain`, `connect`, `add` | E13 |
 | R12 | Docs site with Quick start, Guides, Reference and CLI sections, and a landing page with an honest price comparison | docs verifier |
 | R13 | Apps keep serving when the `5050d` process is down, including across an agent restart and a worker host reboot | E22, E22b, E22c |
 | R14 | Re-running the installer is safe and does not restart healthy containers | E21 |
-| R15 | A Railway project moves over with `5050 import railway` or **New > Import from Railway**: services, sources, settings, variables, domains, volumes and databases land as staged changes | E30, U35 |
-| R16 | Repos that carry `railway.json`, `railway.toml`, `nixpacks.toml`, `5050.yaml` or `5050.json` build and run as their file says | E31 |
+| R15 | A Railway project moves over with `openrail import railway` or **New > Import from Railway**: services, sources, settings, variables, domains, volumes and databases land as staged changes | E30, U35 |
+| R16 | Repos that carry `railway.json`, `railway.toml`, `nixpacks.toml`, `openrail.yaml` or `openrail.json` build and run as their file says | E31 |
 | R17 | The console feels fast: the perceived-latency budgets in 16.1 hold | P1-P10 |
 
 ### 1.2 Non-goals for v0.1 (see section 22 for the v0.2 list)
 
 Kubernetes, autoscaling, a highly available control plane, PR environments, Git mode for config
-(`5050 config plan|apply`), serverless sleeping, functions, buckets, a template marketplace,
+(`openrail config plan|apply`), serverless sleeping, functions, buckets, a template marketplace,
 SSO/OIDC, Login with GitHub, agent mTLS, a free SQL query box in the Data tab, MySQL backups,
-wildcard custom domains, Windows hosts, and a hosted 5050cloud service. Every one of these that a
+wildcard custom domains, Windows hosts, and a hosted openrail service. Every one of these that a
 Railway user meets in the first week has a "Coming from Railway" row (14.3) and, where Railway shows
 it in the UI, a disabled control with a "Not in v0.1" tooltip (13.6).
 
@@ -94,10 +94,10 @@ Names, labels and keyboard shortcuts match Railway's so a Railway user feels at 
 **Railway label** column holds the exact string Railway shows (from `railway-ui.md`; rows whose
 label there is tagged [O] are re-checked against the live Railway dashboard in M0, see 19.0, before
 the label is frozen). The V1 verifier compares our UI strings to this column mechanically
-(`web/e2e/labels.json` is generated from this table). Where we do better, the 5050cloud column says
+(`web/e2e/labels.json` is generated from this table). Where we do better, the openrail column says
 how. "WP" is the owning work package for the server side; the WP8 sub-packages own every UI row.
 
-| # | Railway feature | Railway label | 5050cloud v0.1 | Server WP |
+| # | Railway feature | Railway label | openrail v0.1 | Server WP |
 |---|---|---|---|---|
 | D1 | Dashboard, projects with mini canvas and online summary, sort, grid/list, **New** (`Cmd+/`) | `New`, `Recent Activity`, `Creation Date`, `A-Z` | Same, plus a Hosts card with disk bars | WP1 |
 | D2 | New project menu | `GitHub Repository`, `Database`, `Template`, `Docker Image`, `Empty Project` | Same list and order, plus `Import from Railway` and `Docker Compose` | WP1 |
@@ -115,7 +115,7 @@ how. "WP" is the owning work package for the server side; the WP8 sub-packages o
 | D14 | Variables | `New Variable`, `Raw Editor`, `Shared Variable`, `Seal`, `Add Reference` | Same; every reveal is audited; suggested variables from `.env*` files | WP1 |
 | D15 | Provided variables | `PORT`, `RAILWAY_PUBLIC_DOMAIN`, `RAILWAY_PRIVATE_DOMAIN`, ... | `FIFTY_*` names plus every `RAILWAY_*` alias (on by default) so apps move with zero edits (9.3) | WP2a |
 | D16 | Settings sections | `Source`, `Networking`, `Build`, `Deploy`, `Scale`, `Danger`; right-hand index; `/` filter | Same sections with Railway's field placement (13.3), plus **Processes** and **Placement** under Scale | WP1 |
-| D17 | Config as code | `railway.json`, `railway.toml`; file icon next to fields set by the file | Same files and priority, plus `5050.yaml`/`5050.json` and `nixpacks.toml` hints (9.20) | WP1, WP4 |
+| D17 | Config as code | `railway.json`, `railway.toml`; file icon next to fields set by the file | Same files and priority, plus `openrail.yaml`/`openrail.json` and `nixpacks.toml` hints (9.20) | WP1, WP4 |
 | D18 | Domains | `Generate Domain`, `+ Custom Domain`, `TCP Proxy`, DNS records, `Retry certificate` | Same; generated domains use sslip.io or your wildcard domain; outbound IP shown free | WP1, WP2a, WP5 |
 | D19 | Private networking | `<name>.railway.internal` | `<name>.internal`, with `<name>.railway.internal` as an alias | WP5 |
 | D20 | Health and restarts | `Healthcheck Path`, `Healthcheck Timeout`, `Restart Policy` `On Failure`/`Always`/`Never` | Same, plus TCP check when no path is set, 2xx and 3xx accepted, continuous checks after deploy | WP3 |
@@ -125,7 +125,7 @@ how. "WP" is the owning work package for the server side; the WP8 sub-packages o
 | D24 | Resource limits | `Resource Limits` (under Deploy) | Same place; vCPU and memory per replica | WP2a |
 | D25 | Volumes | `Volume`, `Mount Path`, `Wipe Volume`, `Backups` | Same rules and a volume panel; volumes use host disk (no Live Resize needed) | WP2b |
 | D26 | Databases | `Postgres`, `MySQL`, `Redis`, `MongoDB`; `Connect`; `Data` | Same variable names; Postgres continuous WAL archiving with point-in-time restore to a copy | WP2b |
-| D27 | Templates | `Template`, `Deploy`, `Deploy on Railway` button | 12 built-in templates (10.2), `/new/template/<id>` deep link, `Deploy on 5050cloud` button | WP2b |
+| D27 | Templates | `Template`, `Deploy`, `Deploy on Railway` button | 12 built-in templates (10.2), `/new/template/<id>` deep link, `Deploy on openrail` button | WP2b |
 | D28 | Logs | `Log Explorer`, filter `@level:error`, `"phrase"`, `-word`, `AND`/`OR`, `@httpStatus:>=400` | Same syntax (9.4), side panel with attributes, View in Context | WP3, WP5 |
 | D29 | Metrics | `CPU`, `Memory`, `Disk`, `Network`, `Requests`, `Error Rate`, `Response Time`; `Sum`/`Replica` | Same, plus p90; 30 days kept; Postgres database metrics | WP2a |
 | D30 | Monitors | threshold alerts | CPU, memory, disk, 5xx rate monitors by email or webhook (9.21) | WP2a |
@@ -134,7 +134,7 @@ how. "WP" is the owning work package for the server side; the WP8 sub-packages o
 | D33 | Members | `Owner`, `Editor`, `Viewer` per project; invite links; `Transfer Ownership` | Install roles plus per-project grants (9.15), invite links, 2FA, no seat fees | WP1 |
 | D34 | Tokens | account, workspace and project tokens | Account tokens and environment tokens | WP1 |
 | D35 | Command palette | `Cmd+K`, sub-menus | Same commands and adaptive labels (13.4) | WP1 |
-| D36 | CLI | `railway login/init/link/up/logs/run/shell/ssh/variables/domain/connect/add/redeploy/restart/down/status/open/...` | `5050` with the same verbs and flags, and a `railway` alias (section 12) | WP7 |
+| D36 | CLI | `railway login/init/link/up/logs/run/shell/ssh/variables/domain/connect/add/redeploy/restart/down/status/open/...` | `openrail` with the same verbs and flags, and a `railway` alias (section 12) | WP7 |
 | D37 | Regions | Railway Metal regions | Your hosts, grouped by role (`app`, `data`, `build`, `ingress`) | WP2a |
 | D38 | Migration | none | `Import from Railway`, `Docker Compose` import, `Import variables from Heroku` | WP1 |
 | D39 | Account | email login, magic link, 2FA | Email and password, `Forgot password` by SMTP, TOTP 2FA, email on failed and crashed deploys | WP1 |
@@ -145,7 +145,7 @@ how. "WP" is the owning work package for the server side; the WP8 sub-packages o
 ## 3. Architecture
 
 ```
-          browser (console)        5050 CLI          GitHub (webhooks)
+          browser (console)        openrail CLI          GitHub (webhooks)
                  \                   |                  /
                   \        HTTPS 443 (Caddy on the control host)
                    v                 v                v
@@ -228,11 +228,11 @@ control plane is v0.2. Honest limits (14.1) and the **Add a host** guide say thi
 ### 4.1 The command
 
 ```
-curl -fsSL https://5050cloud.com/install.sh | sudo sh
+curl -fsSL https://openrail.app/install.sh | sudo sh
 ```
 
 The same script lives at `install/install.sh` in the repo and at
-`https://raw.githubusercontent.com/5050cloud/5050cloud/main/install/install.sh` (fallback when the
+`https://raw.githubusercontent.com/openrail/openrail/main/install/install.sh` (fallback when the
 site is not deployed yet). It is POSIX `sh`, `set -eu`, and every step is idempotent.
 
 Flags (each also readable from an environment variable `FIFTY_<FLAG>` in upper snake case):
@@ -271,7 +271,7 @@ Flags (each also readable from an environment variable `FIFTY_<FLAG>` in upper s
    - **Time sync**: `chronyd` or `systemd-timesyncd` active and the clock within 2 s of an HTTPS
      `Date` header (clock skew breaks log merging, cron and certificate checks); otherwise enable
      timesyncd, or exit with a message.
-   - **IPv4**: an IPv6-only host exits with "5050cloud v0.1 needs a public IPv4 address."
+   - **IPv4**: an IPv6-only host exits with "openrail v0.1 needs a public IPv4 address."
    - **Firewalls**: when `ufw` or `firewalld` is active, print the ports to open (80, 443, UDP
      51820, the TCP proxy range) and check that their rules sit next to our `iptables-nft` chains
      without flushing them; `--firewall` refuses to run alongside an active ufw or firewalld.
@@ -295,7 +295,7 @@ Flags (each also readable from an environment variable `FIFTY_<FLAG>` in upper s
 6. **Binaries.** Download `5050_<ver>_linux_<arch>.tar.gz` and `checksums.txt` plus
    `checksums.txt.minisig` from GitHub Releases, verify the signature with the public key embedded
    in the script and the SHA-256, unpack to `/opt/5050/releases/<ver>/`, point
-   `/opt/5050/current` at it, link `/usr/local/bin/5050d`, `5050-agent`, `5050`.
+   `/opt/5050/current` at it, link `/usr/local/bin/5050d`, `5050-agent`, `openrail`.
 7. **Initialise.** `5050d init --public-ip ... --base-domain ... --console-domain ...` creates
    `/etc/5050/config.json` (0600), the master key `/etc/5050/master.key` (0600, 32 random bytes),
    the host key `/etc/5050/host.key` (0600, encrypts the agent's local desired-state cache),
@@ -308,7 +308,7 @@ Flags (each also readable from an environment variable `FIFTY_<FLAG>` in upper s
    for up to 120 s. Then print, and exit 0:
 
 ```
-5050cloud v0.1.0 is ready.
+openrail v0.1.0 is ready.
 
   Open this link to create your account (valid 24 hours, works once):
   https://console.203-0-113-7.sslip.io/setup?token=Q2X7-KL9P-...
@@ -319,7 +319,7 @@ Flags (each also readable from an environment variable `FIFTY_<FLAG>` in upper s
   5050R-AB12-CD34-...
 
   Next: deploy something from the console, or install the CLI on your laptop:
-  curl -fsSL https://5050cloud.com/install.sh | sh -s -- --cli
+  curl -fsSL https://openrail.app/install.sh | sh -s -- --cli
 ```
 
 If the certificate cannot be issued in 120 s (no inbound 80/443, for example), the installer
@@ -355,11 +355,11 @@ Anything else (two blank disks, a disk with data) is left alone with a message n
 
 ### 4.4 Joining a host
 
-The console's **Hosts > Add host** (or `5050 host add`) creates a single-use join token valid for
+The console's **Hosts > Add host** (or `openrail host add`) creates a single-use join token valid for
 1 hour and shows:
 
 ```
-curl -fsSL https://5050cloud.com/install.sh | sudo sh -s -- --join https://console.example.com --token J-... --roles app
+curl -fsSL https://openrail.app/install.sh | sudo sh -s -- --join https://console.example.com --token J-... --roles app
 ```
 
 The dialog has role checkboxes (`app` ticked; `ingress`, `data`, `build` optional) and explains
@@ -386,16 +386,16 @@ App containers and `/var/lib/5050` are kept unless `--purge`. A purge asks for c
 ### 5.1 Layout
 
 ```
-5050cloud/
+openrail/
   cmd/5050d/              control plane main                          WP1
   cmd/5050-agent/         agent main                                  WP3
-  cmd/5050/               CLI main (MIT)                              WP7
+  cmd/openrail/               CLI main (MIT)                              WP7
   pkg/api/                REST contract types (MIT)                   FROZEN (planner)
   pkg/proto/              agent protocol types (MIT)                  FROZEN (planner)
-  pkg/manifest/           template manifest and 5050.yaml types (MIT) FROZEN (planner)
+  pkg/manifest/           template manifest and openrail.yaml types (MIT) FROZEN (planner)
   pkg/version/            build metadata (MIT)                        FROZEN (planner)
   pkg/logfilter/          log filter parser and matcher (MIT)         WP3
-  pkg/configfile/         railway.json/.toml, nixpacks.toml, 5050.yaml WP1
+  pkg/configfile/         railway.json/.toml, nixpacks.toml, openrail.yaml WP1
                           parser with source line map (MIT)
   pkg/compose/            docker-compose.yml to staged services (MIT) WP1
   internal/cp/cpapi/      core <-> orchestrator interfaces            FROZEN (planner)
@@ -437,11 +437,11 @@ public push; only this spec stays in `docs/`.
 ### 5.2 Licenses
 
 - **AGPL-3.0-only**: `cmd/5050d`, `cmd/5050-agent`, `internal/` except `internal/cli`, `web/`.
-- **MIT**: `cmd/5050`, `internal/cli`, `pkg/`, `templates/`, `examples/`, `install/`, `site/`,
+- **MIT**: `cmd/openrail`, `internal/cli`, `pkg/`, `templates/`, `examples/`, `install/`, `site/`,
   `internal/agent/assets/cluster.cjs`.
 - Root `LICENSE` is AGPL-3.0 with a `LICENSING.md` that lists the MIT directories; each MIT
   directory carries a `LICENSE` file. Every source file starts with an SPDX line.
-- The CLI must not import anything AGPL: `go list -deps ./cmd/5050` may not contain
+- The CLI must not import anything AGPL: `go list -deps ./cmd/openrail` may not contain
   `/internal/cp`, `/internal/agent`, `/internal/upgrade` or `/web` (checked in CI).
 
 ### 5.3 Frozen contracts (committed by the planner)
@@ -450,12 +450,12 @@ public push; only this spec stays in `docs/`.
 |---|---|---|
 | `pkg/api/types.go` | Every REST request and response body | WP1, WP2, WP7, WP8 (via generated TypeScript) |
 | `pkg/proto/proto.go` | Agent wire protocol | WP2, WP3, WP4, WP5, WP6 (fake agents) |
-| `pkg/manifest/manifest.go` | Template manifest, `5050.yaml` | WP1, WP2, WP7 |
+| `pkg/manifest/manifest.go` | Template manifest, `openrail.yaml` | WP1, WP2, WP7 |
 | `internal/cp/cpapi/cpapi.go` | `Config` (WP1 implements) and `Orchestrator` (WP2 implements) | WP1, WP2 |
 | `internal/agent/agentapi/agentapi.go` | `Builder`, `Network`, `Ingress`, `Tools` | WP3, WP4, WP5 |
 | `internal/cp/secretbox/secretbox.go` | Encryption of secret columns (implemented and tested) | WP1, WP2 |
 | `internal/cp/orch/README.md` (interface section) | The `data.Service` interface WP2a calls and WP2b implements | WP2a, WP2b |
-| `pkg/manifest/golden_test.go` | Round trip of `template.yaml` and `5050.yaml` through `sigs.k8s.io/yaml` with camelCase names | all |
+| `pkg/manifest/golden_test.go` | Round trip of `template.yaml` and `openrail.yaml` through `sigs.k8s.io/yaml` with camelCase names | all |
 | Stubs: `internal/agent/build/stub.go`, `internal/agent/netw/stub.go`, `internal/cp/orch/stub.go`, `internal/cp/orch/data/stub.go`, `internal/upgrade/stub.go`, `templates/embed.go`, `web/embed.go` | Constructor signatures | replaced by WP4, WP5, WP2a, WP2b, WP6, WP2b, WP8a |
 | Section 11 of this file | REST paths, methods, roles | WP1, WP7, WP8 |
 | Section 12 of this file | CLI commands and flags | WP7, WP9 |
@@ -613,7 +613,7 @@ computed from the 1 hour rollups.
 | `/var/lib/5050/state.db` | Control plane state | yes, hourly (9.17) |
 | `/var/lib/5050/metrics.db` | Metrics | no |
 | `/var/lib/5050/builds/<dep>.log.gz` | Build logs | no |
-| `/var/lib/5050/uploads/<upl>.tar.gz` | `5050 up` sources, deleted 1 hour after the build | no |
+| `/var/lib/5050/uploads/<upl>.tar.gz` | `openrail up` sources, deleted 1 hour after the build | no |
 | `/var/lib/5050/logs/<env>/<svc>/<YYYYMMDDHH>.jsonl(.gz)` | Runtime and HTTP logs on each agent | no |
 | `/var/lib/5050/tools/<name>-<version>` | Verified helper binaries | no |
 | `/var/lib/5050/caddy/` | Caddy data (certificates) | no (re-issued) |
@@ -764,7 +764,7 @@ Workers follow the same flow without routes. Cron services have no long-running 
 
 The agent probes from the host to `<replica ip>:<port>` every `IntervalSec` (3 s). With a path:
 HTTP GET with `Host` set to the service's first domain (or `<name>.internal`),
-`X-Forwarded-Proto: https`, `User-Agent: 5050cloud-healthcheck`, no redirect following; 2xx or 3xx
+`X-Forwarded-Proto: https`, `User-Agent: openrail-healthcheck`, no redirect following; 2xx or 3xx
 passes. Without a path: TCP connect. After the first pass, wait `GraceSec` (5 s) and probe once
 more, then report `healthy`. Past `DeadlineSec` (300 s) report `unhealthy` with a diagnosis.
 After a deployment is active, the agent keeps probing every 30 s; three failures in a row report
@@ -890,7 +890,7 @@ Implements `agentapi.Builder`.
    Image names are validated before the copy (lowercase repository, any case tag).
 7. Every command is an argv array (`exec.CommandContext`), never a shell string. Build output
    streams line by line through `logf`. Secret values are masked in log lines.
-8. **Sandbox**: `EnsureRunning` creates the buildx builder `5050` (driver `docker-container`,
+8. **Sandbox**: `EnsureRunning` creates the buildx builder `openrail` (driver `docker-container`,
    pinned BuildKit image, `--driver-opt network=5050-build`, buildkitd flags
    `--oci-worker-net=bridge` (M0 checked BuildKit v0.33.1, the newest release at least two weeks
    old: buildkitd's `--oci-worker-net` accepts `auto, bridge, cni or host`, and the
@@ -1181,7 +1181,7 @@ setup needs `--domain`. The **Add a host** guide covers both setups.
   override the matching setting when the setting is empty.
 - **Shared variables** live per environment. **Share** (from the shared variables page) adds
   `NAME=${{shared.NAME}}` to the chosen services as a staged change.
-- **Sealed** variables can never be revealed again, are excluded from reveal, `5050 run`,
+- **Sealed** variables can never be revealed again, are excluded from reveal, `openrail run`,
   environment duplication, service duplication, imports' exports and the Raw Editor; they still
   reach builds and deployments.
 - **Suggested variables**: names found in `.env`, `.env.local`, `.env.production`, `.env.<suffix>`,
@@ -1397,7 +1397,7 @@ agent counts restarts from Docker events; when `on_failure` is exhausted the rep
   key** (delete rights; used only by retention jobs run from the control host), path style,
   with **Test connection** (put, get, delete a small object with the right key for each). Until a
   bucket is configured every database shows a "Backups off" badge. The Backups guide explains
-  bucket versioning and object lock, so a compromised database or a member with `5050 ssh` cannot
+  bucket versioning and object lock, so a compromised database or a member with `openrail ssh` cannot
   destroy history.
 - **Encryption**: WAL-G uses `WALG_LIBSODIUM_KEY` derived from the recovery key; restic uses the
   per-install restic password in the recovery kit. Backups in the bucket are useless without the
@@ -1452,7 +1452,7 @@ agent counts restarts from Docker events; when `on_failure` is exhausted the rep
 - **Backups tab**: list (time, size, trigger, status, verified), **Back up now**, **Lock**,
   **Delete**, **Edit schedule**, **Restore** (pick a backup or, for Postgres, a point in time).
 - **Connect** (button in the database panel header): a modal with the private URL, the public URL
-  (when Public access is on), masked until revealed, copy buttons, and the `5050 connect <name>`
+  (when Public access is on), masked until revealed, copy buttons, and the `openrail connect <name>`
   command.
 - **Regenerate credentials** (database panel menu, Admin, confirm): sets a new password in the
   database (`ALTER ROLE`, `CONFIG SET requirepass` plus ACL, `db.changeUserPassword`), updates the
@@ -1463,7 +1463,7 @@ agent counts restarts from Docker events; when `on_failure` is exhausted the rep
 - **Data tab**: tables with row estimates and sizes (Postgres, MySQL), collections with counts
   (MongoDB), connection count, and for Redis a read-only key browser (`SCAN` with a pattern,
   type, TTL, size, and the first 1 KB of a value, revealed per key and audited). There is no free
-  query box and no row editing in v0.1 (Coming from Railway says so and points to `5050 connect`).
+  query box and no row editing in v0.1 (Coming from Railway says so and points to `openrail connect`).
   Identifiers come from the stored config, never from the request.
 
 ### 9.14 GitHub (WP1)
@@ -1474,7 +1474,7 @@ agent counts restarts from Docker events; when `on_failure` is exhausted the rep
   429 (rate limited), the scan falls back to a shallow `git clone --depth 1 --filter=blob:limit=1m`
   into a temp dir. `autoDeploy` for public repos polls `git ls-remote` every 2 minutes.
 - **GitHub App** (private repos and push webhooks): Settings > GitHub > **Create GitHub App** uses
-  the GitHub App manifest flow (no copying of keys): name `5050cloud-<install name>`, webhook URL
+  the GitHub App manifest flow (no copying of keys): name `openrail-<install name>`, webhook URL
   `<console>/api/v1/github/webhook`, permissions `contents: read`, `metadata: read`,
   `pull_requests: read`, `checks: read`, events `push`. The callback stores the app id, private key,
   webhook secret and client credentials encrypted. Then **Install** opens GitHub's install page.
@@ -1489,7 +1489,7 @@ agent counts restarts from Docker events; when `on_failure` is exhausted the rep
   the changed files (or the compare API when the payload is truncated) and call `Deploy` or record
   a `SKIPPED` deployment.
 - **Scan** (`POST /github/scan`, one dialog for every entry point): Dockerfile presence, config
-  files (`railway.json`, `railway.toml`, `5050.yaml`, `5050.json`, `nixpacks.toml`) with what they
+  files (`railway.json`, `railway.toml`, `openrail.yaml`, `openrail.json`, `nixpacks.toml`) with what they
   set, Railpack provider guess from manifest files, `package.json` start script and engines, JS
   monorepo packages (pnpm/npm/yarn/bun workspaces, skipping lint/config/test packages) to tick,
   variable names from the `.env*` files in 9.3, suggested port from `EXPOSE` or common defaults.
@@ -1529,7 +1529,7 @@ agent counts restarts from Docker events; when `on_failure` is exhausted the rep
 | Action | Owner | Admin | Member / project Editor | Viewer / project Viewer |
 |---|:-:|:-:|:-:|:-:|
 | View projects, canvas, deployments, logs, metrics | yes | yes | yes | yes |
-| Reveal variables, `5050 run`, shell, connect | yes | yes | yes | no |
+| Reveal variables, `openrail run`, shell, connect | yes | yes | yes | no |
 | Create and change services, variables, domains, volumes; deploy, roll back | yes | yes | yes | no |
 | Delete services, environments, projects; restore and promote databases; wipe volumes | yes | yes | no | no |
 | Hosts, GitHub App, bucket and SMTP settings, members, upgrades, audit log | yes | yes | no | no |
@@ -1569,7 +1569,7 @@ agent counts restarts from Docker events; when `on_failure` is exhausted the rep
 
 ### 9.16 Upgrades and maintenance (WP6 `internal/upgrade`, triggered by WP2a)
 
-- `5050 upgrade` (CLI), the **Upgrade** button (Settings > Upgrades), or `sudo 5050d upgrade
+- `openrail upgrade` (CLI), the **Upgrade** button (Settings > Upgrades), or `sudo 5050d upgrade
   [--version vX.Y.Z]` on the host.
 - Steps: resolve the release and verify `checksums.txt.minisig` with the embedded minisign public
   key(s) and the tarball SHA-256; take a state snapshot (9.17); unpack to
@@ -1594,7 +1594,7 @@ agent counts restarts from Docker events; when `on_failure` is exhausted the rep
   paused, Caddy one ingress host at a time (stop, start with `--resume`; about 2 s without 80/443
   on that host, so a single-ingress install has a 2 s gap; the release notes say when a release
   changes the Caddy pin).
-- **Host maintenance** (Hosts > host menu > **Maintenance**, or `5050 host maintenance HOST`):
+- **Host maintenance** (Hosts > host menu > **Maintenance**, or `openrail host maintenance HOST`):
   reschedules volume-less replicas elsewhere, then stops the host's remaining services in reverse
   dependency order (apps before the databases they reference) with their stop grace, and marks the
   host `maintenance` so you can upgrade Docker or the kernel and reboot. **End maintenance** starts
@@ -1602,7 +1602,7 @@ agent counts restarts from Docker events; when `on_failure` is exhausted the rep
 - **Release signing keys**: `install.sh` and `internal/upgrade` embed the current minisign key and
   accept a next key once announced. Rotation: a release signed by the current key ships the next
   key; the release after is signed by the next key. On key compromise: a security advisory, a new
-  installer with only the new key, and `5050 upgrade --pubkey <new>` documented in SECURITY.md.
+  installer with only the new key, and `openrail upgrade --pubkey <new>` documented in SECURITY.md.
 - The console shows "Update available: vX.Y.Z" when the latest release is newer (checked daily;
   `--no-update-check` disables it).
 
@@ -1716,7 +1716,7 @@ agent log store 7 days **and** at most 1 GB per service per host and 10% of the 
 #### 9.20.1 Files and priority
 
 At build time WP4 looks in the service's root directory (or **Config file path**, Settings >
-Source) for, in this order, the first that exists: `5050.yaml`, `5050.json`, `railway.json`,
+Source) for, in this order, the first that exists: `openrail.yaml`, `openrail.json`, `railway.json`,
 `railway.toml`. `pkg/configfile` parses it into `manifest.RailwayConfig` (Railway's schema:
 `build.builder`, `build.buildCommand`, `build.dockerfilePath`, `build.watchPatterns`,
 `build.railpackVersion`, `deploy.startCommand`, `deploy.preDeployCommand`,
@@ -1736,7 +1736,7 @@ file's commit and path. Watch patterns from the file apply to the next push.
 with a hover "Set by railway.json line 12: "startCommand": "node server.js"" and a link to the
 file on GitHub. The Details tab of a deployment lists which fields came from the file. Unknown
 fields fail the build (9.18); fields we know but do not support produce one notice line each in
-the build log, for example "railway.json: sleepApplication is not supported in 5050cloud v0.1 and
+the build log, for example "railway.json: sleepApplication is not supported in openrail v0.1 and
 was ignored."
 
 #### 9.20.2 Nixpacks and Railpack hints
@@ -1764,7 +1764,7 @@ was ignored."
 
 ### 9.22 Imports (WP1)
 
-- **Import from Railway** (`5050 import railway --token <project token>` or **New > Import from
+- **Import from Railway** (`openrail import railway --token <project token>` or **New > Import from
   Railway**, which asks for the token): reads the project through Railway's public GraphQL API
   (`https://backboard.railway.com/graphql/v2`) with a project token: environments, services,
   sources (repo, branch, root directory, image), service settings (builder, build and start
@@ -1777,10 +1777,10 @@ was ignored."
   skipped and why. Nothing deploys until you press Deploy. The token is used once and never
   stored.
 - **Database data**: the "Move a database from Railway" guide pipes `pg_dump` from Railway's
-  public URL into `5050 connect Postgres` (`pg_dump "$RAILWAY_URL" | 5050 connect Postgres --
+  public URL into `openrail connect Postgres` (`pg_dump "$RAILWAY_URL" | openrail connect Postgres --
   psql`), with the same for MySQL, Redis (`redis-cli --rdb`) and MongoDB.
 - **Docker Compose**: drag a `docker-compose.yml` onto the canvas (or **New > Docker Compose**,
-  or `5050 import compose FILE`). `pkg/compose` maps `services.<name>.image` or `build` (context
+  or `openrail import compose FILE`). `pkg/compose` maps `services.<name>.image` or `build` (context
   and dockerfile, needs a repo), `command`, `environment`/`env_file` contents pasted in,
   `ports` (first one becomes the target port; published ports become a generated domain or a TCP
   proxy suggestion), `volumes` (named volumes become volumes; bind mounts are skipped with a
@@ -1841,7 +1841,7 @@ Rules:
   script for 9.10.
 - MySQL, Redis and MongoDB get stop grace 60 s. MongoDB gets `--wiredTigerCacheSizeGB` from the
   limit.
-- Each template has `data:` set so the Data tab and `5050 connect` know the client (`psql`,
+- Each template has `data:` set so the Data tab and `openrail connect` know the client (`psql`,
   `mysql`, `redis-cli`, `mongosh`).
 - Template creation is immediate (not staged) and deploys at once, as on Railway.
 - Templates must be re-runnable: provisioning scripts create roles only if missing.
@@ -1873,8 +1873,8 @@ pinned images. Multi-service templates set `DependsOn`, so they deploy in order 
   block **Deploy** until filled), the environment to deploy into, and **Deploy**. Deploy creates
   the services and deploys them in dependency order, then opens the canvas.
 - **Deep link and button**: `https://<console>/new/template/<id>?KEY=value` opens the detail with
-  inputs prefilled. The docs give a **Deploy on 5050cloud** README button
-  (`https://5050cloud.com/deploy?template=<id>` asks for your console URL once and remembers it in
+  inputs prefilled. The docs give a **Deploy on openrail** README button
+  (`https://openrail.app/deploy?template=<id>` asks for your console URL once and remembers it in
   the browser, then redirects).
 - Every template is covered by a golden render test (1 GB, 4 GB, 32 GB hosts) and by E-suite
   smoke runs of `n8n` and `uptime-kuma`; U19 deploys `umami` through the UI.
@@ -1976,7 +1976,7 @@ newest first.
 | GET, PUT | `/environments/{eid}/shared-variables` | `VariablesResponse` / `SetVariablesRequest` (staged) | V / M |
 | POST | `/environments/{eid}/shared-variables/reveal` | `RevealRequest` -> `RevealResponse` | M |
 | POST | `/environments/{eid}/shared-variables/share` | `{name, services[]}` -> 204 (staged) | M |
-| GET | `/environments/{eid}/export` | `5050.yaml` text (`manifest.ProjectFile`) | V |
+| GET | `/environments/{eid}/export` | `openrail.yaml` text (`manifest.ProjectFile`) | V |
 | POST | `/imports/railway` | `{token, projectName?}` -> `Import` (creates a project with staged changes) | M |
 | POST | `/environments/{eid}/imports/compose` | YAML body -> `Import` (staged) | M |
 | POST | `/environments/{eid}/services/{sid}/imports/heroku-env` | text body -> `Import` (staged) | M |
@@ -2057,7 +2057,7 @@ newest first.
 |---|---|---|
 | POST | `/join` | join token in body (rate limited 10 per minute per IP) |
 | GET (WebSocket) | `/connect` | host token bound to machine-id and WireGuard key (7.1) |
-| GET | `/uploads/{id}` | host token; serves a `5050 up` tarball to the build host |
+| GET | `/uploads/{id}` | host token; serves a `openrail up` tarball to the build host |
 
 The agent endpoints are also served on `agents.<console domain>` so operators can firewall them
 separately; the console domain keeps serving them for compatibility.
@@ -2075,15 +2075,15 @@ separately; the console domain keeps serving them for compatibility.
 
 ---
 
-## 12. CLI `5050` (WP7, MIT)
+## 12. CLI `openrail` (WP7, MIT)
 
-Install: `curl -fsSL https://5050cloud.com/install.sh | sh -s -- --cli` (CLI only, to
+Install: `curl -fsSL https://openrail.app/install.sh | sh -s -- --cli` (CLI only, to
 `~/.local/bin` or `/usr/local/bin`, plus the `railway` alias unless `--no-alias` or a real
 `railway` binary is already on `PATH`), or the release archives for macOS, Linux and Windows
 (Windows builds are labelled experimental).
 
 Config: `~/.config/5050/config.json` (0600) holds instances (`url -> token`) and links
-(`absolute dir -> {instance, project, environment, service}`). `FIFTY_URL` and `FIFTY_TOKEN`
+(`absolute dir -> {instance, project, environment, service}`). `OPENRAIL_URL` and `OPENRAIL_TOKEN`
 override for CI; `RAILWAY_TOKEN` and `RAILWAY_API_TOKEN` are read too when the binary runs as
 `railway`. Every command accepts `-p/--project`, `-e/--environment`, `-s/--service`, `--json`,
 `-y/--yes`. Exit code non-zero on failure. Output is plain text without colour when not a TTY.
@@ -2092,9 +2092,9 @@ Interactive pickers are numbered prompts.
 **`railway` alias**: the same binary installed as a `railway` symlink. When `argv[0]` is
 `railway` it accepts Railway's verbs and flags as documented in `railway-docs.md` section 19
 (including `railway up --service`, `railway variables --set`, `railway add -d postgres`), prints
-one line the first time ("Using 5050cloud at <url>; run `5050 alias remove` to undo"), and
-answers verbs we do not have with "railway <verb> is not available in 5050cloud. See
-5050cloud.com/docs/coming-from-railway". `5050 alias install|remove` manages the symlink.
+one line the first time ("Using openrail at <url>; run `openrail alias remove` to undo"), and
+answers verbs we do not have with "railway <verb> is not available in openrail. See
+openrail.app/docs/coming-from-railway". `openrail alias install|remove` manages the symlink.
 
 | Command | What it does | Key flags |
 |---|---|---|
@@ -2116,7 +2116,7 @@ answers verbs we do not have with "railway <verb> is not available in 5050cloud.
 | `run -- CMD` | Run a local command with the service's resolved variables | |
 | `shell` | Local subshell with the variables loaded | `--silent` |
 | `ssh [-- CMD]` | Shell inside a running replica (WebSocket exec) | `--replica`, `--session NAME` (reattach) |
-| `connect [SERVICE]` | Open `psql`, `mysql`, `redis-cli` or `mongosh` through a local tunnel; `--tunnel-only` prints the local URL; `-- ARGS` passes arguments and stdin through (for `pg_dump | 5050 connect`) | `-P/--port`, `--tunnel-only` |
+| `connect [SERVICE]` | Open `psql`, `mysql`, `redis-cli` or `mongosh` through a local tunnel; `--tunnel-only` prints the local URL; `-- ARGS` passes arguments and stdin through (for `pg_dump | openrail connect`) | `-P/--port`, `--tunnel-only` |
 | `domain [DOMAIN]` | No argument: generate a domain; with one: add a custom domain and print the DNS records; `list`, `delete`, `status DOMAIN`, `update DOMAIN --port`, `certificate retry DOMAIN` | `--port` |
 | `tcp-proxy` | `list`, `add --port`, `delete` | |
 | `environment` | Switch; `new NAME [--duplicate ENV]`, `delete`, `rename`, `sync --from ENV`, `config` (print the environment's effective config as JSON), `edit --service-config SVC DOT.PATH VALUE [--stage]` | |
@@ -2126,13 +2126,13 @@ answers verbs we do not have with "railway <verb> is not available in 5050cloud.
 | `cron` | `list` runs, `run` now | |
 | `metrics` | Print CPU, memory, network and HTTP summaries for a range | `--range` |
 | `usage` | Usage for the period and the Railway comparison | `--from`, `--until` |
-| `config pull` | Write `5050.yaml` for the environment (no lock-in export) | `--file` |
+| `config pull` | Write `openrail.yaml` for the environment (no lock-in export) | `--file` |
 | `host` | `add [--roles app]` prints the join command; `list`; `drain HOST`; `maintenance HOST on\|off` | admin |
 | `upgrade` | Upgrade the install (control plane then agents), wait and report | `--version` |
 | `alias install\|remove` | Manage the `railway` symlink | |
 | `completion bash\|zsh\|fish`, `version` | | |
 
-`5050 up` packs with `archive/tar` + gzip, skips `.git` and ignored files (unless
+`openrail up` packs with `archive/tar` + gzip, skips `.git` and ignored files (unless
 `--no-gitignore`), refuses more than 500 MB, prints `Uploaded 3.2 MB`, then the build log, then the
 first deploy log lines, then `Deployed: https://...` and exits 0, or prints the diagnosis and exits
 1. `--path-as-root` uploads PATH as the archive root instead of the linked root directory.
@@ -2144,7 +2144,7 @@ first deploy log lines, then `Deployed: https://...` and exits 0, or prints the 
 Start from `reference/console-web` (copied into `web/` by WP8a), keep its stack and kit, and fix
 every item in `docs/research/reuse.md` section 2.2 (private strings, `depot` names, copy that names
 our vendors, comments that say values were copied from another product's stylesheet). Package name
-`@5050cloud/web`. Our own theme: shift neutrals and the accent so it is clearly ours, add a light
+`@openrail/web`. Our own theme: shift neutrals and the accent so it is clearly ours, add a light
 theme (system default, toggle in the avatar menu). Types come from `make gen-ts` (tygo over
 `pkg/api` into `web/src/api/types.gen.ts`, committed; CI fails if stale). The reference console is
 about 2,000 lines of mostly read-only views; most of this section is new work.
@@ -2211,7 +2211,7 @@ name, the host(s) and replica count, and for databases a **Connect** button (9.1
   red, history with **Show Skipped**, three-dot menu by state (View logs, Restart, Redeploy,
   Rollback, Remove, Abort); rollback confirm says "Restores the image and the variables this
   deployment ran with". Empty state offers the first deploy for every source type (for an empty
-  service: "Connect a repo or image" plus the `5050 up` command). A Crashed card has an inline
+  service: "Connect a repo or image" plus the `openrail up` command). A Crashed card has an inline
   **Restart**.
 - **Variables**: "N Service Variables", **Shared Variable**, **Raw Editor** (paste `.env` or JSON;
   shows the parsed result before applying), **New Variable** with `${{` autocomplete in name and
@@ -2371,11 +2371,11 @@ rendered strings by `labels.spec.ts`.
 ## 14. Docs site and landing page (WP9, `site/`)
 
 Astro with Starlight, pinned exactly. `site/` builds to static files (`npm run build`), deployed
-by `.github/workflows/site.yml` to GitHub Pages (custom domain `5050cloud.com` when its DNS is
+by `.github/workflows/site.yml` to GitHub Pages (custom domain `openrail.app` when its DNS is
 set; otherwise the Pages URL). `install/install.sh` is copied to `site/public/install.sh` at build
-time so `https://5050cloud.com/install.sh` serves it. Every page is also published as Markdown
+time so `https://openrail.app/install.sh` serves it. Every page is also published as Markdown
 (`/<path>.md`), plus `/llms.txt` (index) and `/llms-full.txt` (all pages), as Railway does. The
-site also serves `/deploy` (the Deploy on 5050cloud button target, 10.2).
+site also serves `/deploy` (the Deploy on openrail button target, 10.2).
 
 ### 14.1 Landing page (`site/src/pages/index.astro`)
 
@@ -2403,13 +2403,13 @@ Sections, in order:
    S3-compatible bucket with point-in-time restore to a copy (E15); zero-downtime deploys for
    services without a volume, for public and private traffic (E7, E33); the old version keeps
    serving if a deploy fails (E9); rollbacks that restore variables and do not expire after a few
-   days (E8); `5050 upgrade` reverts itself if the new version is unhealthy (E17, E29); apps keep
+   days (E8); `openrail upgrade` reverts itself if the new version is unhealthy (E17, E29); apps keep
    serving while the `5050d` process is stopped or restarting, and across a worker reboot (E22,
    E22b); the control plane's state streams to your bucket and rebuilds on a new VM (E28).
-7. **Move from Railway in minutes**: `5050 import railway`, `railway.json` honoured, the `railway`
+7. **Move from Railway in minutes**: `openrail import railway`, `railway.json` honoured, the `railway`
    CLI alias, the same variable names and reference syntax (E30, E31, E13).
 8. **No lock-in**: Railpack builds (Railway's own builder), standard Docker images,
-   `5050 config pull` exports everything to a file, AGPL-3.0 server and MIT CLI.
+   `openrail config pull` exports everything to a file, AGPL-3.0 server and MIT CLI.
 9. **Compared with**: table vs Railway, Coolify, Dokploy, Kamal, Dokku using only facts from
    `competitors.md` section 2 (canvas, references, multi-host, replicas on one host, zero downtime,
    backups with restore, inbound ports needed, license).
@@ -2444,9 +2444,9 @@ star counts, no idle RAM comparisons (competitors.md 5, "Claims to avoid").
 - **Get started**: Quick start (install, open the link, deploy a repo, add Postgres), The basics
   (projects, environments, services, deployments, variables, hosts), Coming from Railway (14.3),
   Production checklist.
-- **Guides**: Deploy from GitHub, Deploy a Docker image, Deploy with the CLI (`5050 up`), Config
-  as code (`railway.json`, `5050.yaml`), Import from Railway, Move a database from Railway, Import
-  Docker Compose, Templates and the Deploy on 5050cloud button, Add Postgres/MySQL/Redis/MongoDB,
+- **Guides**: Deploy from GitHub, Deploy a Docker image, Deploy with the CLI (`openrail up`), Config
+  as code (`railway.json`, `openrail.yaml`), Import from Railway, Move a database from Railway, Import
+  Docker Compose, Templates and the Deploy on openrail button, Add Postgres/MySQL/Redis/MongoDB,
   Variables and references, Staged changes and environment sync, Custom domains and HTTPS, Use all
   cores, Add a host (and the two-ingress setup), Replicas and zero-downtime deploys (including
   keep-alive timeouts for internal callers), Health checks, Rollbacks, Cron jobs, Volumes, Backups
@@ -2470,27 +2470,27 @@ the meta description), numbered steps that start with the place, exact UI names 
 
 ### 14.3 Coming from Railway (one row per difference)
 
-| Railway | In 5050cloud v0.1 | What to do instead |
+| Railway | In openrail v0.1 | What to do instead |
 |---|---|---|
 | PR environments (incl. Focused and Bot PR environments) | Not yet (v0.2) | Duplicate an environment and point a service at the branch |
-| Wait for CI | Not yet | Deploy from CI with `5050 up -c` or a GitHub Action calling `5050 redeploy` |
+| Wait for CI | Not yet | Deploy from CI with `openrail up -c` or a GitHub Action calling `openrail redeploy` |
 | Deployment approvals | Not yet | Turn off auto deploy and deploy by hand |
-| Image Auto Updates with maintenance windows | Not yet | "Check for a newer image" in Settings > Source, or a cron that calls `5050 redeploy` |
+| Image Auto Updates with maintenance windows | Not yet | "Check for a newer image" in Settings > Source, or a cron that calls `openrail redeploy` |
 | Serverless (app sleeping) | Not available | Scale to 0 is v0.2; idle apps cost only RAM on your own VM |
 | Buckets | Not yet | The MinIO template |
 | Functions | Not available | A small service or a cron service |
 | Observability widget board | Not yet | The Observability page and Metrics tabs |
 | AI Diagnose and fix PR | Rule-based sentence | The diagnosis sentence and the Troubleshooting guide |
-| Data tab SQL editor and row editing | Read-only tables and Redis keys | `5050 connect` |
+| Data tab SQL editor and row editing | Read-only tables and Redis keys | `openrail connect` |
 | Metrics for 30 days | Same, 30 days | |
 | Wildcard custom domains | Not yet | One custom domain per name, or `--domain` with a wildcard A record for generated names |
 | Static egress IPs (paid) | Free: your hosts' IPs | Settings > Networking shows them |
 | Volume Live Resize | Not needed: volumes use the host disk | Add a data disk |
 | Regions | Your hosts and roles | Add a host in another location |
-| `railway` CLI | `5050`, plus the `railway` alias | Same commands |
+| `railway` CLI | `openrail`, plus the `railway` alias | Same commands |
 | Login with GitHub, magic link email login | Email and password with 2FA | |
 | Slack/Discord formatted webhooks | Signed JSON | A small relay service, or v0.2 |
-| `config plan/apply` style config sync | `5050 config pull` and `railway.json` in the repo | v0.2 Git mode |
+| `config plan/apply` style config sync | `openrail config pull` and `railway.json` in the repo | v0.2 Git mode |
 
 ---
 
@@ -2589,7 +2589,7 @@ doubled.
   web build with the size budget, site build, `go mod tidy` diff check, `make gen-ts` diff check,
   `make test-linux` on the Linux runner.
 - `release.yml` on tag `v*`: goreleaser builds `5050_<ver>_linux_<arch>.tar.gz` (5050d,
-  5050-agent, 5050, systemd units, LICENSE files), `5050-cli_<ver>_<os>_<arch>.tar.gz`,
+  5050-agent, 5050, systemd units, LICENSE files), `openrail-cli_<ver>_<os>_<arch>.tar.gz`,
   `checksums.txt`, signs it with minisign (secret `MINISIGN_KEY`) into `checksums.txt.minisig`,
   publishes a GitHub Release with notes, and updates `latest.txt`.
 - `site.yml` on pushes to `main` touching `site/` or `install/`: build and deploy to Pages.
@@ -2632,7 +2632,7 @@ when infrastructure image pins changed (9.16).
 | `internal/cp/core/auth` | argon2id, sessions, reset tokens, TOTP and recovery codes, invite links, rate limits with trusted proxies | 85% |
 | `internal/cp/core/github` | webhook signature, watch path matcher (incl. negation and first push), scan of fixture repos, shallow clone fallback | 80% |
 | `internal/cp/core/imports` | Railway GraphQL fixtures to staged changes, Heroku env parsing | 80% |
-| `pkg/configfile` | railway.json, railway.toml, 5050.yaml, nixpacks.toml parsing, priority merge, line map, unknown field suggestions (fuzz) | 90% |
+| `pkg/configfile` | railway.json, railway.toml, openrail.yaml, nixpacks.toml parsing, priority merge, line map, unknown field suggestions (fuzz) | 90% |
 | `pkg/compose` | compose fixtures to staged services, skipped keys report | 85% |
 | `pkg/manifest` | golden round trip through `sigs.k8s.io/yaml` (camelCase) | 100% of types |
 | `internal/cp/orch/engine` | state machine with a fake hub: success, failed health, abort, supersede, crash, restart mid-deploy (QUEUED and DEPLOYING), ordering by references, rollback uses snapshot, volume rollout restart on failure, max surge waves, queue timeout | 80% |
@@ -2675,13 +2675,13 @@ image `traefik/whoami` (pinned).
 | E2 | Setup and CLI login | owner created; API token works with the CLI |
 | E3 | Public GitHub repo, Deploy Now, generated domain | `examples/node-hello` at its pinned commit: `SUCCESS`; HTTPS 200 with a valid certificate; total time since E1 start < 300 s |
 | E4 | Docker image service | `traefik/whoami` on port 80 serves 200 over HTTPS; P8 timing recorded |
-| E5 | Postgres + reference | template online; `examples/pg-check` deployed with `5050 up` and `DATABASE_URL=${{Postgres.DATABASE_URL}}`; `/health` says db ok; canvas has the edge |
+| E5 | Postgres + reference | template online; `examples/pg-check` deployed with `openrail up` and `DATABASE_URL=${{Postgres.DATABASE_URL}}`; `/health` says db ok; canvas has the edge |
 | E6 | Staged changes | config patch and variable set give 2 changes with correct diffs; commit deploys; discard works; rename rewrites a reference |
 | E7 | Zero downtime, public | 2 replicas, 50 rps from host 2 (or the runner) for the whole redeploy: 0 non-2xx and 0 connection errors; P7 timing recorded |
 | E8 | Rollback restores variables | FOO=1 deploy, FOO=2 deploy, rollback to the first: `/env/FOO` is 1; committed variable is still 2 |
 | E9 | Failure diagnosis | target port 8080 for an app on 80: `FAILED`, diagnosis names both ports, previous deployment still serves |
 | E10 | Crash restart | `/crash`: replica restarts and serves again within 30 s; restart count shown |
-| E11 | Logs | build log stored; deploy log has the app's line; HTTP log has the request with status; `@level:error` filter; `5050 logs --http --status 500` works |
+| E11 | Logs | build log stored; deploy log has the app's line; HTTP log has the request with status; `@level:error` filter; `openrail logs --http --status 500` works |
 | E12 | Metrics | after 90 s CPU and memory series have points; HTTP requests and error rate counted |
 | E13 | CLI and alias | `run -- env` has resolved `DATABASE_URL`; `ssh -- echo hi`; `connect Postgres -- -c 'select 1'`; `variables set/list`; `domain` generates one; `logs`; the same through `railway` alias commands copied from Railway's docs |
 | E14 | Volume | written file survives a redeploy; usage shown; a failed redeploy of a volume service restarts the old container |
@@ -2767,7 +2767,7 @@ package for integration testing, not to start.
 | Caddy `dynamic a` with a custom resolver | Yes, v2.11.7: `resolver.addresses` takes `udp/127.0.0.1:5354` (8.4) |
 | Railway GraphQL schema | Introspection works without a token. The slice the importer reads (query fields `project`, `environment(s)`, `service`, `serviceInstance`, `variables`, `domains`, `tcpProxies`, `deployments` and types `Project`, `Environment`, `Service`, `ServiceInstance`, `ServiceSource`, `ServiceDomain`, `CustomDomain`, `Volume`, `VolumeInstance`, `TCPProxy`, `Deployment`, `DeploymentTrigger`, enums `Builder`, `RestartPolicyType`, `DeploymentStatus`) is in `e2e/fixtures/railway/schema.json`. Response fixtures from a test project need a Railway project token; M0 did not create a project on anyone's account. `e2e/requests/M0-railway-import-fixtures.md` asks for them; WP1 starts from the schema |
 | Railway labels (section 2 and 9.1.1) | Not checked against the live dashboard: M0 had no signed-in Railway browser session, and the Railway MCP manages infrastructure, not dashboard strings. Instead every label was checked against Railway's docs of 2026-10-22 (`docs.railway.com/llms-full.txt`): 132 of 149 console labels appear verbatim. The 16 that do not are flagged `needsLiveCheck` in `web/e2e/labels.json`: `Recent Activity`, `Creation Date`, `Configure GitHub App`, `Hide Connections`, `New Group` and `Add to Group` (the docs write "New group" and "Add to group", for workspace groups), `N changes`, `G S`, `Healthcheck Timeout` (the docs write "Healthcheck timeout"), `Every hour`, `Every week`, `Every month`, `Error Rate`, `Response Time`, and the filter examples `"phrase"` and `-word`. `labels.json` is frozen with these strings; V1 compares them with the live dashboard and a mismatch becomes a planner defect that changes section 2 and the file together |
-| Console copy | `reference/console-web` copied into `web/` without `node_modules`; every item of `reuse.md` 2.2 removed (workspace name and vendor label now from the API, no private repo links, `5050.*` storage keys, no private DNS suffix or IP, no vendor names, no comments about copying another product's stylesheet, GitHub avatars only for GitHub actors and switchable off); two icons of our own fleet's apps removed; package renamed `@5050cloud/web`; MSW, Vitest and ESLint added at pinned versions; npm dependencies resolved with `--before=2026-10-08` |
+| Console copy | `reference/console-web` copied into `web/` without `node_modules`; every item of `reuse.md` 2.2 removed (workspace name and vendor label now from the API, no private repo links, `5050.*` storage keys, no private DNS suffix or IP, no vendor names, no comments about copying another product's stylesheet, GitHub avatars only for GitHub actors and switchable off); two icons of our own fleet's apps removed; package renamed `@openrail/web`; MSW, Vitest and ESLint added at pinned versions; npm dependencies resolved with `--before=2026-10-08` |
 
 ### 19.1 Order: a walking skeleton, then widen
 
@@ -2896,9 +2896,9 @@ package for integration testing, not to start.
 - **Depends on**: all packages for the full e2e run.
 
 ### WP7 cli
-- **Dirs**: `cmd/5050/`, `internal/cli/`.
+- **Dirs**: `cmd/openrail/`, `internal/cli/`.
 - **Scope**: section 12 including the `railway` alias, using only `pkg/` (MIT boundary).
-- **Acceptance**: 18.1 row passes; `go list -deps ./cmd/5050` has no AGPL packages; against
+- **Acceptance**: 18.1 row passes; `go list -deps ./cmd/openrail` has no AGPL packages; against
   `5050d --dev` with fakeorch every command runs end to end where the fake allows; `up` packs
   correctly (golden tar listing with ignores); `connect` rewrites URLs and passes stdin through;
   `--json` output for list commands; a table of Railway CLI invocations from `railway-docs.md`
@@ -2971,12 +2971,12 @@ same commit.
    `reference/` are not tracked.
 2. `make check-public DENYLIST=reference/denylist.txt` and gitleaks over the full history pass.
 3. Fresh history: the public repo starts from a single squashed commit of the verified tree.
-4. Create the public GitHub repository (`5050cloud/5050cloud` if the organization name is
+4. Create the public GitHub repository (`openrail/openrail` if the organization name is
    available, otherwise under the owner's account; update the module path and URLs in one change
    before tagging if it differs), push, add topics and description, enable Discussions and private
    vulnerability reporting.
 5. Add the `MINISIGN_KEY` secret, tag `v0.1.0`, let `release.yml` publish the release.
-6. Deploy the site with `site.yml`; point `5050cloud.com` at GitHub Pages when the DNS is ready.
+6. Deploy the site with `site.yml`; point `openrail.app` at GitHub Pages when the DNS is ready.
 7. Run V2's install test once more against the published release URL (no `--release-base`, no
    `--archive`). This is a re-check: the same code path already ran in every e2e run with the test
    key (17.4).
@@ -2986,7 +2986,7 @@ same commit.
 ## 22. Deferred to v0.2
 
 PR environments (focused and bot PR environments), Git mode (staged changes as pull requests) and
-`5050 config plan|apply`, a highly available control plane, agent mTLS, Login with GitHub and
+`openrail config plan|apply`, a highly available control plane, agent mTLS, Login with GitHub and
 SSO/OIDC, a SQL query box and row editing in the Data tab, MySQL backups, Slack and Discord webhook
 formatting, wildcard custom domains (DNS-01 with provider plugins), stable per-service virtual IPs
 for internal traffic, WireGuard relay through the control host for NAT-to-NAT pairs, volume size
@@ -3027,7 +3027,7 @@ and changes say why.
 | P1 metrics gaps | Accepted, including 30-day retention (6.3) and Postgres metrics (9.10) |
 | P1 monitors | Accepted in minimal form: 9.21, Critical events preset (9.15) |
 | P1 volumes | Accepted the panel and Wipe Volume. Size limits: changed to "uses host disk" with alerts (9.12), because Docker named volumes on ext4 cannot be capped; XFS quotas are v0.2 |
-| P1 database panel parity | Accepted: Connect, Regenerate credentials, major upgrade by restore to a copy, extensions, Redis key browser. "Allow writes" query box rejected: the build critique's cut wins (smaller V4 attack surface); `5050 connect` covers writes and 14.3 says so |
+| P1 database panel parity | Accepted: Connect, Regenerate credentials, major upgrade by restore to a copy, extensions, Redis key browser. "Allow writes" query box rejected: the build critique's cut wins (smaller V4 attack surface); `openrail connect` covers writes and 14.3 says so |
 | P1 settings placement | Accepted: Railway placement kept (13.3), Processes and Placement under Scale, Railway-only fields as disabled rows |
 | P1 members model | Accepted: per-project grants on top of install roles, invite links, Transfer Ownership, TOTP 2FA (9.15) |
 | P1 palette | Accepted: 13.4, U26 |

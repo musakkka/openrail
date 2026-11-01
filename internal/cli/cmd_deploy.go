@@ -11,7 +11,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // activeDeployment returns the service's active deployment id, or its latest.
@@ -24,7 +24,7 @@ func activeDeployment(ctx context.Context, t *Target) (string, error) {
 		return "", err
 	}
 	if len(ds) == 0 {
-		return "", fmt.Errorf("%s has no deployment yet. Run `5050 up` first", t.Service.Config.Name)
+		return "", fmt.Errorf("%s has no deployment yet. Run `openrail up` first", t.Service.Config.Name)
 	}
 	return ds[0].ID, nil
 }
@@ -83,7 +83,7 @@ func (a *App) cmdDeploy() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if tmpl == "" {
-				return errors.New("pass --template ID (see `5050 templates list`)")
+				return errors.New("pass --template ID (see `openrail templates list`)")
 			}
 			ctx := cmd.Context()
 			t, err := a.resolve(ctx, false)
@@ -232,7 +232,7 @@ func (a *App) printImport(im api.Import) error {
 		a.printf("  skipped  %s %s: %s\n", it.Kind, it.Name, it.Detail)
 	}
 	if im.Status != "failed" {
-		a.printf("The changes are staged. Review and deploy them in the console or with `5050 environment`.\n")
+		a.printf("The changes are staged. Review and deploy them in the console or with `openrail environment`.\n")
 	}
 	return nil
 }

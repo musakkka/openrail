@@ -5,8 +5,8 @@
 copies to `/etc/systemd/system`.
 
 ```
-curl -fsSL https://5050cloud.com/install.sh | sudo sh
-wget -qO- https://5050cloud.com/install.sh | sudo sh
+curl -fsSL https://openrail.app/install.sh | sudo sh
+wget -qO- https://openrail.app/install.sh | sudo sh
 ```
 
 What you see: a small banner, numbered steps (`[3/8]`) with a spinner, a

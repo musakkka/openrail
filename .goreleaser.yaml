@@ -3,7 +3,7 @@
 # locally, signed with the test key in e2e/keys; .github/workflows/release.yml
 # runs it on a v* tag, signed with the MINISIGN_KEY secret.
 version: 2
-project_name: "5050"
+project_name: "openrail"
 
 before:
   hooks:
@@ -24,9 +24,9 @@ builds:
     flags: [-trimpath]
     ldflags: &ldflags
       - -s -w
-      - -X github.com/musakkka/5050cloud/pkg/version.Version=v{{ .Version }}
-      - -X github.com/musakkka/5050cloud/pkg/version.Commit={{ .ShortCommit }}
-      - -X github.com/musakkka/5050cloud/pkg/version.Date={{ .Date }}
+      - -X github.com/musakkka/openrail/pkg/version.Version=v{{ .Version }}
+      - -X github.com/musakkka/openrail/pkg/version.Commit={{ .ShortCommit }}
+      - -X github.com/musakkka/openrail/pkg/version.Date={{ .Date }}
   - id: 5050-agent
     main: ./cmd/5050-agent
     binary: 5050-agent
@@ -36,16 +36,26 @@ builds:
     flags: [-trimpath]
     ldflags: *ldflags
   - id: cli-server
-    main: ./cmd/5050
+    main: ./cmd/openrail
     binary: "5050"
     env: [CGO_ENABLED=0]
     goos: [linux]
     goarch: [amd64, arm64]
     flags: [-trimpath]
     ldflags: *ldflags
+  # Hosts already installed link /usr/local/bin/5050 to the 5050 binary and their
+  # upgrade step requires it, so server archives carry both names.
+  - id: cli-server-openrail
+    main: ./cmd/openrail
+    binary: "openrail"
+    env: [CGO_ENABLED=0]
+    goos: [linux]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags: *ldflags
   - id: cli
-    main: ./cmd/5050
-    binary: "5050"
+    main: ./cmd/openrail
+    binary: "openrail"
     env: [CGO_ENABLED=0]
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
@@ -57,7 +67,7 @@ builds:
 
 archives:
   - id: server
-    ids: [5050d, 5050-agent, cli-server]
+    ids: [5050d, 5050-agent, cli-server, cli-server-openrail]
     name_template: "5050_{{ .Version }}_linux_{{ .Arch }}"
     formats: [tar.gz]
     files:
@@ -68,7 +78,7 @@ archives:
         strip_parent: true
   - id: cli
     ids: [cli]
-    name_template: "5050-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    name_template: "openrail-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     formats: [tar.gz]
     format_overrides:
       - goos: windows
@@ -95,7 +105,7 @@ signs:
 release:
   github:
     owner: musakkka
-    name: 5050cloud
+    name: openrail
   draft: false
   prerelease: auto
   extra_files:

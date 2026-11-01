@@ -1,9 +1,9 @@
 ---
 title: Honest limits
-description: What 5050cloud v0.1 does not do, said plainly, with what to do about each one.
+description: What openrail v0.1 does not do, said plainly, with what to do about each one.
 ---
 
-What 5050cloud v0.1 does not do, said plainly, with what to do about each one.
+What openrail v0.1 does not do, said plainly, with what to do about each one.
 
 ## Beta
 
@@ -12,7 +12,7 @@ These work in 0.1.0 but are not yet covered by the end-to-end tests that run on 
 - More than one host: [adding a host](/docs/guides/add-a-host), the [private WireGuard network](/docs/guides/private-networking) between hosts, and a second ingress host.
 - [Replicas](/docs/guides/replicas-zero-downtime) spread across hosts, with load balancing between them. Replicas on one host are not beta.
 - Database [backups](/docs/guides/backups) to an [S3-compatible bucket](/docs/guides/backups-bucket), and [restoring](/docs/guides/restore) them.
-- [Upgrades](/docs/guides/upgrading) with `5050 upgrade`, and the automatic revert when the new version is unhealthy.
+- [Upgrades](/docs/guides/upgrading) with `openrail upgrade`, and the automatic revert when the new version is unhealthy.
 
 ## One control host
 

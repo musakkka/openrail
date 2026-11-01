@@ -17,11 +17,11 @@ import (
 
 	"filippo.io/age"
 
-	"github.com/musakkka/5050cloud/internal/cp/core"
-	"github.com/musakkka/5050cloud/internal/cp/core/config"
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/internal/upgrade"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/core"
+	"github.com/musakkka/openrail/internal/cp/core/config"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/internal/upgrade"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 func cmdSetupToken(ctx context.Context, args []string, stdout io.Writer) error {

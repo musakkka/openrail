@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
-// Builds the 5050cloud site into dist/: the landing page, the docs (HTML and
+// Builds the openrail site into dist/: the landing page, the docs (HTML and
 // a Markdown copy of every page), a search index, /deploy, /llms.txt,
 // /llms-full.txt, /install.sh, a sitemap and a 404 page. No dependencies
 // beyond Node itself.
 //
 //   node build.mjs [--out DIR]
 //
-// The site reads the 5050cloud source tree (pkg/api, templates, install) for
+// The site reads the openrail source tree (pkg/api, templates, install) for
 // the generated reference pages. It looks for it next to this folder (the
-// site/ folder of a checkout), then in ../5050cloud, or wherever FIFTY_REPO
+// site/ folder of a checkout), then in ../openrail, or wherever FIFTY_REPO
 // points.
 
 import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync, statSync, existsSync, copyFileSync } from 'node:fs';
@@ -24,9 +24,9 @@ import { deployPage } from './src/pages/deploy.mjs';
 const SITE = dirname(fileURLToPath(import.meta.url));
 
 export function findRoot() {
-  const candidates = [process.env.FIFTY_REPO, join(SITE, '..'), join(SITE, '..', '5050cloud')].filter(Boolean);
+  const candidates = [process.env.FIFTY_REPO, join(SITE, '..'), join(SITE, '..', 'openrail')].filter(Boolean);
   for (const c of candidates) if (existsSync(join(c, 'pkg/api/routes.go'))) return resolve(c);
-  throw new Error(`cannot find the 5050cloud source tree (looked in ${candidates.join(', ')}). Set FIFTY_REPO.`);
+  throw new Error(`cannot find the openrail source tree (looked in ${candidates.join(', ')}). Set FIFTY_REPO.`);
 }
 export const ROOT = findRoot();
 
@@ -73,7 +73,7 @@ function loadPages() {
     pages.push({ slug, title: data.title, navTitle: data.nav || '', description: data.description, body, source: `site/${relative(SITE, file).replace(/\\/g, '/')}` });
   }
   const api = apiPage(ROOT);
-  pages.push({ slug: 'docs/reference/api', title: 'API', description: 'The 5050cloud REST API serves everything the console and the CLI do, with the same roles and audit log.', body: api.md, source: 'pkg/api/routes.go' });
+  pages.push({ slug: 'docs/reference/api', title: 'API', description: 'The openrail REST API serves everything the console and the CLI do, with the same roles and audit log.', body: api.md, source: 'pkg/api/routes.go' });
   const ss = serviceSettingsPage(ROOT);
   pages.push({ slug: 'docs/reference/service-settings', title: 'Service settings', description: 'Every setting a service has, with its default and the Railway setting it matches.', body: ss.md, source: 'pkg/api/types.go' });
   for (const c of cliPages()) pages.push({ slug: c.slug, title: c.title, description: c.description, body: expand(c.md, c.slug), source: 'site/data/cli.json' });
@@ -109,15 +109,12 @@ function sidebarHtml(pages, current) {
 // site only. GOATCOUNTER= (empty) turns it off; a code picks another account.
 const GOATCOUNTER = process.env.GOATCOUNTER ?? '5050clooud';
 const ANALYTICS = GOATCOUNTER
-  ? `<script>if(/^(www\\.)?5050cloud\\.com$/.test(location.hostname)){var g=document.createElement('script');g.async=true;g.src='https://gc.zgo.at/count.js';g.dataset.goatcounter='https://${GOATCOUNTER}.goatcounter.com/count';document.head.appendChild(g);}</script>`
+  ? `<script>if(/^(www\\.)?openrail\\.com$/.test(location.hostname)){var g=document.createElement('script');g.async=true;g.src='https://gc.zgo.at/count.js';g.dataset.goatcounter='https://${GOATCOUNTER}.goatcounter.com/count';document.head.appendChild(g);}</script>`
   : '';
 const THEME_BOOT = `<script>(function(){var d=document.documentElement;d.classList.add('js');var t=null;try{t=localStorage.getItem('5050site.theme');}catch(e){}var m=/[?&]theme=(light|dark)/.exec(location.search);if(m)t=m[1];if(t==='light'||t==='dark')d.setAttribute('data-theme',t);})();</script>`;
 
-// The 5050cloud lockup, as in the console (web/src/kit/Logo.tsx): one tile
-// split into a pink half and an ink half, each holding "50", beside the
-// wordmark. The tile keeps its colours in both themes; "5050" takes the text
-// colour and "cloud" the muted one, so the wordmark follows the theme.
-const LOGO = `<svg class="logo" viewBox="0 0 167.3 32" role="img" aria-hidden="true" focusable="false"><path d="M0 16h32v10a6 6 0 0 1-6 6H6a6 6 0 0 1-6-6z" fill="#13111c"/><rect class="logo-edge" x="0.5" y="0.5" width="31" height="31" rx="5.5" fill="none"/><path d="M0 6a6 6 0 0 1 6-6h20a6 6 0 0 1 6 6v10H0z" fill="#d5348a"/><path d="M12.49 11.9Q11.71 11.9 11.1 11.61Q10.49 11.33 10.13 10.82Q9.78 10.32 9.76 9.67H11.28Q11.29 9.96 11.46 10.19Q11.62 10.42 11.9 10.54Q12.17 10.67 12.49 10.67Q12.87 10.67 13.16 10.5Q13.46 10.33 13.62 10.02Q13.79 9.71 13.79 9.31Q13.79 8.91 13.62 8.59Q13.45 8.28 13.15 8.11Q12.85 7.93 12.46 7.93Q12.12 7.93 11.81 8.07Q11.49 8.2 11.32 8.43L9.92 8.19L10.28 4.2H14.88V5.49H11.57L11.38 7.41H11.42Q11.62 7.13 12.03 6.95Q12.43 6.78 12.92 6.78Q13.43 6.78 13.87 6.96Q14.3 7.14 14.62 7.48Q14.95 7.81 15.12 8.27Q15.3 8.73 15.3 9.28Q15.3 10.04 14.95 10.63Q14.59 11.22 13.96 11.56Q13.32 11.9 12.49 11.9ZM19.2 11.9Q18.24 11.9 17.56 11.44Q16.88 10.98 16.52 10.11Q16.16 9.24 16.16 8.01Q16.16 6.78 16.52 5.9Q16.88 5.03 17.56 4.56Q18.24 4.1 19.2 4.1Q20.16 4.1 20.84 4.56Q21.52 5.03 21.88 5.9Q22.24 6.78 22.24 8.01Q22.24 9.24 21.88 10.11Q21.52 10.98 20.84 11.44Q20.16 11.9 19.2 11.9ZM19.2 10.61Q19.67 10.61 19.99 10.31Q20.31 10 20.48 9.42Q20.66 8.84 20.66 8.01Q20.66 7.17 20.48 6.58Q20.31 6 19.99 5.69Q19.67 5.38 19.2 5.38Q18.73 5.38 18.41 5.69Q18.08 6 17.91 6.58Q17.74 7.17 17.74 8.01Q17.74 8.84 17.91 9.42Q18.08 10 18.41 10.31Q18.73 10.61 19.2 10.61Z" fill="#ffffff"/><path d="M12.49 11.9Q11.71 11.9 11.1 11.61Q10.49 11.33 10.13 10.82Q9.78 10.32 9.76 9.67H11.28Q11.29 9.96 11.46 10.19Q11.62 10.42 11.9 10.54Q12.17 10.67 12.49 10.67Q12.87 10.67 13.16 10.5Q13.46 10.33 13.62 10.02Q13.79 9.71 13.79 9.31Q13.79 8.91 13.62 8.59Q13.45 8.28 13.15 8.11Q12.85 7.93 12.46 7.93Q12.12 7.93 11.81 8.07Q11.49 8.2 11.32 8.43L9.92 8.19L10.28 4.2H14.88V5.49H11.57L11.38 7.41H11.42Q11.62 7.13 12.03 6.95Q12.43 6.78 12.92 6.78Q13.43 6.78 13.87 6.96Q14.3 7.14 14.62 7.48Q14.95 7.81 15.12 8.27Q15.3 8.73 15.3 9.28Q15.3 10.04 14.95 10.63Q14.59 11.22 13.96 11.56Q13.32 11.9 12.49 11.9ZM19.2 11.9Q18.24 11.9 17.56 11.44Q16.88 10.98 16.52 10.11Q16.16 9.24 16.16 8.01Q16.16 6.78 16.52 5.9Q16.88 5.03 17.56 4.56Q18.24 4.1 19.2 4.1Q20.16 4.1 20.84 4.56Q21.52 5.03 21.88 5.9Q22.24 6.78 22.24 8.01Q22.24 9.24 21.88 10.11Q21.52 10.98 20.84 11.44Q20.16 11.9 19.2 11.9ZM19.2 10.61Q19.67 10.61 19.99 10.31Q20.31 10 20.48 9.42Q20.66 8.84 20.66 8.01Q20.66 7.17 20.48 6.58Q20.31 6 19.99 5.69Q19.67 5.38 19.2 5.38Q18.73 5.38 18.41 5.69Q18.08 6 17.91 6.58Q17.74 7.17 17.74 8.01Q17.74 8.84 17.91 9.42Q18.08 10 18.41 10.31Q18.73 10.61 19.2 10.61Z" fill="#ea66ad" transform="translate(0 16)"/><path class="logo-ink" d="M49.39 25.64Q47.65 25.64 46.28 24.99Q44.91 24.34 44.11 23.19Q43.3 22.04 43.26 20.57H46.37Q46.4 21.3 46.82 21.85Q47.24 22.41 47.91 22.73Q48.58 23.04 49.39 23.04Q50.35 23.04 51.09 22.61Q51.82 22.17 52.25 21.4Q52.67 20.63 52.67 19.62Q52.67 18.61 52.23 17.82Q51.8 17.03 51.04 16.58Q50.28 16.13 49.3 16.13Q48.48 16.13 47.71 16.43Q46.94 16.74 46.49 17.23L43.59 16.76L44.52 7.58H54.84V10.25H47.17L46.67 14.99H46.76Q47.26 14.41 48.17 14.03Q49.07 13.65 50.15 13.65Q51.35 13.65 52.38 14.09Q53.41 14.53 54.17 15.32Q54.93 16.12 55.35 17.19Q55.77 18.27 55.77 19.55Q55.77 21.32 54.96 22.69Q54.14 24.06 52.71 24.85Q51.27 25.64 49.39 25.64ZM64.59 25.64Q62.43 25.64 60.9 24.56Q59.37 23.47 58.56 21.43Q57.74 19.39 57.74 16.5Q57.74 13.6 58.56 11.56Q59.38 9.51 60.91 8.42Q62.43 7.34 64.59 7.34Q66.75 7.34 68.28 8.42Q69.81 9.51 70.63 11.56Q71.44 13.6 71.44 16.5Q71.44 19.39 70.63 21.43Q69.83 23.47 68.29 24.56Q66.76 25.64 64.59 25.64ZM64.6 22.96Q65.76 22.96 66.57 22.2Q67.37 21.44 67.8 20Q68.22 18.56 68.22 16.5Q68.22 14.43 67.8 12.98Q67.37 11.54 66.57 10.77Q65.76 10 64.6 10Q63.43 10 62.62 10.77Q61.81 11.54 61.39 12.98Q60.96 14.43 60.96 16.5Q60.96 18.56 61.38 20Q61.8 21.44 62.61 22.2Q63.43 22.96 64.6 22.96ZM79.58 25.64Q77.83 25.64 76.46 24.99Q75.09 24.34 74.29 23.19Q73.49 22.04 73.44 20.57H76.55Q76.59 21.3 77 21.85Q77.42 22.41 78.09 22.73Q78.76 23.04 79.58 23.04Q80.53 23.04 81.27 22.61Q82 22.17 82.43 21.4Q82.85 20.63 82.85 19.62Q82.85 18.61 82.42 17.82Q81.98 17.03 81.22 16.58Q80.46 16.13 79.48 16.13Q78.67 16.13 77.9 16.43Q77.12 16.74 76.67 17.23L73.77 16.76L74.71 7.58H85.02V10.25H77.35L76.85 14.99H76.94Q77.45 14.41 78.35 14.03Q79.25 13.65 80.33 13.65Q81.54 13.65 82.57 14.09Q83.6 14.53 84.36 15.32Q85.12 16.12 85.53 17.19Q85.95 18.27 85.95 19.55Q85.95 21.32 85.14 22.69Q84.33 24.06 82.89 24.85Q81.45 25.64 79.58 25.64ZM94.77 25.64Q92.62 25.64 91.09 24.56Q89.55 23.47 88.74 21.43Q87.93 19.39 87.93 16.5Q87.93 13.6 88.75 11.56Q89.57 9.51 91.09 8.42Q92.62 7.34 94.77 7.34Q96.94 7.34 98.47 8.42Q100 9.51 100.81 11.56Q101.62 13.6 101.62 16.5Q101.62 19.39 100.82 21.43Q100.01 23.47 98.48 24.56Q96.95 25.64 94.77 25.64ZM94.78 22.96Q95.94 22.96 96.75 22.2Q97.56 21.44 97.98 20Q98.41 18.56 98.41 16.5Q98.41 14.43 97.98 12.98Q97.56 11.54 96.75 10.77Q95.94 10 94.78 10Q93.61 10 92.8 10.77Q91.99 11.54 91.57 12.98Q91.14 14.43 91.14 16.5Q91.14 18.56 91.56 20Q91.98 21.44 92.8 22.2Q93.61 22.96 94.78 22.96Z"/><path class="logo-cloud" d="M109.82 25.68Q107.87 25.68 106.43 24.81Q105 23.94 104.21 22.39Q103.43 20.84 103.43 18.78Q103.43 16.7 104.21 15.14Q105 13.58 106.43 12.72Q107.87 11.86 109.82 11.86Q110.93 11.86 111.89 12.15Q112.85 12.43 113.6 12.98Q114.35 13.52 114.86 14.3Q115.37 15.08 115.59 16.06L112.68 16.67Q112.55 16.15 112.3 15.73Q112.06 15.3 111.7 15Q111.34 14.71 110.87 14.54Q110.41 14.38 109.84 14.38Q108.75 14.38 108.04 14.96Q107.32 15.54 106.96 16.53Q106.6 17.52 106.6 18.77Q106.6 20 106.96 21Q107.32 21.99 108.04 22.57Q108.75 23.15 109.84 23.15Q110.42 23.15 110.89 22.98Q111.36 22.82 111.73 22.5Q112.09 22.19 112.34 21.75Q112.59 21.31 112.71 20.77L115.62 21.38Q115.41 22.39 114.9 23.17Q114.39 23.96 113.63 24.52Q112.87 25.08 111.91 25.38Q110.94 25.68 109.82 25.68ZM120.91 7.58V25.4H117.8V7.58ZM129.52 25.68Q127.57 25.68 126.14 24.81Q124.7 23.94 123.92 22.39Q123.14 20.84 123.14 18.78Q123.14 16.7 123.92 15.14Q124.7 13.58 126.14 12.72Q127.57 11.86 129.52 11.86Q131.49 11.86 132.92 12.72Q134.36 13.58 135.14 15.14Q135.92 16.7 135.92 18.78Q135.92 20.84 135.14 22.39Q134.36 23.94 132.92 24.81Q131.49 25.68 129.52 25.68ZM129.52 23.15Q130.61 23.15 131.34 22.56Q132.06 21.98 132.41 20.99Q132.77 19.99 132.77 18.77Q132.77 17.54 132.41 16.55Q132.06 15.55 131.34 14.97Q130.61 14.38 129.52 14.38Q128.43 14.38 127.72 14.97Q127.01 15.55 126.66 16.54Q126.31 17.53 126.31 18.77Q126.31 19.99 126.66 20.99Q127.01 21.98 127.72 22.56Q128.43 23.15 129.52 23.15ZM142.73 25.57Q141.36 25.57 140.32 24.98Q139.29 24.4 138.72 23.26Q138.15 22.13 138.15 20.53V12.03H141.26V20.05Q141.26 21.39 141.96 22.16Q142.66 22.92 143.88 22.92Q144.7 22.92 145.35 22.56Q146 22.21 146.36 21.51Q146.73 20.82 146.73 19.86V12.03H149.85V25.4H146.89L146.87 22.73Q146.33 24.01 145.43 24.71Q144.33 25.57 142.73 25.57ZM157.59 25.64Q156.01 25.64 154.76 24.83Q153.51 24.02 152.79 22.48Q152.07 20.94 152.07 18.74Q152.07 16.51 152.81 14.97Q153.55 13.44 154.8 12.65Q156.05 11.86 157.58 11.86Q158.77 11.86 159.53 12.26Q160.29 12.66 160.74 13.21Q161.19 13.76 161.42 14.24H161.55V7.58H164.66V25.4H161.61V23.28H161.42Q161.18 23.76 160.72 24.31Q160.26 24.86 159.5 25.25Q158.75 25.64 157.59 25.64ZM158.44 23.08Q159.46 23.08 160.16 22.53Q160.87 21.99 161.24 21.01Q161.61 20.03 161.61 18.72Q161.61 17.42 161.24 16.46Q160.88 15.49 160.17 14.96Q159.46 14.42 158.44 14.42Q157.39 14.42 156.68 14.97Q155.97 15.53 155.62 16.51Q155.26 17.48 155.26 18.72Q155.26 19.97 155.62 20.96Q155.97 21.94 156.69 22.51Q157.4 23.08 158.44 23.08Z"/></svg>`;
+// The openrail lockup. The word takes the text colour, so it follows the theme.
+const LOGO = `<svg class="logo" viewBox="0 0 829.5 182" role="img" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M56 147.2Q38.4 147.2 25.9 141.2Q13.4 135.2 6.7 122.9Q0 110.6 0 92Q0 73.4 6.7 61.2Q13.4 49 25.9 43Q38.4 37 56 37Q73.8 37 86.3 43Q98.8 49 105.5 61.2Q112.2 73.4 112.2 92Q112.2 110.6 105.5 122.9Q98.8 135.2 86.3 141.2Q73.8 147.2 56 147.2ZM56 123.4Q64.2 123.4 69.3 120.2Q74.4 117 76.7 110.9Q79 104.8 79 95.8V88.4Q79 79.4 76.7 73.2Q74.4 67 69.3 63.9Q64.2 60.8 56 60.8Q48 60.8 42.9 63.9Q37.8 67 35.5 73.2Q33.2 79.4 33.2 88.4V95.8Q33.2 104.8 35.5 110.9Q37.8 117 42.9 120.2Q48 123.4 56 123.4ZM132.2 182V39.4H159L161.8 54H163.2Q168.6 45 176.9 41Q185.2 37 195.4 37Q208.8 37 218.5 43Q228.2 49 233.4 61.2Q238.6 73.4 238.6 92.2Q238.6 110.8 233.4 123Q228.2 135.2 218.6 141.2Q209 147.2 196 147.2Q189.6 147.2 184 145.8Q178.4 144.4 173.9 141.4Q169.4 138.4 166.2 134H165V182ZM185.2 121.6Q192.6 121.6 197.1 118.6Q201.6 115.6 203.6 109.8Q205.6 104 205.6 95.6V88.6Q205.6 80.2 203.6 74.3Q201.6 68.4 197.1 65.5Q192.6 62.6 185.2 62.6Q178 62.6 173.5 65.9Q169 69.2 166.9 75.3Q164.8 81.4 164.8 89.6V94.4Q164.8 100.4 165.9 105.4Q167 110.4 169.5 114Q172 117.6 175.9 119.6Q179.8 121.6 185.2 121.6ZM310.2 147.2Q292.2 147.2 279.6 141.3Q267 135.4 260.3 123.2Q253.6 111 253.6 92Q253.6 73.4 260.2 61.2Q266.8 49 279.2 43Q291.6 37 309 37Q326.2 37 338.1 42.8Q350 48.6 356.2 60.6Q362.4 72.6 362.4 91.6V98.6H286.8Q286.8 107 289.2 112.8Q291.6 118.6 296.6 121.6Q301.6 124.6 310 124.6Q315 124.6 318.8 123.4Q322.6 122.2 325.2 119.9Q327.8 117.6 329.2 114.4Q330.6 111.2 330.6 107.2H362.4Q362.4 116.8 358.9 124.3Q355.4 131.8 348.6 136.9Q341.8 142 332.1 144.6Q322.4 147.2 310.2 147.2ZM287 80.4H329Q329 75.2 327.7 71.3Q326.4 67.4 323.9 64.8Q321.4 62.2 317.9 60.9Q314.4 59.6 309.8 59.6Q302.6 59.6 297.8 62Q293 64.4 290.4 69Q287.8 73.6 287 80.4ZM382.4 144.8V39.4H409.4L411.8 54.4H413.2Q417.2 49 422.4 45Q427.6 41 434.2 39Q440.8 37 448.2 37Q459.6 37 467.5 41.2Q475.4 45.4 479.6 53.8Q483.8 62.2 483.8 75.2V144.8H451V79.8Q451 75.4 449.9 72.3Q448.8 69.2 446.8 67Q444.8 64.8 441.8 63.8Q438.8 62.8 435 62.8Q429.2 62.8 424.8 65.5Q420.4 68.2 417.8 72.7Q415.2 77.2 415.2 83.2V144.8Z"/><path fill="currentColor" fill-rule="evenodd" d="M506.2 39.4H539V144.8H506.2Z"/><path fill="#d5348a" fill-rule="evenodd" d="M543.26 99.68V54.93Q550.69 49.66 559.21 46.06Q574.95 39.4 592.16 39.4L602.7 39.4V69.58L592.16 69.58Q569.6 69.58 553.64 85.53Q547.12 92.05 543.26 99.68Z"/><path fill="currentColor" fill-rule="evenodd" d="M645.3 147.2Q638.7 147.2 632.4 145.9Q626.1 144.6 621 141.3Q615.9 138 612.9 132.2Q609.9 126.4 609.9 117.6Q609.9 106.2 614.7 99Q619.5 91.8 628.6 87.7Q637.7 83.6 650.6 82Q663.5 80.4 679.5 80.4V73.8Q679.5 69.2 677.7 66.1Q675.9 63 672.4 61.3Q668.9 59.6 663.1 59.6Q657.9 59.6 654 60.8Q650.1 62 648.1 64.3Q646.1 66.6 646.1 69.8V71.6H614.1Q613.9 70.6 613.9 69.9Q613.9 69.2 613.9 68Q613.9 58.6 619.8 51.6Q625.7 44.6 636.7 40.8Q647.7 37 663.3 37Q677.9 37 688.8 40.6Q699.7 44.2 706 51.6Q712.3 59 712.3 71V116Q712.3 119.4 714.2 121.4Q716.1 123.4 718.9 123.4H725.7V143.6Q723.5 144.6 718.8 145.9Q714.1 147.2 707.5 147.2Q700.7 147.2 695.6 145.5Q690.5 143.8 687.2 140.7Q683.9 137.6 682.7 133.4H681.3Q677.5 137.4 672.4 140.6Q667.3 143.8 660.6 145.5Q653.9 147.2 645.3 147.2ZM657.5 124.6Q662.3 124.6 666.3 123.2Q670.3 121.8 673.2 119.3Q676.1 116.8 677.8 113.2Q679.5 109.6 679.5 105.4V98.4Q668.1 98.4 659.9 100Q651.7 101.6 647.3 105Q642.9 108.4 642.9 113.6Q642.9 117.4 644.8 119.9Q646.7 122.4 649.9 123.5Q653.1 124.6 657.5 124.6ZM739.1 25.2V0H771.9V25.2ZM739.1 144.8V39.4H771.9V144.8ZM796.7 144.8V0H829.5V144.8Z"/></svg>`;
 
 const OG = existsSync(join(SITE, 'public/og/index.json')) ? JSON.parse(readFileSync(join(SITE, 'public/og/index.json'), 'utf8')) : {};
 function ogImage(slug) {
@@ -148,7 +145,7 @@ export function shell({ slug, title, description, main, head = '', bodyClass = '
 <meta name="theme-color" content="#f6f6f8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#13111c" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="5050cloud">
+<meta property="og:site_name" content="openrail">
 <meta property="og:title" content="${escapeHtml(title)}">
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta property="og:url" content="${ORIGIN}/${slug}${slug ? '/' : ''}">
@@ -166,7 +163,7 @@ ${head}
 <body class="${bodyClass}" data-root="${r('/')}">
 <a class="skip" href="#main">Skip to content</a>
 <header class="top">
-  <a class="brand" href="${r('/')}" aria-label="5050cloud home">${LOGO}</a>
+  <a class="brand" href="${r('/')}" aria-label="openrail home">${LOGO}</a>
   <nav class="nav" aria-label="Main">
     ${links}
   </nav>
@@ -178,14 +175,14 @@ ${head}
   </div>
 </header>
 <div class="sheet" id="sheet" hidden>
-  <div class="sheet-head"><a class="brand" href="${r('/')}" aria-label="5050cloud home">${LOGO}</a><button class="menu-close" type="button">Close</button></div>
+  <div class="sheet-head"><a class="brand" href="${r('/')}" aria-label="openrail home">${LOGO}</a><button class="menu-close" type="button">Close</button></div>
   <nav class="sheet-nav" aria-label="Main">${links}</nav>
   <p class="sheet-tools"><button class="search-open" type="button" hidden>Search docs</button> <button class="theme-toggle" type="button" hidden>Theme</button></p>
   ${sheetExtra}
 </div>
 ${main}
 <footer class="foot">
-  <p class="foot-name"><a class="brand" href="${r('/')}" aria-label="5050cloud home">${LOGO}</a></p>
+  <p class="foot-name"><a class="brand" href="${r('/')}" aria-label="openrail home">${LOGO}</a></p>
   <p class="foot-links"><a href="${REPO}" rel="noopener">GitHub</a> <a href="${r('/docs/quick-start')}">Docs</a> <a href="${REPO}/blob/main/LICENSING.md" rel="noopener">License</a> <a href="${REPO}/blob/main/SECURITY.md" rel="noopener">Security policy</a> <a href="${REPO}/releases/tag/v0.1.0" rel="noopener">Release v0.1.0</a> <a href="${r('/llms.txt')}">llms.txt</a></p>
   <p class="foot-note">AGPL-3.0 server, MIT CLI, API types, templates and installer. Not affiliated with Railway; Railway is a trademark of its owner.</p>
 </footer>
@@ -212,10 +209,10 @@ export const MEDIA = JSON.parse(readFileSync(join(SITE, 'data/media.json'), 'utf
 // `node scripts/media.mjs --demo <dir> --reviewed`. A missing or partial file
 // leaves the section out; the page never shows a placeholder.
 export function findDemo(dir = join(SITE, 'public/demo')) {
-  const need = ['5050cloud-demo.mp4', '5050cloud-demo.webm', '5050cloud-demo.en.vtt', 'demo.json'];
+  const need = ['openrail-demo.mp4', 'openrail-demo.webm', 'openrail-demo.en.vtt', 'demo.json'];
   if (!need.every((f) => existsSync(join(dir, f)) && statSync(join(dir, f)).size > 0)) return { ready: false };
   // A finished MP4 has its index (moov) written; an encode still running does not.
-  const mp4 = readFileSync(join(dir, '5050cloud-demo.mp4'));
+  const mp4 = readFileSync(join(dir, 'openrail-demo.mp4'));
   if (mp4.indexOf('moov') < 0) return { ready: false };
   const meta = JSON.parse(readFileSync(join(dir, 'demo.json'), 'utf8'));
   let chapters = null;
@@ -276,7 +273,7 @@ ${pager}
 </main>
 ${tocHtml}
 </div>`;
-  return shell({ slug: page.slug, title: `${page.title} | 5050cloud docs`, description: page.description, main, bodyClass: 'docs-page', sheetExtra: `<nav class="sheet-docs" aria-label="Docs">${side}</nav>` });
+  return shell({ slug: page.slug, title: `${page.title} | openrail docs`, description: page.description, main, bodyClass: 'docs-page', sheetExtra: `<nav class="sheet-docs" aria-label="Docs">${side}</nav>` });
 }
 
 // Both `![alt](shot:name "caption")` and `![alt](shot:name) "caption"` are accepted.
@@ -338,8 +335,8 @@ export function build(out = OUT) {
 
   const bySlug = new Map(pages.map((p) => [p.slug, p]));
   const groupHtml = sidebar.map((g) => `<section class="docs-group"><h2>${escapeHtml(g.label)}</h2><ul>${g.items.map((sl) => { const pg = bySlug.get(sl); return `<li><a href="${rel('docs', '/' + sl)}">${escapeHtml(pg.navTitle || pg.title)}</a><span>${inline(pg.description, (h) => rel('docs', h))}</span></li>`; }).join('')}</ul></section>`).join('');
-  const indexMain = `<main id="main" class="docs-home"><h1>Documentation</h1><p class="lead">Install 5050cloud on a VM, deploy your first service, and look up every setting, command and endpoint. Every page is also plain Markdown, listed in <a href="${rel('docs', '/llms.txt')}">llms.txt</a>.</p><p class="docs-home-start"><a class="btn primary" href="${rel('docs', '/docs/quick-start')}">Read the quick start</a> <a href="${rel('docs', '/docs/coming-from-railway')}">Coming from Railway</a> <a href="${rel('docs', '/docs/reference/honest-limits')}">Honest limits</a></p><div class="docs-groups">${groupHtml}</div></main>`;
-  write(join(out, 'docs/index.html'), shell({ slug: 'docs', title: '5050cloud docs', description: 'Documentation for 5050cloud: install, set up, deploy, and reference for the CLI and API.', main: indexMain }));
+  const indexMain = `<main id="main" class="docs-home"><h1>Documentation</h1><p class="lead">Install openrail on a VM, deploy your first service, and look up every setting, command and endpoint. Every page is also plain Markdown, listed in <a href="${rel('docs', '/llms.txt')}">llms.txt</a>.</p><p class="docs-home-start"><a class="btn primary" href="${rel('docs', '/docs/quick-start')}">Read the quick start</a> <a href="${rel('docs', '/docs/coming-from-railway')}">Coming from Railway</a> <a href="${rel('docs', '/docs/reference/honest-limits')}">Honest limits</a></p><div class="docs-groups">${groupHtml}</div></main>`;
+  write(join(out, 'docs/index.html'), shell({ slug: 'docs', title: 'openrail docs', description: 'Documentation for openrail: install, set up, deploy, and reference for the CLI and API.', main: indexMain }));
 
   const claims = JSON.parse(readFileSync(join(SITE, 'claims.json'), 'utf8'));
   const pricing = JSON.parse(readFileSync(join(SITE, 'data/pricing.json'), 'utf8'));
@@ -349,10 +346,10 @@ export function build(out = OUT) {
   const report = existsSync(reportPath) ? JSON.parse(readFileSync(reportPath, 'utf8')) : null;
   write(join(out, 'index.html'), landing({ shell, rel, claims, pricing, bench, media: MEDIA, report, demo: findDemo() }));
   write(join(out, 'deploy/index.html'), deployPage({ shell, rel }));
-  write(join(out, '404.html'), shell({ slug: '', title: 'Page not found | 5050cloud', description: 'This page does not exist on the 5050cloud site.', main: '<main id="main" class="content narrow"><h1>Page not found</h1><p>This page does not exist. Try the <a href="/docs/quick-start/">Quick start</a> or the <a href="/">home page</a>.</p></main>' }));
+  write(join(out, '404.html'), shell({ slug: '', title: 'Page not found | openrail', description: 'This page does not exist on the openrail site.', main: '<main id="main" class="content narrow"><h1>Page not found</h1><p>This page does not exist. Try the <a href="/docs/quick-start/">Quick start</a> or the <a href="/">home page</a>.</p></main>' }));
 
   // llms.txt: an index, grouped like the sidebar. llms-full.txt: every page.
-  const lines = ['# 5050cloud', '', "> Railway's workflow on your own servers. Open source and self-hosted: one command turns any Linux VM into a canvas of services with git deploys, databases, logs and rollbacks. You pay only for the VM.", ''];
+  const lines = ['# openrail', '', "> Railway's workflow on your own servers. Open source and self-hosted: one command turns any Linux VM into a canvas of services with git deploys, databases, logs and rollbacks. You pay only for the VM.", ''];
   for (const g of sidebar) {
     lines.push(`## ${g.label}`, '');
     for (const s of g.items) {

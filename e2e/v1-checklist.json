@@ -212,7 +212,7 @@
       "id": "V1-D27",
       "source": "SPEC 2",
       "item": "Templates",
-      "ours": "12 built-in templates (10.2), `/new/template/\u003cid\u003e` deep link, `Deploy on 5050cloud` button",
+      "ours": "12 built-in templates (10.2), `/new/template/\u003cid\u003e` deep link, `Deploy on openrail` button",
       "result": "pending",
       "evidence": []
     },
@@ -476,7 +476,7 @@
       "id": "V1-X20",
       "source": "SPEC 23.1",
       "item": "P1 database panel parity",
-      "decision": "Accepted: Connect, Regenerate credentials, major upgrade by restore to a copy, extensions, Redis key browser. \"Allow writes\" query box rejected: the build critique's cut wins (smaller V4 attack surface); `5050 connect` covers writes and 14.3 says so",
+      "decision": "Accepted: Connect, Regenerate credentials, major upgrade by restore to a copy, extensions, Redis key browser. \"Allow writes\" query box rejected: the build critique's cut wins (smaller V4 attack surface); `openrail connect` covers writes and 14.3 says so",
       "result": "pending",
       "evidence": []
     },

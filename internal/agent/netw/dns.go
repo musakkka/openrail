@@ -17,7 +17,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // DNS answer settings (docs/SPEC.md 8.4).

@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/musakkka/5050cloud/internal/agent/core/statecache"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/agent/core/statecache"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Default paths (docs/SPEC.md 6.4).

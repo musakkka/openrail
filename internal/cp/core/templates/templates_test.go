@@ -5,7 +5,7 @@ package templates
 import (
 	"testing"
 
-	builtin "github.com/musakkka/5050cloud/templates"
+	builtin "github.com/musakkka/openrail/templates"
 )
 
 func TestLoadBuiltins(t *testing.T) {

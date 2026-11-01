@@ -106,7 +106,7 @@ export function installHostMocks(): Promise<unknown> {
         const token = `jt_${Math.random().toString(36).slice(2, 12)}`;
         const roles = (body.roles?.length ? body.roles : ["app"]).join(",");
         return HttpResponse.json({
-          command: `curl -fsSL https://5050cloud.com/install.sh | sudo sh -s -- --join https://console.example.test --token ${token} --roles ${roles}`,
+          command: `curl -fsSL https://openrail.app/install.sh | sudo sh -s -- --join https://console.example.test --token ${token} --roles ${roles}`,
           token,
           expiresAt: Date.now() + 15 * MIN,
         } satisfies T.JoinToken);

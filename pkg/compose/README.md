@@ -1,6 +1,6 @@
 # pkg/compose (MIT)
 
-Maps a `docker-compose.yml` to 5050cloud services (docs/SPEC.md 9.22): images
+Maps a `docker-compose.yml` to openrail services (docs/SPEC.md 9.22): images
 or builds, commands, environment and env files, ports (first one is the target
 port; published ports suggest a domain or a TCP proxy), named volumes,
 `depends_on` order, `deploy.replicas`, health checks and restart policies.

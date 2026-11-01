@@ -1,14 +1,14 @@
 #!/bin/sh
 # SPDX-License-Identifier: MIT
 #
-# Installs the 5050 command line tool only (no server, no root needed).
+# Installs the openrail command line tool only (no server, no root needed).
 #
-#   curl -fsSL https://5050cloud.com/install-cli.sh | sh
-#   curl -fsSL https://5050cloud.com/install-cli.sh | sh -s -- --version v0.1.0 --dir ~/bin
+#   curl -fsSL https://openrail.app/install-cli.sh | sh
+#   curl -fsSL https://openrail.app/install-cli.sh | sh -s -- --version v0.1.0 --dir ~/bin
 #
-# It downloads 5050-cli_<version>_<os>_<arch>.tar.gz from a GitHub release,
+# It downloads openrail-cli_<version>_<os>_<arch>.tar.gz from a GitHub release,
 # checks the minisign signature of checksums.txt and the SHA-256 of the
-# archive, and puts the 5050 binary in /usr/local/bin when that is writable,
+# archive, and puts the openrail binary in /usr/local/bin when that is writable,
 # else in ~/.local/bin. Every flag is also an environment variable
 # FIFTY_<FLAG> (for example FIFTY_VERSION or FIFTY_DIR). Run with --help.
 
@@ -18,7 +18,7 @@ set -eu
 # and internal/upgrade/release-keys.txt. e2e/scripts/release-key.sh writes it.
 RELEASE_PUBKEYS="RWS5v2vaQNNARGmod7/0v3a8ZYZGhT95PWYNvc+dXNxe3/gWarQEiKiR"
 
-DEFAULT_REPO="musakkka/5050cloud"
+DEFAULT_REPO="musakkka/openrail"
 
 # ------------------------------------------------------------------ output
 # Colour and animation only on a terminal. NO_COLOR, TERM=dumb or --no-color
@@ -131,13 +131,13 @@ die() {
 	step_end fail
 	spin_stop
 	printf '  %s%s error:%s %s\n' "$RED" "$BAD_MARK" "$R" "$*" >&2
-	printf '  %sIt is safe to run the installer again once this is fixed. Flags: --help. Docs: https://5050cloud.com/docs%s\n' "$DIM" "$R" >&2
+	printf '  %sIt is safe to run the installer again once this is fixed. Flags: --help. Docs: https://openrail.app/docs%s\n' "$DIM" "$R" >&2
 	exit 1
 }
 
 banner() {
 	if [ -z "$UI_COLOR" ]; then
-		printf '5050cloud installer\n'
+		printf 'openrail installer\n'
 		return 0
 	fi
 	if [ -n "$UI_UTF" ]; then
@@ -152,7 +152,7 @@ banner() {
 			[ -z "$UI_ANIM" ] || sleep 0.06
 		done
 	else
-		printf '\n  %s5050cloud%s\n' "$B" "$R"
+		printf '\n  %sopenrail%s\n' "$B" "$R"
 	fi
 	printf '  %sopen-source cloud on your own servers%s\n\n' "$DIM" "$R"
 }
@@ -189,18 +189,18 @@ trap 'exit 143' TERM
 
 usage() {
 	cat <<'EOF'
-Install the 5050 command line tool.
+Install the openrail command line tool.
 
-  curl -fsSL https://5050cloud.com/install-cli.sh | sh [-s -- FLAGS]
+  curl -fsSL https://openrail.app/install-cli.sh | sh [-s -- FLAGS]
 
 Flags (each also an environment variable FIFTY_<FLAG>, for example FIFTY_VERSION):
   --version vX.Y.Z         release to install (default: latest)
   --dir PATH               where to put the binary (default /usr/local/bin when
                            writable, else ~/.local/bin)
-  --repo OWNER/NAME        GitHub repository to download from (default musakkka/5050cloud)
+  --repo OWNER/NAME        GitHub repository to download from (default musakkka/openrail)
   --release-base URL       download from URL/<version>/ instead of GitHub
   --release-pubkey KEY     minisign public key to check the release with
-  --archive PATH           install from a local 5050-cli tarball (checksums.txt and
+  --archive PATH           install from a local openrail-cli tarball (checksums.txt and
                            checksums.txt.minisig must sit next to it)
   --insecure-skip-verify   skip the signature check; the SHA-256 from checksums.txt
                            is still checked (test builds only)
@@ -358,14 +358,14 @@ get_archive() {
 		[ -f "$dir/checksums.txt" ] || die "checksums.txt must sit next to $ARCHIVE."
 		cp "$dir/checksums.txt" "$TMP/"
 		if [ -f "$dir/checksums.txt.minisig" ]; then cp "$dir/checksums.txt.minisig" "$TMP/"; fi
-		[ -n "$VERSION" ] || VERSION=v$(printf '%s' "$name" | sed -n 's/^5050-cli_\([0-9][^_]*\)_.*/\1/p')
+		[ -n "$VERSION" ] || VERSION=v$(printf '%s' "$name" | sed -n 's/^openrail-cli_\([0-9][^_]*\)_.*/\1/p')
 	else
 		[ -n "$VERSION" ] || VERSION=$(latest_version)
 		case "$VERSION" in v*) ;; *) VERSION=v$VERSION ;; esac
 		base=${RELEASE_BASE:-$REPO_RELEASES/download}
 		base=${base%/}/$VERSION
-		name="5050-cli_${VERSION#v}_${os}_${arch}.tar.gz"
-		sub "Downloading the 5050 CLI $VERSION for $os/$arch"
+		name="openrail-cli_${VERSION#v}_${os}_${arch}.tar.gz"
+		sub "Downloading the openrail CLI $VERSION for $os/$arch"
 		fetch "$base/checksums.txt" "$TMP/checksums.txt" || die "cannot download $base/checksums.txt. Does release $VERSION exist?"
 		if [ -z "$INSECURE" ]; then
 			fetch "$base/checksums.txt.minisig" "$TMP/checksums.txt.minisig" || die "cannot download the release signature."
@@ -390,12 +390,12 @@ get_archive() {
 
 banner
 STEP_TOTAL=2
-step "Downloading and verifying the 5050 CLI"
+step "Downloading and verifying the openrail CLI"
 get_archive
-step "Installing the 5050 CLI"
+step "Installing the openrail CLI"
 mkdir -p "$TMP/cli"
 tar -xzf "$FILE" -C "$TMP/cli"
-[ -f "$TMP/cli/5050" ] || die "the archive has no 5050 binary."
+[ -f "$TMP/cli/openrail" ] || die "the archive has no openrail binary."
 
 if [ -z "$DIR" ]; then
 	if [ -w /usr/local/bin ]; then
@@ -406,25 +406,25 @@ if [ -z "$DIR" ]; then
 fi
 mkdir -p "$DIR" || die "cannot create $DIR."
 [ -w "$DIR" ] || die "$DIR is not writable. Pass --dir, or run with sudo."
-cp "$TMP/cli/5050" "$DIR/5050.new" && chmod 0755 "$DIR/5050.new" && mv "$DIR/5050.new" "$DIR/5050"
+cp "$TMP/cli/openrail" "$DIR/openrail.new" && chmod 0755 "$DIR/openrail.new" && mv "$DIR/openrail.new" "$DIR/openrail" && ln -sf openrail "$DIR/5050"
 
 if [ -n "$RAILWAY_ALIAS" ]; then
 	if [ -e "$DIR/railway" ] && [ ! -L "$DIR/railway" ]; then
 		warn "$DIR/railway exists and is not our alias; leaving it alone."
 	else
-		ln -sf 5050 "$DIR/railway"
+		ln -sf openrail "$DIR/railway"
 		note "Installed the railway alias at $DIR/railway."
 	fi
 fi
 
 step_end ok
 if [ -n "$QUIET" ]; then
-	printf '%s\n' "$DIR/5050"
+	printf '%s\n' "$DIR/openrail"
 else
 	say ""
-	box "Installed the 5050 CLI $VERSION" "Path=$DIR/5050" "Took=$(fmt_time $(($(date +%s) - START_T)))" "Next=5050 login https://<your console>"
+	box "Installed the openrail CLI $VERSION" "Path=$DIR/openrail" "Took=$(fmt_time $(($(date +%s) - START_T)))" "Next=openrail login https://<your console>"
 	case ":$PATH:" in
 	*":$DIR:"*) ;;
-	*) warn "$DIR is not on your PATH yet. Add it to run 5050 from anywhere, for example: export PATH=\"$DIR:\$PATH\"" ;;
+	*) warn "$DIR is not on your PATH yet. Add it to run openrail from anywhere, for example: export PATH=\"$DIR:\$PATH\"" ;;
 	esac
 fi

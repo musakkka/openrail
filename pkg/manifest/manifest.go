@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-// Package manifest defines the file formats 5050cloud reads and writes:
+// Package manifest defines the file formats openrail reads and writes:
 //
 //   - templates/<id>/template.yaml (Template), docs/SPEC.md section 10;
-//   - 5050.yaml / 5050.json, the project file written by `5050 config pull`
+//   - 5050.yaml / 5050.json, the project file written by `openrail config pull`
 //     (ProjectFile), docs/SPEC.md section 12;
 //   - railway.json / railway.toml and the config-as-code part of 5050.yaml
 //     (RailwayConfig), docs/SPEC.md 9.20.
@@ -23,7 +23,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // Template is templates/<id>/template.yaml.
@@ -68,7 +68,7 @@ type TemplateService struct {
 	Tools  []string       `json:"tools,omitempty"`
 	Backup *BackupRecipe  `json:"backup,omitempty"`
 	Probe  *TemplateProbe `json:"probe,omitempty"`
-	// Data enables the Data tab, Connect and `5050 connect`:
+	// Data enables the Data tab, Connect and `openrail connect`:
 	// "postgres" | "mysql" | "redis" | "mongodb".
 	Data string `json:"data,omitempty"`
 	// Monitors are created with the service (default disk monitor at 80%).
@@ -129,7 +129,7 @@ type BackupRecipe struct {
 	Load []string `json:"load,omitempty"`
 }
 
-// ProjectFile is 5050.yaml as written by `5050 config pull` (and by
+// ProjectFile is 5050.yaml as written by `openrail config pull` (and by
 // GET /environments/{eid}/export). Secret values are written as "@preserve".
 type ProjectFile struct {
 	Project      string                     `json:"project"`

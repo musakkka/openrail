@@ -16,13 +16,13 @@ import (
 
 	"golang.org/x/net/publicsuffix"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/changes"
-	"github.com/musakkka/5050cloud/internal/cp/core/config"
-	"github.com/musakkka/5050cloud/internal/cp/core/fail"
-	"github.com/musakkka/5050cloud/internal/cp/core/ids"
-	"github.com/musakkka/5050cloud/internal/cp/core/store"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/cfranges"
+	"github.com/musakkka/openrail/internal/cp/core/changes"
+	"github.com/musakkka/openrail/internal/cp/core/config"
+	"github.com/musakkka/openrail/internal/cp/core/fail"
+	"github.com/musakkka/openrail/internal/cp/core/ids"
+	"github.com/musakkka/openrail/internal/cp/core/store"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/cfranges"
 )
 
 // ---------------------------------------------------------------- domains
@@ -526,7 +526,7 @@ func (c *Core) envProxies(ctx context.Context, q store.Querier, envID, base stri
 // CreateTCPProxy picks a free host port in 20000-29999.
 func (c *Core) CreateTCPProxy(ctx context.Context, a Actor, envID, sid string, req api.CreateTCPProxyRequest) (api.TCPProxy, error) {
 	if c.file.Private {
-		return api.TCPProxy{}, fail.Validation("targetPort", "TCP proxies cannot work on a private host, because it has no open ports. Use `5050 connect` to reach a service from your machine.")
+		return api.TCPProxy{}, fail.Validation("targetPort", "TCP proxies cannot work on a private host, because it has no open ports. Use `openrail connect` to reach a service from your machine.")
 	}
 	if req.TargetPort < 1 || req.TargetPort > 65535 {
 		return api.TCPProxy{}, fail.Validation("targetPort", "The target port must be between 1 and 65535.")

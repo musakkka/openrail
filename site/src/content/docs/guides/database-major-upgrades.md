@@ -13,7 +13,7 @@ A new major version cannot read the old data directory. Changing the major versi
 
 1. Open the database panel menu and select **Upgrade to a new major version**.
 2. Pick the version (for Postgres, 17 or 18).
-3. 5050cloud dumps the source (`pg_dumpall` for Postgres, `mongodump` for MongoDB) and restores into a new copy on the chosen version. The source keeps running.
+3. openrail dumps the source (`pg_dumpall` for Postgres, `mongodump` for MongoDB) and restores into a new copy on the chosen version. The source keeps running.
 4. Check the copy, then select **Promote**. It takes the original's name, dependents redeploy, and the original stops as `<name>-old-<stamp>`.
 
 Stop writes during the dump if you cannot lose any.

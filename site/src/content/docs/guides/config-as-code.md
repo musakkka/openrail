@@ -1,13 +1,13 @@
 ---
 title: Config as code
-description: Keep a service's build and deploy settings in your repo with `railway.json`, `railway.toml`, `5050.yaml` or `5050.json`.
+description: Keep a service's build and deploy settings in your repo with `railway.json`, `railway.toml`, `openrail.yaml` or `openrail.json`.
 ---
 
-Keep a service's build and deploy settings in your repo with `railway.json`, `railway.toml`, `5050.yaml` or `5050.json`.
+Keep a service's build and deploy settings in your repo with `railway.json`, `railway.toml`, `openrail.yaml` or `openrail.json`.
 
 ## Which file is read
 
-At build time 5050cloud looks in the service's root directory (or the **Config file path** in **Settings > Source**) for the first of `5050.yaml`, `5050.json`, `railway.json`, `railway.toml`.
+At build time openrail looks in the service's root directory (or the **Config file path** in **Settings > Source**) for the first of `openrail.yaml`, `openrail.json`, `railway.json`, `railway.toml`.
 
 ## Example
 
@@ -39,10 +39,10 @@ A field set by the file shows a file icon in the console and cannot be edited th
 
 ## Supported fields
 
-`build.builder`, `build.buildCommand`, `build.dockerfilePath`, `build.watchPatterns`, `build.railpackVersion`, `deploy.startCommand`, `deploy.preDeployCommand`, `deploy.healthcheckPath`, `deploy.healthcheckTimeout`, `deploy.restartPolicyType`, `deploy.restartPolicyMaxRetries`, `deploy.cronSchedule`, `deploy.numReplicas`, `deploy.overlapSeconds`, `deploy.drainingSeconds`, `deploy.multiRegionConfig` (replica count only), and the same inside `environments.<name>`. `5050.yaml` and `5050.json` also accept `deploy.processes`, `deploy.placement` and `deploy.singleton`.
+`build.builder`, `build.buildCommand`, `build.dockerfilePath`, `build.watchPatterns`, `build.railpackVersion`, `deploy.startCommand`, `deploy.preDeployCommand`, `deploy.healthcheckPath`, `deploy.healthcheckTimeout`, `deploy.restartPolicyType`, `deploy.restartPolicyMaxRetries`, `deploy.cronSchedule`, `deploy.numReplicas`, `deploy.overlapSeconds`, `deploy.drainingSeconds`, `deploy.multiRegionConfig` (replica count only), and the same inside `environments.<name>`. `openrail.yaml` and `openrail.json` also accept `deploy.processes`, `deploy.placement` and `deploy.singleton`.
 
 - An unknown field fails the build with the line and a suggestion, for example "railway.json line 7: unknown field buildComand. Did you mean buildCommand?"
-- A known field 5050cloud does not support, such as `deploy.sleepApplication`, is ignored with one notice line in the build log.
+- A known field openrail does not support, such as `deploy.sleepApplication`, is ignored with one notice line in the build log.
 
 ## Nixpacks
 
@@ -50,7 +50,7 @@ A field set by the file shows a file icon in the console and cannot be edited th
 
 ## Export your settings
 
-`5050 config pull` writes an environment's services and settings to `5050.yaml`.
+`openrail config pull` writes an environment's services and settings to `openrail.yaml`.
 
 ## Next steps
 

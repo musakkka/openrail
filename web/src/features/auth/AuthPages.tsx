@@ -171,7 +171,7 @@ function LoginFlow({ gate = false }: { gate?: boolean }) {
   }
 
   return (
-    <AuthCard titleId="login-title" title="Welcome to 5050cloud" subtitle="Deploy and run your services on hardware you control." streaks>
+    <AuthCard titleId="login-title" title="Welcome to openrail" subtitle="Deploy and run your services on hardware you control." streaks>
       <form
         onSubmit={(e) => { e.preventDefault(); if (emailOk) setStep("password"); }}
         className="space-y-3"

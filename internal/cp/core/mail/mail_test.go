@@ -108,14 +108,14 @@ func (s *smtpServer) handle(c net.Conn) {
 
 func TestSendNone(t *testing.T) {
 	srv := newServer(t, false)
-	s := SMTP{Host: "127.0.0.1", Port: srv.port(), TLSMode: "none", Username: "u", Password: "p", From: "5050cloud <noreply@example.com>"}
+	s := SMTP{Host: "127.0.0.1", Port: srv.port(), TLSMode: "none", Username: "u", Password: "p", From: "openrail <noreply@example.com>"}
 	err := s.Send(context.Background(), Message{To: []string{"ada@example.com"}, Subject: "Hi\nthere", Text: "line1\nline2"})
 	if err != nil {
 		t.Fatal(err)
 	}
 	srv.mu.Lock()
 	defer srv.mu.Unlock()
-	if !strings.Contains(srv.data, "Subject: Hi there") || !strings.Contains(srv.data, "line1\r\nline2") || !strings.Contains(srv.data, "From: 5050cloud <noreply@example.com>") {
+	if !strings.Contains(srv.data, "Subject: Hi there") || !strings.Contains(srv.data, "line1\r\nline2") || !strings.Contains(srv.data, "From: openrail <noreply@example.com>") {
 		t.Fatalf("data = %q", srv.data)
 	}
 	if !strings.HasPrefix(srv.auth, "AUTH PLAIN") || len(srv.rcpts) != 1 {
@@ -185,7 +185,7 @@ func TestFakeAndMessages(t *testing.T) {
 	if s, _ := Notice("i", "short", ""); s != "[i] short" {
 		t.Fatal(s)
 	}
-	if b := Render("bad", Message{To: []string{"x@example.com"}, Text: "t\n"}); !strings.Contains(string(b), "@5050cloud>") {
+	if b := Render("bad", Message{To: []string{"x@example.com"}, Text: "t\n"}); !strings.Contains(string(b), "@openrail>") {
 		t.Fatal("Message-ID host fallback")
 	}
 }

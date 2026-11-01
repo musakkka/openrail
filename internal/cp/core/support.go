@@ -13,15 +13,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/auth"
-	"github.com/musakkka/5050cloud/internal/cp/core/fail"
-	"github.com/musakkka/5050cloud/internal/cp/core/github"
-	"github.com/musakkka/5050cloud/internal/cp/core/ids"
-	"github.com/musakkka/5050cloud/internal/cp/core/mail"
-	"github.com/musakkka/5050cloud/internal/cp/core/store"
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/version"
+	"github.com/musakkka/openrail/internal/cp/core/auth"
+	"github.com/musakkka/openrail/internal/cp/core/fail"
+	"github.com/musakkka/openrail/internal/cp/core/github"
+	"github.com/musakkka/openrail/internal/cp/core/ids"
+	"github.com/musakkka/openrail/internal/cp/core/mail"
+	"github.com/musakkka/openrail/internal/cp/core/store"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/version"
 )
 
 func versionString() string { return version.Version }
@@ -683,7 +683,7 @@ func (c *Core) updateCheck(ctx context.Context) {
 	}
 	url := c.file.LatestURL
 	if url == "" {
-		url = "https://get.5050cloud.com/latest"
+		url = "https://openrail.app/latest"
 	}
 	check := func() {
 		req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)

@@ -29,7 +29,7 @@ const DESCRIPTIONS: [RegExp, string][] = [
 ];
 const describe = (n: string) => DESCRIPTIONS.find(([re]) => re.test(n))?.[1] ?? "Set by the platform for your service";
 
-/** Footer row "N variables added by 5050cloud", collapsed by default. */
+/** Footer row "N variables added by openrail", collapsed by default. */
 export function ProvidedGroup({ names, docsHref }: { names: string[]; docsHref: string }) {
   const [open, setOpen] = useState(false);
   if (!names.length) return null;
@@ -38,7 +38,7 @@ export function ProvidedGroup({ names, docsHref }: { names: string[]; docsHref: 
       <button type="button" aria-expanded={open} onClick={() => setOpen((o) => !o)}
         className="flex w-full items-center gap-2 px-4 py-1 text-left text-sm text-fg-2 transition-colors hover:text-foreground">
         {open ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-        {names.length} variable{names.length === 1 ? "" : "s"} added by 5050cloud
+        {names.length} variable{names.length === 1 ? "" : "s"} added by openrail
       </button>
       {open && (
         <div className="animate-collapsible-down overflow-hidden">

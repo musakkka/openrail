@@ -6,8 +6,8 @@ A tiny Node HTTP app. It answers JSON on `/` and `ok` on `/health`, listens on
 Deploy it with the CLI from this directory:
 
 ```
-5050 init -n hello
-5050 up
+openrail init -n hello
+openrail up
 ```
 
 The end-to-end suite deploys it from a public test repository pinned to a fixed

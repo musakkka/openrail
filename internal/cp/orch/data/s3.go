@@ -19,7 +19,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // s3Client is a small S3 client (Signature Version 4) for the bucket test.
@@ -183,7 +183,7 @@ func testBucket(ctx context.Context, b api.BackupSettings, hc *http.Client) api.
 	var nonce [8]byte
 	_, _ = rand.Read(nonce[:])
 	key := strings.TrimLeft(strings.Trim(b.Prefix, "/")+"/_5050/test-"+hex.EncodeToString(nonce[:]), "/")
-	body := []byte("5050cloud bucket test " + hex.EncodeToString(nonce[:]) + "\n")
+	body := []byte("openrail bucket test " + hex.EncodeToString(nonce[:]) + "\n")
 
 	if _, err := w.do(ctx, http.MethodPut, key, body); err != nil {
 		return api.TestResult{Error: fmt.Sprintf("The write key could not put a test object into %s: %v.", b.Bucket, strings.TrimSuffix(err.Error(), "."))}

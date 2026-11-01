@@ -14,8 +14,8 @@ import (
 
 	"sigs.k8s.io/yaml"
 
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/manifest"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/manifest"
 )
 
 // Catalog is the parsed set of templates.

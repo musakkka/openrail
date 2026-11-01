@@ -1,11 +1,11 @@
 #!/bin/sh
 # SPDX-License-Identifier: MIT
 #
-# 5050cloud installer (docs/SPEC.md section 4).
+# openrail installer (docs/SPEC.md section 4).
 #
-#   curl -fsSL https://5050cloud.com/install.sh | sudo sh
-#   wget -qO- https://5050cloud.com/install.sh | sudo sh
-#   curl -fsSL https://5050cloud.com/install.sh | sh -s -- --cli
+#   curl -fsSL https://openrail.app/install.sh | sudo sh
+#   wget -qO- https://openrail.app/install.sh | sudo sh
+#   curl -fsSL https://openrail.app/install.sh | sh -s -- --cli
 #
 # Piped, it asks nothing. Run from a terminal (sh install.sh) it walks you
 # through the choices. Every choice is also a flag and an environment
@@ -19,7 +19,7 @@ set -eu
 # holds the same keys; e2e/scripts/release-key.sh writes both.
 RELEASE_PUBKEYS="RWS5v2vaQNNARGmod7/0v3a8ZYZGhT95PWYNvc+dXNxe3/gWarQEiKiR"
 
-REPO_RELEASES="https://github.com/musakkka/5050cloud/releases"
+REPO_RELEASES="https://github.com/musakkka/openrail/releases"
 INSTALL_DIR=/opt/5050
 ETC_DIR=/etc/5050
 DATA_DIR=/var/lib/5050
@@ -142,13 +142,13 @@ die() {
 	step_end fail
 	spin_stop
 	printf '  %s%s error:%s %s\n' "$RED" "$BAD_MARK" "$R" "$*" >&2
-	printf '  %sIt is safe to run the installer again once this is fixed. Flags: --help. Docs: https://5050cloud.com/docs%s\n' "$DIM" "$R" >&2
+	printf '  %sIt is safe to run the installer again once this is fixed. Flags: --help. Docs: https://openrail.app/docs%s\n' "$DIM" "$R" >&2
 	exit 1
 }
 
 banner() {
 	if [ -z "$UI_COLOR" ]; then
-		printf '5050cloud installer\n'
+		printf 'openrail installer\n'
 		return 0
 	fi
 	if [ -n "$UI_UTF" ]; then
@@ -163,7 +163,7 @@ banner() {
 			[ -z "$UI_ANIM" ] || sleep 0.06
 		done
 	else
-		printf '\n  %s5050cloud%s\n' "$B" "$R"
+		printf '\n  %sopenrail%s\n' "$B" "$R"
 	fi
 	printf '  %sopen-source cloud on your own servers%s\n\n' "$DIM" "$R"
 }
@@ -201,9 +201,9 @@ trap 'exit 143' TERM
 
 usage() {
 	cat <<'EOF'
-Install 5050cloud on this server, join it to an install, or install the CLI.
+Install openrail on this server, join it to an install, or install the CLI.
 
-  curl -fsSL https://5050cloud.com/install.sh | sudo sh [-s -- FLAGS]
+  curl -fsSL https://openrail.app/install.sh | sudo sh [-s -- FLAGS]
 
 Flags (each also an environment variable FIFTY_<FLAG>, for example FIFTY_DOMAIN):
   --version vX.Y.Z           release to install (default: latest)
@@ -236,8 +236,8 @@ Flags (each also an environment variable FIFTY_<FLAG>, for example FIFTY_DOMAIN)
   --restore s3://bucket/prefix --recovery-key K   rebuild a control host from a bucket
                              (prefer FIFTY_RECOVERY_KEY, which stays out of your shell history)
       --s3-endpoint URL --s3-region R --s3-access-key K --s3-secret-key S
-  --cli                      install only the 5050 command line tool
-  --uninstall [--purge] [--yes]   remove 5050cloud (--purge also deletes data)
+  --cli                      install only the openrail command line tool
+  --uninstall [--purge] [--yes]   remove openrail (--purge also deletes data)
   --force                    continue on an operating system that is not supported
   --yes                      answer yes to every question
   --dry-run                  walk through the installer without changing anything
@@ -585,7 +585,7 @@ get_release() {
 		base=${RELEASE_BASE:-$REPO_RELEASES/download}
 		base=${base%/}/$VERSION
 		name=$(printf '%s' "$name_tpl" | sed "s/@V@/${VERSION#v}/")
-		sub "Downloading 5050cloud $VERSION"
+		sub "Downloading openrail $VERSION"
 		fetch "$base/checksums.txt" "$TMP/checksums.txt" || die "cannot download $base/checksums.txt. Does release $VERSION exist?"
 		fetch "$base/checksums.txt.minisig" "$TMP/checksums.txt.minisig" || die "cannot download the release signature."
 		fetch "$base/$name" "$TMP/$name" || die "cannot download $base/$name."
@@ -605,7 +605,7 @@ detect_arch() {
 	case "$(uname -m)" in
 	x86_64 | amd64) echo amd64 ;;
 	aarch64 | arm64) echo arm64 ;;
-	*) die "this processor ($(uname -m)) is not supported; 5050cloud runs on amd64 and arm64." ;;
+	*) die "this processor ($(uname -m)) is not supported; openrail runs on amd64 and arm64." ;;
 	esac
 }
 
@@ -613,9 +613,9 @@ install_cli() {
 	os=$(uname -s | tr '[:upper:]' '[:lower:]')
 	case "$os" in linux | darwin) ;; *) die "the CLI installer supports Linux and macOS." ;; esac
 	arch=$(detect_arch)
-	step "Downloading and verifying the 5050 CLI"
-	get_release "5050-cli_@V@_${os}_${arch}.tar.gz"
-	step "Installing the 5050 CLI"
+	step "Downloading and verifying the openrail CLI"
+	get_release "openrail-cli_@V@_${os}_${arch}.tar.gz"
+	step "Installing the openrail CLI"
 	mkdir -p "$TMP/cli"
 	tar -xzf "$RELEASE_FILE" -C "$TMP/cli"
 	if [ "$(id -u)" = 0 ] || [ -w /usr/local/bin ]; then
@@ -624,11 +624,11 @@ install_cli() {
 		dest=$HOME/.local/bin
 		mkdir -p "$dest"
 	fi
-	cp "$TMP/cli/5050" "$dest/5050.new" && chmod 0755 "$dest/5050.new" && mv "$dest/5050.new" "$dest/5050"
+	cp "$TMP/cli/openrail" "$dest/openrail.new" && chmod 0755 "$dest/openrail.new" && mv "$dest/openrail.new" "$dest/openrail" && ln -sf openrail "$dest/5050"
 	step_end ok
 	say ""
-	box "Installed the 5050 CLI $VERSION" "Path=$dest/5050" "Took=$(fmt_time $(($(date +%s) - START_T)))" "Next=5050 login https://<your console>"
-	case ":$PATH:" in *":$dest:"*) ;; *) warn "$dest is not on your PATH yet. Add it to run 5050 from anywhere." ;; esac
+	box "Installed the openrail CLI $VERSION" "Path=$dest/openrail" "Took=$(fmt_time $(($(date +%s) - START_T)))" "Next=openrail login https://<your console>"
+	case ":$PATH:" in *":$dest:"*) ;; *) warn "$dest is not on your PATH yet. Add it to run openrail from anywhere." ;; esac
 }
 
 # ------------------------------------------------------------------ uninstall
@@ -656,7 +656,7 @@ uninstall() {
 		confirm "Delete $DATA_DIR, every app container and volume? This cannot be undone." ||
 			die "not purging. Pass --yes to confirm without a question."
 	fi
-	step "Stopping 5050cloud"
+	step "Stopping openrail"
 	for u in 5050d 5050-agent 5050-net-restore; do
 		systemctl disable --now "$u.service" >/dev/null 2>&1 || true
 		rm -f "$UNIT_DIR/$u.service"
@@ -667,7 +667,7 @@ uninstall() {
 	if have docker; then
 		docker ps -aq --filter label=5050.infra 2>/dev/null | xargs -r docker rm -f >/dev/null 2>&1 || true
 	fi
-	rm -f /usr/local/bin/5050d /usr/local/bin/5050-agent /usr/local/bin/5050
+	rm -f /usr/local/bin/5050d /usr/local/bin/5050-agent /usr/local/bin/5050 /usr/local/bin/openrail
 	rm -rf "$INSTALL_DIR"
 	if [ -n "$PURGE" ]; then
 		step "Deleting data"
@@ -681,18 +681,18 @@ uninstall() {
 		rm -rf "$DATA_DIR" "$ETC_DIR" /etc/sysctl.d/90-5050.conf
 		step_end ok
 		say ""
-		box "5050cloud was removed" "Data=deleted" "Took=$(fmt_time $(($(date +%s) - START_T)))"
+		box "openrail was removed" "Data=deleted" "Took=$(fmt_time $(($(date +%s) - START_T)))"
 	else
 		step_end ok
 		say ""
-		box "5050cloud was removed" "Kept=app containers, $DATA_DIR, $ETC_DIR" "Delete=run again with --purge" "Took=$(fmt_time $(($(date +%s) - START_T)))"
+		box "openrail was removed" "Kept=app containers, $DATA_DIR, $ETC_DIR" "Delete=run again with --purge" "Took=$(fmt_time $(($(date +%s) - START_T)))"
 	fi
 }
 
 # ------------------------------------------------------------------ preflight
 
 preflight() {
-	[ "$(id -u)" = 0 ] || die "run the installer as root: curl -fsSL https://5050cloud.com/install.sh | sudo sh"
+	[ "$(id -u)" = 0 ] || die "run the installer as root: curl -fsSL https://openrail.app/install.sh | sudo sh"
 	[ "$(uname -s)" = Linux ] || die "the server installer runs on Linux. For the CLI use --cli."
 	ARCH=$(detect_arch)
 	[ -d /run/systemd/system ] || die "systemd is required."
@@ -710,7 +710,7 @@ preflight() {
 	ubuntu:22.04 | debian:12) warn "$PRETTY_NAME is not tested in this release; continuing." ;;
 	*)
 		if [ -n "$FORCE" ]; then warn "${PRETTY_NAME:-this OS} is not supported; continuing because of --force."
-		else die "${PRETTY_NAME:-this OS} is not supported. 5050cloud v0.1 runs on Ubuntu 24.04 (pass --force to try anyway)."; fi
+		else die "${PRETTY_NAME:-this OS} is not supported. openrail v0.1 runs on Ubuntu 24.04 (pass --force to try anyway)."; fi
 		;;
 	esac
 	have apt-get || die "apt-get is required."
@@ -751,7 +751,7 @@ preflight() {
 
 	# IPv4.
 	if ! ip -4 route show default 2>/dev/null | grep -q default; then
-		die "5050cloud v0.1 needs a public IPv4 address."
+		die "openrail v0.1 needs a public IPv4 address."
 	fi
 
 	# Host firewalls.
@@ -834,7 +834,7 @@ setup_data_disk() {
 		fi
 	fi
 	if [ -n "$(docker ps -aq 2>/dev/null || true)" ]; then
-		warn "Docker already has containers, so its data stays where it is. Only 5050cloud state moves to $disk."
+		warn "Docker already has containers, so its data stays where it is. Only openrail state moves to $disk."
 		KEEP_DOCKER_ROOT=1
 	fi
 	sub "Formatting $disk as the data disk"
@@ -893,7 +893,7 @@ configure_system() {
 	conntrack=$((MEM_MB * 32768 / 1024))
 	[ "$conntrack" -ge 131072 ] || conntrack=131072
 	cat >/etc/sysctl.d/90-5050.conf <<EOF
-# Written by the 5050cloud installer.
+# Written by the openrail installer.
 vm.overcommit_memory = 1
 vm.swappiness = 10
 net.core.somaxconn = 4096
@@ -966,7 +966,7 @@ firewall_unit() {
 	systemctl disable 5050-firewall.service >/dev/null 2>&1 || true
 	cat >"$UNIT_DIR/5050-firewall.service" <<'EOF'
 [Unit]
-Description=5050cloud host firewall
+Description=openrail host firewall
 DefaultDependencies=no
 Before=network-pre.target shutdown.target
 Wants=network-pre.target
@@ -989,7 +989,7 @@ EOF
 docker_needs_firewall() {
 	mkdir -p "$UNIT_DIR/docker.service.d"
 	cat >"$UNIT_DIR/docker.service.d/10-5050-firewall.conf" <<'EOF'
-# Written by the 5050cloud installer.
+# Written by the openrail installer.
 [Service]
 ExecStartPre=/bin/sh -c 'nft list table inet fifty_filter >/dev/null 2>&1 || nft -f /etc/nftables-5050.conf'
 EOF
@@ -1036,7 +1036,7 @@ harden_ssh() {
 	if [ -n "$admin" ]; then root=no; else root=prohibit-password; fi
 	f=/etc/ssh/sshd_config.d/10-5050-hardening.conf
 	cat >"$f" <<EOF
-# Written by the 5050cloud installer. Delete this file and reload ssh to undo it.
+# Written by the openrail installer. Delete this file and reload ssh to undo it.
 PasswordAuthentication no
 KbdInteractiveAuthentication no
 PermitRootLogin $root
@@ -1091,7 +1091,7 @@ install_binaries() {
 		rm -rf "$rel.tmp"
 		mkdir -p "$rel.tmp"
 		tar -xzf "$RELEASE_FILE" -C "$rel.tmp"
-		for b in 5050d 5050-agent 5050; do
+		for b in 5050d 5050-agent openrail; do
 			[ -x "$rel.tmp/$b" ] || die "the release has no $b binary."
 		done
 		echo "$sum" >"$rel.tmp/.sha256"
@@ -1105,6 +1105,7 @@ install_binaries() {
 	ln -sfn "$INSTALL_DIR/current/5050d" /usr/local/bin/5050d
 	ln -sfn "$INSTALL_DIR/agent/5050-agent" /usr/local/bin/5050-agent
 	ln -sfn "$INSTALL_DIR/current/5050" /usr/local/bin/5050
+	ln -sfn "$INSTALL_DIR/current/openrail" /usr/local/bin/openrail
 
 	mkdir -p "$ETC_DIR"
 	chown root:root "$ETC_DIR"
@@ -1300,7 +1301,7 @@ summary() {
 	took=$(fmt_time $(($(date +%s) - START_T)))
 	if [ -n "$1" ]; then login="Open the setup link below"; else login="Sign in with your owner account"; fi
 	printf '\n'
-	box "5050cloud $VERSION is ready." "Console=https://$CONSOLE_DOMAIN" "Login=$login" "Apps=*.${DOMAIN:-your domain}" "Took=$took" "Logs=journalctl -u 5050d -f"
+	box "openrail $VERSION is ready." "Console=https://$CONSOLE_DOMAIN" "Login=$login" "Apps=*.${DOMAIN:-your domain}" "Took=$took" "Logs=journalctl -u 5050d -f"
 	printf '\n'
 	if [ -n "$1" ]; then
 		printf '  %sOpen this link to create your account (valid 24 hours, works once):%s\n' "$B" "$R"
@@ -1315,7 +1316,7 @@ summary() {
 		printf '  Recovery key saved to %s (0600). Move it off this machine and delete the file.\n\n' "$RECOVERY_KEY_FILE"
 	fi
 	printf '  %sNext%s: deploy something from the console, or install the CLI on your laptop:\n' "$B" "$R"
-	printf '  %scurl -fsSL https://5050cloud.com/install.sh | sh -s -- --cli%s\n\n' "$CYN" "$R"
+	printf '  %scurl -fsSL https://openrail.app/install.sh | sh -s -- --cli%s\n\n' "$CYN" "$R"
 }
 
 # ------------------------------------------------------------------ private host
@@ -1386,7 +1387,7 @@ install_tunnel() {
 	# The token reaches cloudflared as a credential file, never on its command line.
 	cat >"$UNIT_DIR/5050-tunnel.service" <<EOF
 [Unit]
-Description=5050cloud Cloudflare tunnel
+Description=openrail Cloudflare tunnel
 After=network-online.target
 Wants=network-online.target
 
@@ -1587,14 +1588,14 @@ print_private() {
 		printf '  a new one cannot be opened.\n'
 	fi
 	printf '\n  %sHow to get back in without SSH:%s\n' "$B" "$R"
-	printf '  - Apps: the console shell (a service, then Shell) or 5050 ssh opens a shell inside a\n'
+	printf '  - Apps: the console shell (a service, then Shell) or openrail ssh opens a shell inside a\n'
 	printf '    running service. It does not reach the host itself.\n'
 	printf '  - The host: your cloud provider'"'"'s serial console or run-command, for example\n'
 	printf '    az vm run-command invoke or the AWS and Hetzner web consoles. Test it now.\n'
 	printf '  - To turn SSH back on from there: systemctl unmask ssh.socket ssh.service,\n'
 	printf '    systemctl enable --now ssh, and\n'
 	printf '    nft add rule inet fifty_filter input tcp dport 22 ip saddr YOUR_IP accept\n'
-	printf '\n  Guide: https://5050cloud.com/docs/guides/private-mode\n\n'
+	printf '\n  Guide: https://openrail.app/docs/guides/private-mode\n\n'
 }
 
 # ------------------------------------------------------------------ join
@@ -1702,10 +1703,10 @@ wizard_mode() {
 	if [ -n "$CLI_ONLY$UNINSTALL$JOIN$RESTORE$DOMAIN$PRIVATE$ARCHIVE$RELEASE_BASE$VERSION" ]; then return 0; fi
 	mode=1
 	choose mode "What would you like to do?" \
-		"Install 5050cloud on this server" \
+		"Install openrail on this server" \
 		"Join this server to an existing install (worker host)" \
-		"Install only the 5050 command line tool" \
-		"Uninstall 5050cloud from this server"
+		"Install only the openrail command line tool" \
+		"Uninstall openrail from this server"
 	case "$mode" in
 	2) need_root; wizard_join ;;
 	3) CLI_ONLY=1 ;;
@@ -1729,7 +1730,7 @@ dry_run() {
 		"Installing packages and Docker|Installing base packages|Installing Docker Engine" \
 		"Preparing storage and Docker|Looking for a blank data disk|Writing the Docker settings" \
 		"Tuning the system|Tuning the kernel|Adding a 2 GB swap file" \
-		"Installing 5050cloud $VERSION|Downloading 5050cloud $VERSION|Unpacking $VERSION" \
+		"Installing openrail $VERSION|Downloading openrail $VERSION|Unpacking $VERSION" \
 		"Setting up the control plane|Initialising the control plane" \
 		"Starting services|Starting the control plane" \
 		"Waiting for the HTTPS certificate|Waiting for the console certificate (6 s of 120)"; do
@@ -1777,7 +1778,7 @@ setup_data_disk
 configure_docker
 step "Tuning the system"
 configure_system
-step "Installing 5050cloud ${VERSION:-}"
+step "Installing openrail ${VERSION:-}"
 install_binaries
 if [ -n "$JOIN" ]; then
 	join_host

@@ -1,11 +1,11 @@
 ---
 title: Move a project from Railway
-description: Move a Railway project to 5050cloud by recreating its services, copying its variables and moving its database data; the one-step importer comes in a later release.
+description: Move a Railway project to openrail by recreating its services, copying its variables and moving its database data; the one-step importer comes in a later release.
 ---
 
-Move a Railway project to 5050cloud by recreating its services, copying its variables and moving its database data; the one-step importer comes in a later release.
+Move a Railway project to openrail by recreating its services, copying its variables and moving its database data; the one-step importer comes in a later release.
 
-> **Note:** `5050 import railway` and **Import from Railway** in the console answer "Import from Railway is not available in this build yet" in 0.1.0. The steps below do the same job by hand, and most of them are one command each.
+> **Note:** `openrail import railway` and **Import from Railway** in the console answer "Import from Railway is not available in this build yet" in 0.1.0. The steps below do the same job by hand, and most of them are one command each.
 
 ## Take stock
 
@@ -20,17 +20,17 @@ Run the second line once per service, changing `--service` and the file name. Wr
 
 ## Create the project
 
-1. Log the `5050` CLI in to your console: see [Set up the CLI](/docs/guides/cli-setup).
+1. Log the `openrail` CLI in to your console: see [Set up the CLI](/docs/guides/cli-setup).
 2. Create the project:
 
 ```sh
-5050 init -n my-app
+openrail init -n my-app
 ```
 
 3. Add each database with the same name it had on Railway, so references like `${{Postgres.DATABASE_URL}}` keep working. On the canvas, select **+ Add**, **Database**, then the engine, and rename it if needed. Or:
 
 ```sh
-5050 add -d postgres
+openrail add -d postgres
 ```
 
 ## Recreate the services
@@ -43,18 +43,18 @@ For each service built from a repo:
 
 A `railway.json` or `railway.toml` in the repo is read and applied: start command, pre-deploy command, health check path and environment overrides come from it. See [Config as code](/docs/guides/config-as-code).
 
-For a service built from an image, select **+ Add**, **Docker Image**, or run `5050 add --image <image>`.
+For a service built from an image, select **+ Add**, **Docker Image**, or run `openrail add --image <image>`.
 
-Have a Docker Compose file? `5050 import compose docker-compose.yml` stages every service in it at once. See [Import Docker Compose](/docs/guides/import-docker-compose).
+Have a Docker Compose file? `openrail import compose docker-compose.yml` stages every service in it at once. See [Import Docker Compose](/docs/guides/import-docker-compose).
 
 ## Copy the variables
 
-Railway's JSON output is one object of names and values. This loop sets each one on the linked 5050cloud service, skipping Railway's own `RAILWAY_*` names, which 5050cloud provides itself:
+Railway's JSON output is one object of names and values. This loop sets each one on the linked openrail service, skipping Railway's own `RAILWAY_*` names, which openrail provides itself:
 
 ```sh
-5050 link -s web
+openrail link -s web
 jq -r 'to_entries[] | select(.key | startswith("RAILWAY_") | not) | "\(.key)=\(.value)"' web.json |
-  while IFS= read -r kv; do 5050 variables set "$kv" --skip-deploys; done
+  while IFS= read -r kv; do openrail variables set "$kv" --skip-deploys; done
 ```
 
 It needs `jq`. Values that span several lines do not survive the loop; set those in the service's **Variables** tab. Sealed variables on Railway come out empty, so set them by hand too.
@@ -63,7 +63,7 @@ Reference variables such as `${{Postgres.DATABASE_URL}}` and `${{shared.API_KEY}
 
 ## Move the data
 
-Copy each database with one pipe through `5050 connect`. See [Move a database from Railway](/docs/guides/move-database-from-railway).
+Copy each database with one pipe through `openrail connect`. See [Move a database from Railway](/docs/guides/move-database-from-railway).
 
 ## Deploy
 
@@ -80,7 +80,7 @@ Copy each database with one pipe through `5050 connect`. See [Move a database fr
 ## Keep your CLI habits
 
 ```sh
-5050 alias install
+openrail alias install
 ```
 
 `railway up`, `railway logs` and the rest now talk to your console. See [The railway alias](/docs/cli/railway-alias).
@@ -88,8 +88,8 @@ Copy each database with one pipe through `5050 connect`. See [Move a database fr
 ## What success looks like
 
 - Every service shows **Active**.
-- Row counts match between the Railway database and the 5050cloud one.
-- The custom domains show **Active** on 5050cloud.
+- Row counts match between the Railway database and the openrail one.
+- The custom domains show **Active** on openrail.
 - You can stop the services on Railway.
 
 ## Next steps

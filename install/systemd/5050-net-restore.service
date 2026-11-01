@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 [Unit]
-Description=5050cloud firewall and mesh restore (before Docker)
+Description=openrail firewall and mesh restore (before Docker)
 DefaultDependencies=no
 After=network-pre.target local-fs.target
 Before=docker.service

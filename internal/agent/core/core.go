@@ -24,16 +24,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/agent/agentapi"
-	"github.com/musakkka/5050cloud/internal/agent/assets"
-	"github.com/musakkka/5050cloud/internal/agent/core/engine"
-	"github.com/musakkka/5050cloud/internal/agent/core/logstore"
-	"github.com/musakkka/5050cloud/internal/agent/core/sample"
-	"github.com/musakkka/5050cloud/internal/agent/core/statecache"
-	"github.com/musakkka/5050cloud/internal/agent/core/tools"
-	"github.com/musakkka/5050cloud/internal/upgrade"
-	"github.com/musakkka/5050cloud/pkg/proto"
-	"github.com/musakkka/5050cloud/pkg/version"
+	"github.com/musakkka/openrail/internal/agent/agentapi"
+	"github.com/musakkka/openrail/internal/agent/assets"
+	"github.com/musakkka/openrail/internal/agent/core/engine"
+	"github.com/musakkka/openrail/internal/agent/core/logstore"
+	"github.com/musakkka/openrail/internal/agent/core/sample"
+	"github.com/musakkka/openrail/internal/agent/core/statecache"
+	"github.com/musakkka/openrail/internal/agent/core/tools"
+	"github.com/musakkka/openrail/internal/upgrade"
+	"github.com/musakkka/openrail/pkg/proto"
+	"github.com/musakkka/openrail/pkg/version"
 )
 
 // Options configures the runtime. The first block is the constructor shape

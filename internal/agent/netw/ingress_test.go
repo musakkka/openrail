@@ -27,7 +27,7 @@ import (
 	"github.com/docker/docker/api/types/mount"
 	"github.com/miekg/dns"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // fakeCaddy is an admin API on a unix socket that keeps the loaded config.

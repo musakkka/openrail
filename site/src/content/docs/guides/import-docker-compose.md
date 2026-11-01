@@ -7,11 +7,11 @@ Turn a `docker-compose.yml` into services on the canvas, staged for you to revie
 
 ## Import
 
-- Drag the file onto the canvas, or select **New > Docker Compose**, or run `5050 import compose docker-compose.yml`.
+- Drag the file onto the canvas, or select **New > Docker Compose**, or run `openrail import compose docker-compose.yml`.
 
 ## What is mapped
 
-| Compose | 5050cloud |
+| Compose | openrail |
 |---|---|
 | `image` | Docker image service |
 | `build` (context, dockerfile) | Built service (needs a repo) |

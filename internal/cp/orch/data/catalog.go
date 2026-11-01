@@ -14,8 +14,8 @@ import (
 
 	"sigs.k8s.io/yaml"
 
-	"github.com/musakkka/5050cloud/pkg/manifest"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/manifest"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // catalog reads templates.FS: template manifests, tools.json and images.json.
@@ -62,7 +62,7 @@ func (c *catalog) Template(id string) (*manifest.Template, error) {
 	}
 	b, err := fs.ReadFile(c.fsys, id+"/template.yaml")
 	if err != nil {
-		return nil, fmt.Errorf("The template %q does not exist in this version of 5050cloud.", id)
+		return nil, fmt.Errorf("The template %q does not exist in this version of openrail.", id)
 	}
 	var t manifest.Template
 	if err := yaml.UnmarshalStrict(b, &t); err != nil {

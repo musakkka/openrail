@@ -87,7 +87,7 @@ function RepoSource() {
       <SettingField title="Wait for CI" keywords="wait ci github actions checks"
         description="Deploy only after the commit's GitHub checks have passed.">
         <ToggleRow checked={false} onChange={() => undefined} label="Wait for CI" disabled
-          reason="Not in v0.1: deploy from CI with 5050 up, or call 5050 redeploy from a GitHub Action" />
+          reason="Not in v0.1: deploy from CI with openrail up, or call openrail redeploy from a GitHub Action" />
       </SettingField>
 
       {disconnect && (

@@ -66,7 +66,7 @@ func NewPlan(podCIDR, meshCIDR string) (Plan, error) {
 		return Plan{}, errorf("The mesh range %q is not a valid CIDR: %w", meshCIDR, err)
 	}
 	if !pod.Addr().Is4() || !mesh.Addr().Is4() {
-		return Plan{}, errorf("The pod and mesh ranges must be IPv4 ranges: 5050cloud v0.1 is IPv4 only.")
+		return Plan{}, errorf("The pod and mesh ranges must be IPv4 ranges: openrail v0.1 is IPv4 only.")
 	}
 	if pod.Bits() > 9 {
 		return Plan{}, errorf("The pod range %s is too small: it must be a /9 or larger to hold 127 hosts.", pod)

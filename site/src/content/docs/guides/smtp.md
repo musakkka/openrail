@@ -18,7 +18,7 @@ Any SMTP relay works: your email provider's SMTP access or a transactional email
 1. In the console, go to **Settings**, **General**, and find the **Email** section.
 2. Fill in **SMTP host** (for example `smtp.example.com`), **Port** and **TLS** (**STARTTLS**, **TLS** or **None**).
 3. Fill in **User name** and **Password**. Later, leave **Password** empty to keep the stored one.
-4. Set **From address**, for example `5050cloud <noreply@example.com>`.
+4. Set **From address**, for example `openrail <noreply@example.com>`.
 5. Select **Save**.
 
 ## Test it

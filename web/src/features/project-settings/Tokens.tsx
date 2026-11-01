@@ -48,7 +48,7 @@ export default function Tokens({ environments, current }: { environments: T.Envi
         )}
       </section>
       <section className="mt-12">
-        <SectionHead title="Your Tokens" description={<>Anyone with any of your tokens has access to your project environment variables. Be careful. Visit the <ExternalLink href="https://github.com/5050cloud/5050cloud#tokens" className="underline underline-offset-2 hover:text-foreground">Tokens documentation</ExternalLink>.</>} />
+        <SectionHead title="Your Tokens" description={<>Anyone with any of your tokens has access to your project environment variables. Be careful. Visit the <ExternalLink href="https://github.com/openrail/openrail#tokens" className="underline underline-offset-2 hover:text-foreground">Tokens documentation</ExternalLink>.</>} />
         {rows.length === 0 ? (
           <div className="flex min-h-[54px] items-center justify-center rounded-lg border border-dashed border-line p-4 text-body text-fg-2">You have no tokens yet</div>
         ) : (

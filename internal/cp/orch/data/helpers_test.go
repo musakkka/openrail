@@ -15,11 +15,11 @@ import (
 	_ "modernc.org/sqlite"
 	"sigs.k8s.io/yaml"
 
-	"github.com/musakkka/5050cloud/internal/cp/orch/data/fakerunner"
-	"github.com/musakkka/5050cloud/internal/cp/orch/fakeconfig"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/manifest"
-	"github.com/musakkka/5050cloud/templates"
+	"github.com/musakkka/openrail/internal/cp/orch/data/fakerunner"
+	"github.com/musakkka/openrail/internal/cp/orch/fakeconfig"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/manifest"
+	"github.com/musakkka/openrail/templates"
 )
 
 var _ Runner = fakerunner.New()

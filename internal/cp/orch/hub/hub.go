@@ -29,8 +29,8 @@ import (
 
 	"github.com/coder/websocket"
 
-	"github.com/musakkka/5050cloud/internal/cp/orch/ipam"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/cp/orch/ipam"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Handler is what the engine gives the hub.

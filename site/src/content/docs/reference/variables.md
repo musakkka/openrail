@@ -1,9 +1,9 @@
 ---
 title: Variables reference
-description: The variables 5050cloud provides to every replica, their Railway aliases, the reference syntax and the variables that change settings.
+description: The variables openrail provides to every replica, their Railway aliases, the reference syntax and the variables that change settings.
 ---
 
-The variables 5050cloud provides to every replica, their Railway aliases, the reference syntax and the variables that change settings.
+The variables openrail provides to every replica, their Railway aliases, the reference syntax and the variables that change settings.
 
 ## Provided variables
 

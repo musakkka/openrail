@@ -24,16 +24,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/internal/cp/orch/data"
-	"github.com/musakkka/5050cloud/internal/cp/orch/hub"
-	"github.com/musakkka/5050cloud/internal/cp/orch/ipam"
-	"github.com/musakkka/5050cloud/internal/cp/orch/logs"
-	"github.com/musakkka/5050cloud/internal/cp/orch/metrics"
-	"github.com/musakkka/5050cloud/internal/cp/orch/monitors"
-	"github.com/musakkka/5050cloud/internal/cp/secretbox"
-	"github.com/musakkka/5050cloud/internal/upgrade"
-	"github.com/musakkka/5050cloud/pkg/version"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/internal/cp/orch/data"
+	"github.com/musakkka/openrail/internal/cp/orch/hub"
+	"github.com/musakkka/openrail/internal/cp/orch/ipam"
+	"github.com/musakkka/openrail/internal/cp/orch/logs"
+	"github.com/musakkka/openrail/internal/cp/orch/metrics"
+	"github.com/musakkka/openrail/internal/cp/orch/monitors"
+	"github.com/musakkka/openrail/internal/cp/secretbox"
+	"github.com/musakkka/openrail/internal/upgrade"
+	"github.com/musakkka/openrail/pkg/version"
 )
 
 // Timing holds every delay of the protocol and the pipeline. Zero values

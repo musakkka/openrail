@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // The Data tab reads databases through commands run inside the running

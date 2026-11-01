@@ -28,7 +28,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Filter is a parsed filter expression. The zero value and a nil *Filter

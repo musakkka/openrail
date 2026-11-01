@@ -14,21 +14,21 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/core"
-	coreapi "github.com/musakkka/5050cloud/internal/cp/core/api"
-	"github.com/musakkka/5050cloud/internal/cp/core/config"
-	"github.com/musakkka/5050cloud/internal/cp/core/fakeorch"
-	"github.com/musakkka/5050cloud/internal/cp/core/github"
-	"github.com/musakkka/5050cloud/internal/cp/core/mail"
-	"github.com/musakkka/5050cloud/internal/cp/core/store"
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/internal/cp/orch"
-	"github.com/musakkka/5050cloud/internal/cp/secretbox"
-	"github.com/musakkka/5050cloud/internal/upgrade"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/version"
-	"github.com/musakkka/5050cloud/templates"
-	"github.com/musakkka/5050cloud/web"
+	"github.com/musakkka/openrail/internal/cp/core"
+	coreapi "github.com/musakkka/openrail/internal/cp/core/api"
+	"github.com/musakkka/openrail/internal/cp/core/config"
+	"github.com/musakkka/openrail/internal/cp/core/fakeorch"
+	"github.com/musakkka/openrail/internal/cp/core/github"
+	"github.com/musakkka/openrail/internal/cp/core/mail"
+	"github.com/musakkka/openrail/internal/cp/core/store"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/internal/cp/orch"
+	"github.com/musakkka/openrail/internal/cp/secretbox"
+	"github.com/musakkka/openrail/internal/upgrade"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/version"
+	"github.com/musakkka/openrail/templates"
+	"github.com/musakkka/openrail/web"
 )
 
 // plane is an opened control plane: config, key, store and core.
@@ -201,7 +201,7 @@ func openDev(ctx context.Context, dataDir, listen string, log *slog.Logger) (*pl
 	path := filepath.Join(abs, "config.json")
 	f, err := config.Load(path)
 	if err != nil {
-		f = &config.File{DataDir: abs, Listen: listen, InstallName: "5050cloud dev", PublicIP: "127.0.0.1", BaseDomain: "127-0-0-1.sslip.io",
+		f = &config.File{DataDir: abs, Listen: listen, InstallName: "openrail dev", PublicIP: "127.0.0.1", BaseDomain: "127-0-0-1.sslip.io",
 			ConsoleDomain: "console.127-0-0-1.sslip.io", MasterKeyPath: filepath.Join(abs, "master.key"), HostKeyPath: filepath.Join(abs, "host.key"),
 			ConsoleURL: "http://" + listen, Insecure: true, NoUpdateCheck: true}
 		f.Defaults()

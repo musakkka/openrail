@@ -15,7 +15,7 @@ import { NEW_MENU, newIcon, sendCanvas, type NewKind } from "../canvas/menus";
 import { toggleActivity } from "../activity/bridge";
 import { redeployLabel, type Cmd } from "./model";
 
-const REPO = "https://github.com/musakkka/5050cloud";
+const REPO = "https://github.com/musakkka/openrail";
 const DOCS = `${REPO}/tree/main/docs`;
 
 export const PROJECT_SETTINGS: { id: string; label: string; icon: ReactNode }[] = [

@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/musakkka/5050cloud/pkg/manifest"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/manifest"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Builder choice (docs/SPEC.md 8.2 step 3) and the Nixpacks and Railpack

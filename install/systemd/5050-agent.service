@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 [Unit]
-Description=5050cloud host agent
-Documentation=https://5050cloud.com/docs
+Description=openrail host agent
+Documentation=https://openrail.app/docs
 After=network-online.target docker.service 5050-net-restore.service
 Wants=network-online.target
 Requires=docker.service

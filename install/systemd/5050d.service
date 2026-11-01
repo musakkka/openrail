@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 [Unit]
-Description=5050cloud control plane
-Documentation=https://5050cloud.com/docs
+Description=openrail control plane
+Documentation=https://openrail.app/docs
 After=network-online.target docker.service
 Wants=network-online.target
 

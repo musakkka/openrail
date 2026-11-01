@@ -1,4 +1,4 @@
-# 5050.yaml as written by `5050 config pull`. The embedded service config
+# 5050.yaml as written by `openrail config pull`. The embedded service config
 # fields sit next to variables, domains and volume.
 project: sturdy-otter
 shared:

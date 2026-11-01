@@ -18,7 +18,7 @@ import (
 	"github.com/coder/websocket"
 	"github.com/spf13/cobra"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // tunnel listens on 127.0.0.1:port and forwards each connection over the

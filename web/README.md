@@ -1,7 +1,7 @@
 # web
 
-The 5050cloud console: React 18, Vite 6, Tailwind 3 (docs/SPEC.md 13).
-AGPL-3.0-only. Package name `@5050cloud/web`.
+The openrail console: React 18, Vite 6, Tailwind 3 (docs/SPEC.md 13).
+AGPL-3.0-only. Package name `@openrail/web`.
 
 M0 copied this tree from the earlier internal console and removed every
 private string listed in the reuse audit. Most screens still read the old

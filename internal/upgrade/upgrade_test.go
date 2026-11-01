@@ -22,9 +22,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/upgrade/minisign"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/upgrade/minisign"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // fakeRun records commands and can run a hook per command.
@@ -79,7 +79,7 @@ func newRelease(t *testing.T, key minisign.PrivateKey, version string, files map
 	tb := tarball(t, files)
 	sum := sha256.Sum256(tb)
 	name := ServerTarball(version, "amd64")
-	sums := fmt.Sprintf("%s  %s\n%s  5050-cli_x.tar.gz\n", hex.EncodeToString(sum[:]), name, strings.Repeat("0", 64))
+	sums := fmt.Sprintf("%s  %s\n%s  openrail-cli_x.tar.gz\n", hex.EncodeToString(sum[:]), name, strings.Repeat("0", 64))
 	sig, err := minisign.Sign(key, []byte(sums), "test")
 	if err != nil {
 		t.Fatal(err)

@@ -39,7 +39,7 @@ package proto
 import (
 	"encoding/json"
 
-	"github.com/musakkka/5050cloud/pkg/manifest"
+	"github.com/musakkka/openrail/pkg/manifest"
 )
 
 // ProtocolVersion is the wire protocol version. The control plane advertises
@@ -120,7 +120,7 @@ const (
 	TExecClose  = "exec_close"
 	TExecExit   = "exec_exit" // a>
 
-	// cp> open a TCP stream to a replica port (5050 connect); data as BinTCP frames
+	// cp> open a TCP stream to a replica port (openrail connect); data as BinTCP frames
 	TTCPOpen  = "tcp_open"
 	TTCPClose = "tcp_close"
 
@@ -695,7 +695,7 @@ type BuildResult struct {
 	// The control plane merges it with Config.MergeConfigFile (9.20).
 	ConfigFile *ConfigOverlay `json:"configFile,omitempty"`
 	// Notices are one-line build notes shown in the deployment Details,
-	// e.g. "railway.json: sleepApplication is not supported in 5050cloud v0.1 and was ignored."
+	// e.g. "railway.json: sleepApplication is not supported in openrail v0.1 and was ignored."
 	Notices    []string `json:"notices,omitempty"`
 	DurationMs int64    `json:"durationMs"`
 }

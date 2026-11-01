@@ -1,9 +1,9 @@
 ---
 title: Architecture
-description: 5050cloud is a control plane, an agent on every host, and Caddy, a registry and BuildKit run as containers by the agent.
+description: openrail is a control plane, an agent on every host, and Caddy, a registry and BuildKit run as containers by the agent.
 ---
 
-5050cloud is a control plane, an agent on every host, and Caddy, a registry and BuildKit run as containers by the agent.
+openrail is a control plane, an agent on every host, and Caddy, a registry and BuildKit run as containers by the agent.
 
 ## Processes
 
@@ -31,7 +31,7 @@ The control plane never connects to an agent. Agents dial out.
 
 ## A deploy
 
-1. A push, `5050 up` or **Deploy** creates a deployment.
+1. A push, `openrail up` or **Deploy** creates a deployment.
 2. The control plane sends a `build` to a build host; the image is pushed to the registry.
 3. New replicas are placed on eligible hosts and listed in each host's desired state.
 4. Agents pull, start and health check them.

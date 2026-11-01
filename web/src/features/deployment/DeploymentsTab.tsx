@@ -200,7 +200,7 @@ function NoActiveCard({ service, busy, onDeploy, onSettings, className }: { serv
           <button type="button" className={cx(link, "underline underline-offset-4")} onClick={onSettings}>Connect a source to get started</button>
           <span>or run</span>
           <code className="inline-flex h-7 items-center gap-1 rounded bg-surface-hover pl-2 font-mono text-caption text-foreground">
-            5050 up --service {service.config.name}<CopyButton text={`5050 up --service ${service.config.name}`} size={24} />
+            openrail up --service {service.config.name}<CopyButton text={`openrail up --service ${service.config.name}`} size={24} />
           </code>
         </div>
       )}

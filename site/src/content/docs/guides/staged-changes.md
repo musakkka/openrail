@@ -21,11 +21,11 @@ Commits are validated all or nothing: names unique and at most 32 characters, va
 
 ## Duplicate an environment
 
-`5050 environment new staging --duplicate production`, or **New Environment > Duplicate**, stages every service with its settings and non-sealed variables. Nothing deploys until you press **Deploy**.
+`openrail environment new staging --duplicate production`, or **New Environment > Duplicate**, stages every service with its settings and non-sealed variables. Nothing deploys until you press **Deploy**.
 
 ## Sync
 
-1. Open the target environment and select **Sync** from the environment menu, or run `5050 environment sync --from production`.
+1. Open the target environment and select **Sync** from the environment menu, or run `openrail environment sync --from production`.
 2. Services only in the source are tagged **New**, services that differ **Edited**, and services only in the target **Removed** (staged as deletes only if you tick them).
 3. Secret and sealed values are never copied; missing variables arrive empty and flagged **Set a value**.
 4. Select **Deploy**.

@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/agent/core/engine"
-	"github.com/musakkka/5050cloud/internal/agent/core/logstore"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/agent/core/engine"
+	"github.com/musakkka/openrail/internal/agent/core/logstore"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Health check defaults (7.4).
@@ -111,7 +111,7 @@ func httpProbe(ctx context.Context, addr string, s proto.ReplicaSpec) probeResul
 	}
 	req.Host = host
 	req.Header.Set("X-Forwarded-Proto", "https")
-	req.Header.Set("User-Agent", "5050cloud-healthcheck")
+	req.Header.Set("User-Agent", "openrail-healthcheck")
 	client := &http.Client{
 		Transport:     &http.Transport{DisableKeepAlives: true, Proxy: nil},
 		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },

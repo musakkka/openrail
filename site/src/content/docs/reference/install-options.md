@@ -48,7 +48,7 @@ Piped into `sh`, it asks nothing. Downloaded and run from a terminal (`{{INSTALL
 | `--restore SOURCE --recovery-key K` | none | Planned: rebuild a lost control host from its state. Not usable in 0.1.0: a bucket address is refused and a local file stops the installer after the restore. See [Rebuild the control host](/docs/guides/rebuild-control-host) |
 | `--s3-endpoint URL`, `--s3-region R`, `--s3-access-key K`, `--s3-secret-key S` | none | Bucket settings for `--restore` |
 | `--purge` | | With `--uninstall`: also delete data, containers and volumes |
-| `--cli` | | Install only the `5050` CLI |
+| `--cli` | | Install only the `openrail` CLI |
 | `--uninstall [--purge]` | | Remove units and binaries; `--purge` also deletes data, containers and volumes |
 | `--force` | | Continue on an OS that is not supported |
 | `--yes` | | Answer yes to every question |
@@ -68,7 +68,7 @@ Ubuntu 24.04 (amd64, arm64) is tested. Ubuntu 22.04 and Debian 12 install with a
 - Formats and mounts a blank data disk at `/data` when `--data-disk auto` finds exactly one.
 - Merges Docker settings into `/etc/docker/daemon.json` (`live-restore`, log rotation at 20 MB x 3).
 - Writes kernel settings to `/etc/sysctl.d/90-5050.conf`.
-- Verifies the release signature and checksum, unpacks it into `/opt/5050/releases/<version>/` and links `/usr/local/bin/5050d`, `5050-agent` and `5050`.
+- Verifies the release signature and checksum, unpacks it into `/opt/5050/releases/<version>/` and links `/usr/local/bin/5050d`, `5050-agent` and `openrail`.
 - Writes `/etc/ssh/sshd_config.d/10-5050-hardening.conf`, when that cannot lock anyone out: see `--no-ssh-hardening`.
 - Installs `auditd` with rules in `/etc/audit/rules.d/5050.rules`, which record changes to accounts, SSH, the firewall, Docker settings, systemd units and `/etc/5050`. Logs stay in `/var/log/audit`.
 - Creates `/etc/5050/` (config, master key, host key, all 0600) and the systemd units.

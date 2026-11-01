@@ -1,9 +1,9 @@
 {
-  "name": "5050cloud-site",
+  "name": "openrail-site",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
-  "description": "The 5050cloud landing page and docs. Builds to static files with Node alone.",
+  "description": "The openrail landing page and docs. Builds to static files with Node alone.",
   "type": "module",
   "engines": { "node": ">=22" },
   "scripts": {

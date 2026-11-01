@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // WipeVolume stops the service, empties its volume and starts it again

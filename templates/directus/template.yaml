@@ -5,7 +5,7 @@ tagline: Headless CMS and data platform on Postgres, with Redis caching.
 description: >-
   Directus with Postgres for content, Redis for cache and rate limits, and
   uploads on a volume. Sign in with the admin email and password you set here.
-docs: https://5050cloud.com/docs/templates/directus
+docs: https://openrail.app/docs/templates/directus
 icon: directus.svg
 category: app
 inputs:

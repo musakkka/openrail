@@ -8,7 +8,7 @@ import (
 )
 
 // railwayInvocations are Railway CLI invocations from the Railway CLI
-// reference, mapped to what 5050 runs (golden: testdata/railway.golden).
+// reference, mapped to what openrail runs (golden: testdata/railway.golden).
 var railwayInvocations = []string{
 	"login",
 	"login --browserless",
@@ -102,7 +102,7 @@ func TestRailwayGolden(t *testing.T) {
 	var b strings.Builder
 	for _, inv := range railwayInvocations {
 		out, msg := TranslateRailway(strings.Fields(inv))
-		got := "5050 " + strings.Join(out, " ")
+		got := "openrail " + strings.Join(out, " ")
 		if msg != "" {
 			got = msg
 		}
@@ -111,7 +111,7 @@ func TestRailwayGolden(t *testing.T) {
 	golden(t, "railway.golden", b.String())
 }
 
-// Every translated invocation must parse as a 5050 command line.
+// Every translated invocation must parse as an openrail command line.
 func TestRailwayTranslationsParse(t *testing.T) {
 	for _, inv := range railwayInvocations {
 		out, msg := TranslateRailway(strings.Fields(inv))

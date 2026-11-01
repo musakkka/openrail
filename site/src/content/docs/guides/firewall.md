@@ -1,9 +1,9 @@
 ---
 title: Firewall
-description: Open only the ports 5050cloud needs, with your cloud provider's firewall, the installer's --firewall rules, or ufw.
+description: Open only the ports openrail needs, with your cloud provider's firewall, the installer's --firewall rules, or ufw.
 ---
 
-Open only the ports 5050cloud needs, with your cloud provider's firewall, the installer's `--firewall` rules, or ufw.
+Open only the ports openrail needs, with your cloud provider's firewall, the installer's `--firewall` rules, or ufw.
 
 ## The ports
 
@@ -12,7 +12,7 @@ Open only the ports 5050cloud needs, with your cloud provider's firewall, the in
 | TCP 80 and 443 | Ingress hosts | Anywhere | HTTPS. Port 80 redirects to 443 and answers Let's Encrypt's HTTP challenge |
 | UDP 51820 | Every host, once you have two or more | Your other hosts | The WireGuard mesh between hosts |
 | TCP 20000 to 29999 | Ingress hosts | Anywhere | Only if you use TCP proxies; each proxy gets one port in this range |
-| TCP 22 | Every host | You | SSH, for you. 5050cloud does not use it |
+| TCP 22 | Every host | You | SSH, for you. openrail does not use it |
 
 There is no inbound management port. Joined hosts dial out to the console on 443 and keep one WebSocket open.
 
@@ -20,7 +20,7 @@ There is no inbound management port. Joined hosts dial out to the console on 443
 
 This is the simplest choice and works on any provider that has security groups or a cloud firewall.
 
-1. In your provider's console, create a firewall (security group) for your 5050cloud hosts.
+1. In your provider's console, create a firewall (security group) for your openrail hosts.
 2. Add inbound rules: TCP 22 from your own IP, TCP 80 and 443 from anywhere (`0.0.0.0/0`).
 3. With two or more hosts, add UDP 51820 from the other hosts' public IPs, or from the group itself where the provider allows a rule that names the group.
 4. If you use TCP proxies, add TCP 20000 to 29999 from anywhere on ingress hosts, or only the ports your proxies use. **Settings**, **Networking** on a service shows the port its proxy got.

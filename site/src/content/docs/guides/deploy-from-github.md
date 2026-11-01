@@ -1,9 +1,9 @@
 ---
 title: Deploy from GitHub
-description: Connect a GitHub repo to a service and 5050cloud builds and deploys every push to its branch.
+description: Connect a GitHub repo to a service and openrail builds and deploys every push to its branch.
 ---
 
-Connect a GitHub repo to a service and 5050cloud builds and deploys every push to its branch.
+Connect a GitHub repo to a service and openrail builds and deploys every push to its branch.
 
 ## Public repos
 
@@ -18,12 +18,12 @@ Automatic deploys for public repos poll the branch every 2 minutes.
 
 ## Private repos and push webhooks
 
-Private repos need a GitHub App, which 5050cloud creates for you:
+Private repos need a GitHub App, which openrail creates for you:
 
 1. Go to **Settings**, **GitHub**. Optional: type an **Organization** to create the app there.
 2. Select **Connect GitHub** and confirm on GitHub. No keys are copied by hand.
 3. Install the app on the repos it may read.
-4. Repo pickers now list those repos. Pushes reach 5050cloud through the app's webhook and deploy at once.
+4. Repo pickers now list those repos. Pushes reach openrail through the app's webhook and deploy at once.
 
 [GitHub App](/docs/guides/github-app) covers each step, organizations, and what to change after a console domain change.
 
@@ -39,7 +39,7 @@ In **Settings > Source**, set **Branch** (default: the repo's default branch) an
 
 - A `Dockerfile` in the root directory is used when present.
 - Otherwise [Railpack](https://railpack.com) detects the language and builds an image.
-- A `railway.json`, `railway.toml`, `5050.yaml` or `5050.json` file overrides settings. See [Config as code](/docs/guides/config-as-code).
+- A `railway.json`, `railway.toml`, `openrail.yaml` or `openrail.json` file overrides settings. See [Config as code](/docs/guides/config-as-code).
 
 ## Next steps
 

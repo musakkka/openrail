@@ -1,13 +1,13 @@
 ---
 title: Config file schema
-description: The fields `railway.json`, `railway.toml`, `5050.yaml` and `5050.json` accept, with what each one sets.
+description: The fields `railway.json`, `railway.toml`, `openrail.yaml` and `openrail.json` accept, with what each one sets.
 ---
 
-The fields `railway.json`, `railway.toml`, `5050.yaml` and `5050.json` accept, with what each one sets.
+The fields `railway.json`, `railway.toml`, `openrail.yaml` and `openrail.json` accept, with what each one sets.
 
 ## Files
 
-The first of `5050.yaml`, `5050.json`, `railway.json`, `railway.toml` in the root directory is used, or the file named in **Settings > Source > Config file path**.
+The first of `openrail.yaml`, `openrail.json`, `railway.json`, `railway.toml` in the root directory is used, or the file named in **Settings > Source > Config file path**.
 
 ## Fields
 
@@ -30,12 +30,12 @@ The first of `5050.yaml`, `5050.json`, `railway.json`, `railway.toml` in the roo
 | `deploy.overlapSeconds` | Overlap seconds | `deploy.overlapSec` |
 | `deploy.drainingSeconds` | Draining seconds | `deploy.drainingSec` |
 | `deploy.sleepApplication` | Ignored with a notice | |
-| `deploy.processes` (5050 files only) | Processes, or `auto` | `deploy.processes` |
-| `deploy.placement` (5050 files only) | `{roles, hosts}` | `deploy.placement` |
-| `deploy.singleton` (5050 files only) | Singleton | `deploy.singleton` |
+| `deploy.processes` (openrail files only) | Processes, or `auto` | `deploy.processes` |
+| `deploy.placement` (openrail files only) | `{roles, hosts}` | `deploy.placement` |
+| `deploy.singleton` (openrail files only) | Singleton | `deploy.singleton` |
 | `environments.<name>` | The same fields, for one environment | |
 
-## Example `5050.yaml`
+## Example `openrail.yaml`
 
 ```yaml
 build:

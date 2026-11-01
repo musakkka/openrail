@@ -34,7 +34,7 @@ export function TemplateCard({ t, to }: { t: TemplateSummary; to: string }) {
       <div className="mt-4 truncate text-lead font-semibold text-foreground">{t.name}</div>
       <p className="line-clamp-2 text-sm text-fg-3">{t.tagline || t.description}</p>
       <div className="mt-auto flex items-center justify-between pt-4 text-caption text-fg-3">
-        <span className="inline-flex items-center gap-1.5"><span className="text-foreground"><Logo size={14} /></span>5050cloud</span>
+        <span className="inline-flex items-center gap-1.5"><span className="text-foreground"><Logo size={14} /></span>openrail</span>
         <span className="inline-flex items-center gap-1.5"><Layers size={12} />{n} {n === 1 ? "service" : "services"}</span>
       </div>
       <span className="sr-only">View template</span>
@@ -329,13 +329,13 @@ export function TemplateDetailPage() {
         </div>
         <aside className="w-full shrink-0 lg:w-[278px]">
           <div className="border-y border-line py-4">
-            <div className="flex h-10 items-center gap-4 text-sm text-foreground"><Logo size={24} />5050cloud templates</div>
+            <div className="flex h-10 items-center gap-4 text-sm text-foreground"><Logo size={24} />openrail templates</div>
             {t && <>
               <MetaRow icon={<Layers size={16} />}>{t.serviceInfo.length} {t.serviceInfo.length === 1 ? "service" : "services"}</MetaRow>
               <MetaRow icon={<HardDrive size={16} />}>{volumes ? `${volumes} ${volumes === 1 ? "volume" : "volumes"}` : "No volumes"}</MetaRow>
               <MetaRow icon={<Globe size={16} />}>{pub ? "Public domain included" : "Private network only"}</MetaRow>
               <MetaRow icon={<KeyRound size={16} />}>{t.inputs.length ? `${t.inputs.length} ${t.inputs.length === 1 ? "setting" : "settings"} to review` : "Nothing to configure"}</MetaRow>
-              <MetaRow icon={<BadgeCheck size={16} />} tone="ok">Maintained with 5050cloud</MetaRow>
+              <MetaRow icon={<BadgeCheck size={16} />} tone="ok">Maintained with openrail</MetaRow>
               <MetaRow icon={<Folder size={16} />}>{categoryLabel(t.category)}</MetaRow>
             </>}
           </div>

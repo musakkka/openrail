@@ -1,9 +1,9 @@
 ---
 title: Log filter syntax
-description: Filter deploy, build and HTTP logs in the console and with `5050 logs -f` using Railway's filter syntax.
+description: Filter deploy, build and HTTP logs in the console and with `openrail logs -f` using Railway's filter syntax.
 ---
 
-Filter deploy, build and HTTP logs in the console and with `5050 logs -f` using Railway's filter syntax.
+Filter deploy, build and HTTP logs in the console and with `openrail logs -f` using Railway's filter syntax.
 
 ## Grammar
 

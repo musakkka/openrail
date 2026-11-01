@@ -9,13 +9,13 @@ import (
 	"regexp"
 	"sort"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/changes"
-	"github.com/musakkka/5050cloud/internal/cp/core/fail"
-	"github.com/musakkka/5050cloud/internal/cp/core/ids"
-	"github.com/musakkka/5050cloud/internal/cp/core/store"
-	"github.com/musakkka/5050cloud/internal/cp/core/vars"
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/core/changes"
+	"github.com/musakkka/openrail/internal/cp/core/fail"
+	"github.com/musakkka/openrail/internal/cp/core/ids"
+	"github.com/musakkka/openrail/internal/cp/core/store"
+	"github.com/musakkka/openrail/internal/cp/core/vars"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // ---------------------------------------------------------------- listing

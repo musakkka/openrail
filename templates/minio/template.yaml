@@ -7,7 +7,7 @@ description: >-
   environment reach the S3 API at MINIO_PRIVATE_ENDPOINT. The image is the
   community build published as pgsty/minio, since upstream stopped publishing
   container images.
-docs: https://5050cloud.com/docs/templates/minio
+docs: https://openrail.app/docs/templates/minio
 icon: minio.svg
 category: app
 inputs:

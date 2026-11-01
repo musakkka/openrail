@@ -5,7 +5,7 @@ tagline: Self-hosted uptime monitoring with status pages.
 description: >-
   Uptime Kuma with its data on a volume. Create the admin account on first
   visit.
-docs: https://5050cloud.com/docs/templates/uptime-kuma
+docs: https://openrail.app/docs/templates/uptime-kuma
 icon: uptime-kuma.svg
 category: app
 inputs: []

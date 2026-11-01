@@ -180,7 +180,7 @@ function Configuration({ d }: { d: DeploymentDetail }) {
     const body = clean({ build: d.config.build, deploy: d.config.deploy }) || {};
     return fmt === "json" ? JSON.stringify(body, null, 2) : toYaml(body);
   }, [d.config, fmt]);
-  const fileName = d.configFile?.path || (fmt === "json" ? "5050.json" : "5050.yaml");
+  const fileName = d.configFile?.path || (fmt === "json" ? "openrail.json" : "openrail.yaml");
 
   return (
     <section>

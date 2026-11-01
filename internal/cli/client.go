@@ -17,8 +17,8 @@ import (
 
 	"github.com/coder/websocket"
 
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/version"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/version"
 )
 
 // Client talks to one 5050d instance over the REST API (SPEC section 11).
@@ -72,7 +72,7 @@ func (c *Client) newReq(ctx context.Context, method, path string, body io.Reader
 	if ctype != "" {
 		req.Header.Set("Content-Type", ctype)
 	}
-	req.Header.Set("User-Agent", "5050-cli/"+version.Version)
+	req.Header.Set("User-Agent", "openrail-cli/"+version.Version)
 	return req, nil
 }
 
@@ -192,7 +192,7 @@ func (c *Client) Dial(ctx context.Context, path string) (*websocket.Conn, error)
 	if c.Token != "" {
 		h.Set("Authorization", "Bearer "+c.Token)
 	}
-	h.Set("User-Agent", "5050-cli/"+version.Version)
+	h.Set("User-Agent", "openrail-cli/"+version.Version)
 	conn, resp, err := websocket.Dial(ctx, u, &websocket.DialOptions{HTTPHeader: h})
 	if resp != nil && resp.Body != nil {
 		resp.Body.Close()

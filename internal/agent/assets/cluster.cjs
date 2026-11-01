@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// cluster.cjs: run N copies of a Node app that share its port (5050cloud "Use all cores").
+// cluster.cjs: run N copies of a Node app that share its port (openrail "Use all cores").
 // Usage: node [flags] cluster.cjs <processes> <script> [args...]
 'use strict';
 const cluster = require('node:cluster');

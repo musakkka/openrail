@@ -15,7 +15,7 @@ Build the control plane, the agent, the CLI, the console and this site from a cl
 
 ```sh
 git clone {{REPO}}
-cd 5050cloud
+cd openrail
 make deps
 make build      # bin/5050d, bin/5050-agent, bin/5050
 make web        # the console, embedded into 5050d

@@ -9,8 +9,8 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/manifest"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/manifest"
 )
 
 const railwayJSON = `{
@@ -90,7 +90,7 @@ func TestMerge(t *testing.T) {
 		t.Fatalf("watch paths = %v", r.WatchPaths)
 	}
 	joined := strings.Join(r.Notices, "\n")
-	for _, want := range []string{"Nixpacks config detected, building with Railpack.", "sleepApplication is not supported in 5050cloud v0.1 and was ignored.", "region is a Railway setting"} {
+	for _, want := range []string{"Nixpacks config detected, building with Railpack.", "sleepApplication is not supported in openrail v0.1 and was ignored.", "region is a Railway setting"} {
 		if !strings.Contains(joined, want) {
 			t.Errorf("notices miss %q: %v", want, r.Notices)
 		}

@@ -11,7 +11,7 @@ Add a database in one click; it gets a volume, generated credentials and the sam
 2. The database deploys at once onto a host with the `data` role.
 3. In your app's **Variables**, reference it, for example `DATABASE_URL=${{Postgres.DATABASE_URL}}`.
 
-From the CLI: `5050 add -d postgres` (or `mysql`, `redis`, `mongo`).
+From the CLI: `openrail add -d postgres` (or `mysql`, `redis`, `mongo`).
 
 ## Engines and variables
 
@@ -27,14 +27,14 @@ Passwords are generated once (32 characters). Memory settings such as Postgres `
 ## Connect from your laptop
 
 ```sh
-5050 connect Postgres
+openrail connect Postgres
 ```
 
 Or select **Connect** in the database panel for the URLs (masked until revealed). Turn on **Public access** in **Settings > Networking** for a TCP proxy reachable from outside.
 
 ## Data tab
 
-The **Data** tab lists tables with sizes (Postgres, MySQL), collections (MongoDB), Postgres extensions with **Enable**, and a read-only key browser for Redis. There is no query editor; use `5050 connect`.
+The **Data** tab lists tables with sizes (Postgres, MySQL), collections (MongoDB), Postgres extensions with **Enable**, and a read-only key browser for Redis. There is no query editor; use `openrail connect`.
 
 ## Backups
 

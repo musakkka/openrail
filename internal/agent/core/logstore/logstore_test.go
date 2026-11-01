@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 func TestDetectLevel(t *testing.T) {

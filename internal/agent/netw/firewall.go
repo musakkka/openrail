@@ -13,7 +13,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Chain names. iptables allows 28 characters.
@@ -257,7 +257,7 @@ func renderRules(s firewallSpec) ruleSet {
 			f.add(chainIsolate, "-s "+host32(a)+" -d "+mesh+" -j RETURN")
 		}
 	}
-	// Every forwarded container, also on bridges 5050cloud did not make.
+	// Every forwarded container, also on bridges openrail did not make.
 	f.add(chainIsolate, "-d "+meta+" -j DROP")
 	f.add(chainIsolate, "-d "+wire+" -p udp -m udp --dport 53 -j RETURN")
 	f.add(chainIsolate, "-d "+wire+" -p tcp -m tcp --dport 53 -j RETURN")

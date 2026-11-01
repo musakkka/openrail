@@ -15,18 +15,18 @@ Include the version, the affected component (control plane, agent, CLI, installe
 
 ## Supported versions
 
-Security fixes go into the latest release. Upgrade with `5050 upgrade`.
+Security fixes go into the latest release. Upgrade with `openrail upgrade`.
 
 ## Release signing
 
-Releases are signed with minisign. The installer and `5050 upgrade` verify the signature of `checksums.txt` with the public key embedded in them, then the SHA-256 of the archive.
+Releases are signed with minisign. The installer and `openrail upgrade` verify the signature of `checksums.txt` with the public key embedded in them, then the SHA-256 of the archive.
 
 Key rotation: a release signed with the current key ships the next key; the release after that is signed with the next key.
 
-If the signing key is ever compromised, we will publish a security advisory, release a new installer that trusts only the new key, and document the upgrade command with the new key, `5050 upgrade --pubkey <new key>`, here.
+If the signing key is ever compromised, we will publish a security advisory, release a new installer that trusts only the new key, and document the upgrade command with the new key, `openrail upgrade --pubkey <new key>`, here.
 
 ## Scope
 
 In scope: everything in this repository. Out of scope: vulnerabilities in the apps you deploy, in your OS or cloud provider, and denial of service by volume against a single install.
 
-The security model is described at [5050cloud.com/docs/reference/security-model](https://5050cloud.com/docs/reference/security-model/).
+The security model is described at [openrail.app/docs/reference/security-model](https://openrail.app/docs/reference/security-model/).

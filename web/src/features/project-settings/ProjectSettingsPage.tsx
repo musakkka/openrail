@@ -20,7 +20,7 @@ import Usage from "./Usage";
 import Webhooks from "./Webhooks";
 import { LoadError, SectionSkeleton, useLoad } from "./ui";
 
-// Feature flags are left out on purpose: 5050cloud has no flag service yet and we do not ship dead pages.
+// Feature flags are left out on purpose: openrail has no flag service yet and we do not ship dead pages.
 export const PROJECT_SECTIONS: { id: string; label: string; icon: LucideIcon }[] = [
   { id: "general", label: "General", icon: Settings },
   { id: "usage", label: "Usage", icon: ChartColumn },

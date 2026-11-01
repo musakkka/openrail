@@ -26,8 +26,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/agent/agentapi"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/agent/agentapi"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // MaxDownloadBytes caps one tool download.

@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // The control plane assembles the one-sentence diagnosis of docs/SPEC.md

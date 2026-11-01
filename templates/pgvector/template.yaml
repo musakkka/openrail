@@ -6,7 +6,7 @@ description: >-
   The Postgres template with the pgvector image: the same backups,
   point-in-time restore and settings. Run CREATE EXTENSION vector, or Enable
   it in the Data tab.
-docs: https://5050cloud.com/docs/databases/pgvector
+docs: https://openrail.app/docs/databases/pgvector
 icon: pgvector.svg
 category: database
 majorVersions: ["17", "18"]

@@ -35,7 +35,7 @@ export default function TokensPanel({ environments }: { environments?: T.Environ
   const envName = (id?: string) => environments?.find((e) => e.id === id)?.name || id;
   return (
     <div className="max-w-3xl space-y-12">
-      <Section title="New Token" description={environments ? "A token that can deploy, read logs and set variables in one environment. Use it in CI." : "Tokens act as you. Use them with the 5050 CLI or the API."}>
+      <Section title="New Token" description={environments ? "A token that can deploy, read logs and set variables in one environment. Use it in CI." : "Tokens act as you. Use them with the openrail CLI or the API."}>
         <form onSubmit={submit} noValidate className="flex flex-col gap-4 md:flex-row md:items-end">
           <Field label="Name" error={shown ? errs.name : undefined} className="!mb-0 md:max-w-[300px]"><KitInput value={name} onChange={(e) => setName(e.target.value)} placeholder="API Token" /></Field>
           {environments

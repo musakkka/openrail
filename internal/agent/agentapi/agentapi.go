@@ -22,7 +22,7 @@ package agentapi
 import (
 	"context"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Tools fetches and verifies pinned helper binaries (railpack, wal-g,

@@ -7,7 +7,7 @@ description: >-
   variable names. When a backup bucket is set, WAL-G archives every WAL
   segment and takes a daily base backup, so you can restore a copy to any
   point in time.
-docs: https://5050cloud.com/docs/databases/postgres
+docs: https://openrail.app/docs/databases/postgres
 icon: postgres.svg
 category: database
 majorVersions: ["17", "18"]

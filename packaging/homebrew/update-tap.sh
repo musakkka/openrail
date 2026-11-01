@@ -7,21 +7,21 @@
 #   packaging/homebrew/update-tap.sh --version v0.1.0 --checksums dist/checksums.txt \
 #       --tap ../homebrew-tap --commit --push
 #
-# It reads the SHA-256 of the four 5050-cli_<version>_<os>_<arch>.tar.gz
+# It reads the SHA-256 of the four openrail-cli_<version>_<os>_<arch>.tar.gz
 # archives from the release's checksums.txt (a local file, or downloaded
-# from the release), fills packaging/homebrew/fifty-cli.rb.in and writes
-# TAP/Formula/fifty-cli.rb plus the alias TAP/Aliases/5050. With --commit it
+# from the release), fills packaging/homebrew/openrail-cli.rb.in and writes
+# TAP/Formula/openrail-cli.rb plus the alias TAP/Aliases/5050. With --commit it
 # commits in the tap, with --push it also pushes.
 
 set -eu
 
 here=$(cd "$(dirname "$0")" && pwd)
-TEMPLATE=$here/fifty-cli.rb.in
-FORMULA=fifty-cli
-ALIAS=5050
+TEMPLATE=$here/openrail-cli.rb.in
+FORMULA=openrail-cli
+ALIAS=openrail
 
 VERSION=""
-REPO=musakkka/5050cloud
+REPO=musakkka/openrail
 CHECKSUMS=""
 URL_BASE=""
 TAP=""
@@ -38,7 +38,7 @@ Usage: update-tap.sh --version vX.Y.Z --tap DIR [flags]
   --version vX.Y.Z      CLI release (required)
   --tap DIR             checkout of the tap repository (required unless --stdout)
   --stdout              print the formula instead of writing it
-  --repo OWNER/NAME     repository whose releases hold the archives (default musakkka/5050cloud)
+  --repo OWNER/NAME     repository whose releases hold the archives (default musakkka/openrail)
   --checksums FILE      use this checksums.txt instead of downloading it
   --url-base URL        base of the download URLs in the formula
                         (default https://github.com/OWNER/NAME/releases/download)
@@ -101,7 +101,7 @@ if [ -n "$PUBKEY" ]; then
 fi
 
 sum_of() { # sum_of OS ARCH
-	n="5050-cli_${V}_$1_$2.tar.gz"
+	n="openrail-cli_${V}_$1_$2.tar.gz"
 	s=$(awk -v n="$n" '{f=$2; sub(/^\*/, "", f); if (f == n) print $1}' "$CHECKSUMS")
 	printf '%s' "$s" | grep -Eq '^[0-9a-f]{64}$' || die "$n has no SHA-256 in $CHECKSUMS."
 	printf '%s' "$s"

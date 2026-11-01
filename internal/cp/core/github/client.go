@@ -116,7 +116,7 @@ func (c *Client) do(ctx context.Context, method, path, auth string, body any, ac
 	}
 	req.Header.Set("Accept", accept)
 	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
-	req.Header.Set("User-Agent", "5050cloud")
+	req.Header.Set("User-Agent", "openrail")
 	if auth != "" {
 		req.Header.Set("Authorization", auth)
 	}
@@ -437,7 +437,7 @@ func (c *Client) ConvertManifest(ctx context.Context, code string) (App, error) 
 
 // Manifest returns the app manifest for the manifest flow (9.14).
 func Manifest(installName, consoleURL, returnTo string) map[string]any {
-	name := "5050cloud-" + slugify(installName)
+	name := "openrail-" + slugify(installName)
 	if len(name) > 34 {
 		name = name[:34]
 	}

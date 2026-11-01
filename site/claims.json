@@ -56,12 +56,12 @@
   },
   {
    "id": "second-ingress",
-   "claim": "A second public entry point: join a host made with 5050 host add --roles ingress",
+   "claim": "A second public entry point: join a host made with openrail host add --roles ingress",
    "evidence": [
     "E27"
    ],
    "condition": "With host 2 joined as an ingress host, apps on host 2 keep serving through it while host 1 is powered off.",
-   "fallback": "A second public entry point: join a host made with 5050 host add --roles ingress"
+   "fallback": "A second public entry point: join a host made with openrail host add --roles ingress"
   },
   {
    "id": "backups",
@@ -98,7 +98,7 @@
   },
   {
    "id": "upgrade",
-   "claim": "5050 upgrade reverts itself if the new version is unhealthy",
+   "claim": "openrail upgrade reverts itself if the new version is unhealthy",
    "evidence": [
     "E17",
     "E29"
@@ -149,13 +149,13 @@
    "evidence": [
     "recording:public/media/hero.mp4"
    ],
-   "condition": "One run of the 5050cloud-demo pipeline on 2026-10-22: a fresh Ubuntu 24.04 VM with 2 vCPU, a build made an hour before the v0.1.0 tag, installed by install.sh. Waits are sped up and labelled on screen. The console accent is recoloured to the site ink, and host names are replaced with example.com names."
+   "condition": "One run of the openrail-demo pipeline on 2026-10-22: a fresh Ubuntu 24.04 VM with 2 vCPU, a build made an hour before the v0.1.0 tag, installed by install.sh. Waits are sped up and labelled on screen. The console accent is recoloured to the site ink, and host names are replaced with example.com names."
   },
   {
    "id": "free",
-   "claim": "5050cloud is free. You pay your VM provider a fixed monthly price.",
+   "claim": "openrail is free. You pay your VM provider a fixed monthly price.",
    "evidence": [
-    "source:https://github.com/musakkka/5050cloud"
+    "source:https://github.com/musakkka/openrail"
    ],
    "condition": "AGPL-3.0 server, MIT CLI, templates and installer; no paid tier exists."
   },

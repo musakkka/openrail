@@ -79,7 +79,7 @@ export function Timeline({ children }: { children: ReactNode }) {
 export function SettingField({ title, description, children, keywords, danger, staged, locked, className }: {
   title: ReactNode; description?: ReactNode; children?: ReactNode; keywords?: string; danger?: boolean;
   /** Shows the staged marker next to the title. */ staged?: boolean;
-  /** Set by a config file: "5050.yaml:12". */ locked?: string;
+  /** Set by a config file: "openrail.yaml:12". */ locked?: string;
   className?: string;
 }) {
   const { q, sectionMatch } = useFilter();

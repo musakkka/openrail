@@ -13,10 +13,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/internal/cp/orch/hub"
-	"github.com/musakkka/5050cloud/internal/cp/orch/sched"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/internal/cp/orch/hub"
+	"github.com/musakkka/openrail/internal/cp/orch/sched"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // ApplyCommit applies a commit plan (9.1, 9.5): deletes and scale changes at
@@ -214,7 +214,7 @@ func (o *Orchestrator) createDeployment(ctx context.Context, in depInput) (depRo
 	return d, nil
 }
 
-// adoptUpload moves a `5050 up` tarball into the orchestrator's uploads directory.
+// adoptUpload moves a `openrail up` tarball into the orchestrator's uploads directory.
 func (o *Orchestrator) adoptUpload(path, depID string) (string, error) {
 	dst := filepath.Join(o.o.DataDir, "uploads", depID+".tar.gz")
 	if err := os.Rename(path, dst); err == nil {
@@ -222,7 +222,7 @@ func (o *Orchestrator) adoptUpload(path, depID string) (string, error) {
 	}
 	in, err := os.Open(path)
 	if err != nil {
-		return "", errorf("The uploaded source could not be read. Run 5050 up again.")
+		return "", errorf("The uploaded source could not be read. Run openrail up again.")
 	}
 	defer in.Close()
 	out, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o640)

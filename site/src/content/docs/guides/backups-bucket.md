@@ -1,9 +1,9 @@
 ---
 title: Backups bucket
-description: Point 5050cloud at any S3-compatible bucket so every database and volume is backed up off the host and can be restored to a copy.
+description: Point openrail at any S3-compatible bucket so every database and volume is backed up off the host and can be restored to a copy.
 ---
 
-Point 5050cloud at any S3-compatible bucket so every database and volume is backed up off the host and can be restored to a copy.
+Point openrail at any S3-compatible bucket so every database and volume is backed up off the host and can be restored to a copy.
 
 > **Beta:** Backing up to a bucket works in 0.1.0 but is not yet covered by the end-to-end tests. See [Honest limits](/docs/reference/honest-limits#beta).
 

@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // App holds what every command shares: streams, global flags and the config.
@@ -51,7 +51,7 @@ type Target struct {
 	LinkDir  string
 }
 
-var errNotLoggedIn = errors.New("you are not logged in. Run `5050 login <url>` first")
+var errNotLoggedIn = errors.New("you are not logged in. Run `openrail login <url>` first")
 
 func (a *App) config() (*Config, error) {
 	if a.cfg != nil {
@@ -65,11 +65,18 @@ func (a *App) config() (*Config, error) {
 	return c, nil
 }
 
+// env reads a FIFTY_ variable, preferring its OPENRAIL_ name. CI set up before the rename keeps working.
 func (a *App) env(k string) string {
+	get := os.Getenv
 	if a.Getenv != nil {
-		return a.Getenv(k)
+		get = a.Getenv
 	}
-	return os.Getenv(k)
+	if n, ok := strings.CutPrefix(k, "FIFTY_"); ok {
+		if v := get("OPENRAIL_" + n); v != "" {
+			return v
+		}
+	}
+	return get(k)
 }
 
 func (a *App) cwd() string {
@@ -138,13 +145,13 @@ func (a *App) resolve(ctx context.Context, needService bool) (*Target, error) {
 	case pref != "":
 		p, ok := findProject(projects, pref)
 		if !ok {
-			return nil, fmt.Errorf("no project named %q. Run `5050 list` to see your projects", pref)
+			return nil, fmt.Errorf("no project named %q. Run `openrail list` to see your projects", pref)
 		}
 		t.Project = p
 	case len(projects) == 1:
 		t.Project = projects[0]
 	default:
-		return nil, errors.New("this directory is not linked to a project. Run `5050 link` or pass -p")
+		return nil, errors.New("this directory is not linked to a project. Run `openrail link` or pass -p")
 	}
 	eref := a.Environment
 	if eref == "" {
@@ -177,7 +184,7 @@ func (a *App) resolve(ctx context.Context, needService bool) (*Target, error) {
 		t.Service = &t.Services[0]
 		return t, nil
 	}
-	return nil, errors.New("no service is linked. Run `5050 service` to pick one or pass -s")
+	return nil, errors.New("no service is linked. Run `openrail service` to pick one or pass -s")
 }
 
 func (a *App) loadServices(ctx context.Context, t *Target) error {

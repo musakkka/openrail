@@ -17,7 +17,7 @@ export function ConfigSection() {
   const file = svc.configFile;
   return (
     <SettingField title="Config File" keywords="config as code file yaml json toml infrastructure" staged={st.staged}
-      description={<>Keep build and deploy settings in the repo. Without a path, the root directory is searched for <code className="font-mono text-[13px] text-foreground">5050.yaml</code>, <code className="font-mono text-[13px] text-foreground">5050.json</code> and compatible JSON or TOML configs. Fields it sets are read-only here. <DocsLink href={docs("SPEC.md")} /></>}>
+      description={<>Keep build and deploy settings in the repo. Without a path, the root directory is searched for <code className="font-mono text-[13px] text-foreground">openrail.yaml</code>, <code className="font-mono text-[13px] text-foreground">openrail.json</code> and compatible JSON or TOML configs. Fields it sets are read-only here. <DocsLink href={docs("SPEC.md")} /></>}>
       {file && (
         <div className="mb-3 flex h-11 items-center gap-3 rounded-md bg-surface-hover px-4 text-sm">
           <FileCode size={16} className="text-fg-3" />

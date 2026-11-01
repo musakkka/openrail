@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // secretEnv has values that must never appear on argv.

@@ -8,10 +8,10 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/musakkka/5050cloud/internal/cp/orch/hub"
-	"github.com/musakkka/5050cloud/internal/cp/orch/ipam"
-	"github.com/musakkka/5050cloud/internal/cp/orch/sched"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/orch/hub"
+	"github.com/musakkka/openrail/internal/cp/orch/ipam"
+	"github.com/musakkka/openrail/internal/cp/orch/sched"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // Adopt switches adopt mode on after a state restore (9.17.1): a new epoch,
@@ -107,7 +107,7 @@ func (o *Orchestrator) AdoptReplica(ctx context.Context, unknownID, actor string
 	envID, svcID, depID := u.Labels[labelEnvironment], u.Labels[labelService], u.Labels[labelDeployment]
 	repID := firstNonEmpty(u.Labels[labelReplica], u.ReplicaID)
 	if envID == "" || svcID == "" || repID == "" {
-		return errorf("This container has no 5050cloud service labels, so it cannot be adopted. Remove it instead.")
+		return errorf("This container has no openrail service labels, so it cannot be adopted. Remove it instead.")
 	}
 	snap, err := o.cfg.ServiceInstance(ctx, envID, svcID)
 	if err != nil || snap.Deleted {

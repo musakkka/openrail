@@ -11,11 +11,11 @@ import (
 	"io/fs"
 	"log/slog"
 
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/internal/cp/orch/engine"
-	"github.com/musakkka/5050cloud/internal/cp/secretbox"
-	"github.com/musakkka/5050cloud/internal/upgrade"
-	"github.com/musakkka/5050cloud/templates"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/internal/cp/orch/engine"
+	"github.com/musakkka/openrail/internal/cp/secretbox"
+	"github.com/musakkka/openrail/internal/upgrade"
+	"github.com/musakkka/openrail/templates"
 )
 
 type Options struct {

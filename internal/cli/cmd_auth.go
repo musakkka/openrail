@@ -12,7 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 func openBrowser(u string) error {
@@ -52,9 +52,9 @@ func (a *App) cmdLogin() *cobra.Command {
 			}
 			if u == "" {
 				if !a.interactive() {
-					return errors.New("pass the URL of your install, for example `5050 login https://console.example.com`")
+					return errors.New("pass the URL of your install, for example `openrail login https://console.example.com`")
 				}
-				s, err := a.prompt("URL of your 5050cloud console", "")
+				s, err := a.prompt("URL of your openrail console", "")
 				if err != nil {
 					return err
 				}
@@ -133,7 +133,7 @@ func (a *App) deviceLogin(ctx context.Context, cl *Client, browserless bool) (st
 		case "denied":
 			return "", errors.New("the login was denied in the browser")
 		case "expired":
-			return "", errors.New("the code expired. Run `5050 login` again")
+			return "", errors.New("the code expired. Run `openrail login` again")
 		}
 	}
 }

@@ -22,8 +22,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // Point is one 30 s sample in the monitor's unit.

@@ -55,8 +55,8 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/musakkka/5050cloud/internal/agent/netw"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/agent/netw"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Pinned test images (each at least two weeks old when pinned).
@@ -563,7 +563,7 @@ func (e *itEnv) startRegistry(t *testing.T, ctx context.Context, netName, passwo
 		Image: itRegistryImage,
 		Env: []string{
 			"REGISTRY_AUTH=htpasswd",
-			"REGISTRY_AUTH_HTPASSWD_REALM=5050cloud test",
+			"REGISTRY_AUTH_HTPASSWD_REALM=openrail test",
 			"REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd",
 			"REGISTRY_STORAGE_DELETE_ENABLED=true",
 		},

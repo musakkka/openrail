@@ -4,7 +4,7 @@ id: postgres
 name: Postgres
 tagline: The world's most advanced open source database.
 description: Postgres with continuous WAL archiving and point-in-time restore to a copy.
-docs: https://5050cloud.com/docs/databases/postgres
+docs: https://openrail.app/docs/databases/postgres
 icon: postgres.svg
 category: database
 majorVersions: ["17", "18"]

@@ -18,7 +18,7 @@ import (
 
 	"github.com/coder/websocket"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // fake is a small stand-in for 5050d that records the calls it gets.
@@ -210,7 +210,7 @@ func TestVariablesSetCommits(t *testing.T) {
 	if cr.Deploy || !strings.Contains(h.f.bodies[k], `"C":"3"`) {
 		t.Errorf("railway alias: %v", h.f.bodies)
 	}
-	if code, _, errs := h.run("railway", "docs"); code != 1 || !strings.Contains(errs, "railway docs is not available in 5050cloud") {
+	if code, _, errs := h.run("railway", "docs"); code != 1 || !strings.Contains(errs, "railway docs is not available in openrail") {
 		t.Errorf("unavailable verb: %d %s", code, errs)
 	}
 }

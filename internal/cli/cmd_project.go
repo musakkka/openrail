@@ -8,7 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 func (a *App) saveLink(dir string, l Link) error {
@@ -74,7 +74,7 @@ func (a *App) cmdLink() *cobra.Command {
 				return err
 			}
 			if len(projects) == 0 {
-				return errors.New("there are no projects yet. Run `5050 init` to create one")
+				return errors.New("there are no projects yet. Run `openrail init` to create one")
 			}
 			var p api.Project
 			if a.Project != "" {

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// Package cli is the `5050` command line client (SPEC section 12). It only
+// Package cli is the `openrail` command line client (SPEC section 12). It only
 // imports pkg/ and MIT or permissive third-party modules, so the binary stays
 // MIT licensed.
 package cli
@@ -25,7 +25,7 @@ func Main() int {
 	return a.Run(name, os.Args[1:])
 }
 
-// Run runs one invocation. name is argv[0]'s base name ("5050" or "railway").
+// Run runs one invocation. name is argv[0]'s base name ("openrail", "5050" or "railway").
 func (a *App) Run(name string, args []string) int {
 	if name == "railway" {
 		a.Railway = true
@@ -87,9 +87,9 @@ func (a *App) aliasNotice() {
 		u = v
 	}
 	if u == "" {
-		u = "your 5050cloud install"
+		u = "your openrail install"
 	}
-	fmt.Fprintf(a.Err, "Using 5050cloud at %s; run `5050 alias remove` to undo\n", u)
+	fmt.Fprintf(a.Err, "Using openrail at %s; run `openrail alias remove` to undo\n", u)
 	cfg.AliasNoticeShown = true
 	_ = cfg.Save()
 }
@@ -97,8 +97,8 @@ func (a *App) aliasNotice() {
 // Root builds the command tree.
 func (a *App) Root() *cobra.Command {
 	root := &cobra.Command{
-		Use:           "5050",
-		Short:         "Deploy and manage apps on your 5050cloud install",
+		Use:           "openrail",
+		Short:         "Deploy and manage apps on your openrail install",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		CompletionOptions: cobra.CompletionOptions{

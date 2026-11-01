@@ -15,9 +15,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/orch/ipam"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/cp/orch/ipam"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Join tokens are single use and valid for one hour (docs/SPEC.md 15).
@@ -80,7 +80,7 @@ func (h *Hub) CreateJoinToken(ctx context.Context, roles []string, name, replace
 
 // JoinCommand is the one-line command the Hosts page shows.
 func JoinCommand(publicURL, token string, roles []string) string {
-	return fmt.Sprintf("curl -fsSL https://get.5050cloud.com | sudo sh -s -- --join %s --token %s --roles %s",
+	return fmt.Sprintf("curl -fsSL https://openrail.app/install.sh | sudo sh -s -- --join %s --token %s --roles %s",
 		publicURL, token, strings.Join(roles, ","))
 }
 
@@ -333,7 +333,7 @@ func nextMeshIndex(ctx context.Context, tx DB, control bool) (int, error) {
 			return i, nil
 		}
 	}
-	return 0, refuse(http.StatusConflict, api.CodeConflict, fmt.Sprintf("This install already has %d hosts, the most 5050cloud v0.1 supports.", ipam.MaxHosts))
+	return 0, refuse(http.StatusConflict, api.CodeConflict, fmt.Sprintf("This install already has %d hosts, the most openrail v0.1 supports.", ipam.MaxHosts))
 }
 
 func contains(xs []string, s string) bool {

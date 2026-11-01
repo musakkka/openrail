@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: MIT */
-/* 5050cloud site. The tokens follow the console's theme (web/src/kit/theme.css):
+/* openrail site. The tokens follow the console's theme (web/src/kit/theme.css):
    cool near-black and grey neutrals, the pink accent (hue 328), Inter for text,
    IBM Plex Serif for display headings and JetBrains Mono for code. Dark is the
    default look, as in the console; light follows the console's light theme. */
@@ -456,7 +456,7 @@ figcaption strong { color: var(--ink); }
   .bar-fill { height: 24px; }
 }
 
-/* Habits: the split motif. Railway's column and 5050cloud's, with the real
+/* Habits: the split motif. Railway's column and openrail's, with the real
    Variables tab beside them. */
 .habits h2 { margin-bottom: 16px; }
 .habits-lead { max-width: 56ch; }
@@ -679,10 +679,7 @@ details:not([open]) > :not(summary) { display: none; }
 @media (max-width: 1200px) { .docs { max-width: calc(232px + 72ch + 48px + 2 * var(--margin)); } }
 @media (max-width: 900px) { .docs, .docs:has(> .toc:empty) { max-width: none; } }
 .logo { display: block; height: 28px; width: auto; margin: 8px 0; }
-.logo-ink { fill: currentColor; }
-.logo-cloud { fill: var(--logo-cloud, var(--muted)); }
-.logo-edge { stroke: currentColor; stroke-opacity: 0.16; }
-.foot .logo { height: 30px; --logo-cloud: var(--field-muted); }
+.foot .logo { height: 30px; }
 /* Wide screens: the hero text and the recording sit side by side, so the
    headline, the install command and the whole recording are seen together. */
 @media (min-width: 1101px) {

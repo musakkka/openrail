@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-// MaxUpload is the largest archive `5050 up` sends (SPEC section 12).
+// MaxUpload is the largest archive `openrail up` sends (SPEC section 12).
 const MaxUpload = 500 << 20
 
 var errTooLarge = errors.New("the archive is larger than 500 MB. Add large files to .5050ignore and try again")

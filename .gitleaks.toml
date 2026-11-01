@@ -2,7 +2,7 @@
 # gitleaks configuration for make check-public: the default rules plus a
 # short list of reviewed false positives. Add an entry only with a comment
 # that says why the match is not a secret.
-title = "5050cloud"
+title = "openrail"
 
 [extend]
 useDefault = true

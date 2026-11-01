@@ -5,7 +5,7 @@ tagline: Simple, privacy-focused web analytics, backed by Postgres.
 description: >-
   Umami with its own Postgres. Sign in with admin and umami on first start,
   then change the password in Settings.
-docs: https://5050cloud.com/docs/templates/umami
+docs: https://openrail.app/docs/templates/umami
 icon: umami.svg
 category: app
 inputs:

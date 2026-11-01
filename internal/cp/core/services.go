@@ -10,14 +10,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/changes"
-	"github.com/musakkka/5050cloud/internal/cp/core/fail"
-	"github.com/musakkka/5050cloud/internal/cp/core/github"
-	"github.com/musakkka/5050cloud/internal/cp/core/ids"
-	"github.com/musakkka/5050cloud/internal/cp/core/store"
-	"github.com/musakkka/5050cloud/internal/cp/core/vars"
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/core/changes"
+	"github.com/musakkka/openrail/internal/cp/core/fail"
+	"github.com/musakkka/openrail/internal/cp/core/github"
+	"github.com/musakkka/openrail/internal/cp/core/ids"
+	"github.com/musakkka/openrail/internal/cp/core/store"
+	"github.com/musakkka/openrail/internal/cp/core/vars"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // ---------------------------------------------------------------- environment bundle
@@ -299,7 +299,7 @@ func (c *Core) checkSource(src *api.SourceConfig) error {
 			src.Repo = ref.FullName
 		}
 		if src.WaitForCI {
-			return fail.Validation("source.waitForCi", "Wait for CI is not in 5050cloud v0.1. Deploys start when the push arrives.")
+			return fail.Validation("source.waitForCi", "Wait for CI is not in openrail v0.1. Deploys start when the push arrives.")
 		}
 	case "image":
 		if trim(src.Image) == "" || strings.ContainsAny(src.Image, " \t\n") {
@@ -507,7 +507,7 @@ func (c *Core) createCommitted(ctx context.Context, tx *sql.Tx, a Actor, env api
 	if err := c.insertActivity(ctx, tx, env.ID, api.Activity{ServiceID: sid, Kind: "commit", Text: message, Actor: a.Label(), Ref: cid}); err != nil {
 		return cpapi.CommitPlan{}, err
 	}
-	// An upload service has no source until `5050 up` sends one, and that
+	// An upload service has no source until `openrail up` sends one, and that
 	// upload starts its own deployment; deploying now would only fail.
 	return cpapi.CommitPlan{CommitID: cid, EnvID: env.ID, Deploy: cfg.Source.Type != "upload", Actor: a.Label(), Message: message,
 		Items: []cpapi.PlanItem{{ServiceID: sid, Action: changes.ActionCreate, Rebuild: true}}}, nil
@@ -531,7 +531,7 @@ func (c *Core) UpdateServiceConfig(ctx context.Context, a Actor, envID, sid stri
 	}
 	if src, ok := patch["source"].(map[string]any); ok {
 		if w, ok := src["waitForCi"].(bool); ok && w {
-			return api.Service{}, fail.Validation("source.waitForCi", "Wait for CI is not in 5050cloud v0.1. Deploys start when the push arrives.")
+			return api.Service{}, fail.Validation("source.waitForCi", "Wait for CI is not in openrail v0.1. Deploys start when the push arrives.")
 		}
 	}
 	if n, ok := patch["networking"].(map[string]any); ok {

@@ -14,9 +14,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// railwayUnavailable is the answer for Railway verbs 5050cloud does not have.
+// railwayUnavailable is the answer for Railway verbs openrail does not have.
 func railwayUnavailable(verb string) string {
-	return fmt.Sprintf("railway %s is not available in 5050cloud. See 5050cloud.com/docs/coming-from-railway", verb)
+	return fmt.Sprintf("railway %s is not available in openrail. See openrail.app/docs/coming-from-railway", verb)
 }
 
 // Railway verbs that map to ours unchanged (flags may still be renamed).
@@ -34,7 +34,7 @@ var railwayDropWithValue = map[string]bool{"--team": true, "-w": true, "--worksp
 // Railway flags without a value that we drop.
 var railwayDrop = map[string]bool{"--verbose": true, "--deployment": true}
 
-// TranslateRailway maps a Railway CLI invocation to the 5050 equivalent. A
+// TranslateRailway maps a Railway CLI invocation to the openrail equivalent. A
 // non-empty message means the verb is not available.
 func TranslateRailway(args []string) ([]string, string) {
 	if len(args) == 0 {
@@ -88,7 +88,7 @@ func TranslateRailway(args []string) ([]string, string) {
 		}
 		out = append(out, rest...)
 	case "link", "init":
-		// -t is --team there; teams do not exist in 5050cloud.
+		// -t is --team there; teams do not exist in openrail.
 		out = append(out, renameFlags(dropValued(rest, "-t"), nil)...)
 	default:
 		out = append(out, renameFlags(rest, nil)...)
@@ -287,7 +287,7 @@ func (a *App) cmdAlias() *cobra.Command {
 			} else if err := os.Symlink(self, dst); err != nil {
 				return fmt.Errorf("could not create %s: %w", dst, err)
 			}
-			a.printf("Installed %s. `railway` now runs 5050cloud\n", dst)
+			a.printf("Installed %s. `railway` now runs openrail\n", dst)
 			return nil
 		},
 	}

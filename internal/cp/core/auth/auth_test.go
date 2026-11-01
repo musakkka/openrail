@@ -75,7 +75,7 @@ func TestTokens(t *testing.T) {
 }
 
 func TestTOTP(t *testing.T) {
-	secret, url, err := NewTOTP("5050cloud (test)", "ada@example.com")
+	secret, url, err := NewTOTP("openrail (test)", "ada@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}

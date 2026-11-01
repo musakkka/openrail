@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/musakkka/5050cloud/internal/cp/orch/fakeconfig"
-	"github.com/musakkka/5050cloud/internal/cp/secretbox"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/cp/orch/fakeconfig"
+	"github.com/musakkka/openrail/internal/cp/secretbox"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // The ACME primary's cert_status reports reach DomainCertStatus: an error

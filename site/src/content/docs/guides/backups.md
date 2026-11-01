@@ -36,7 +36,7 @@ Backups are encrypted with keys derived from your recovery key. Without the reco
 2. Pick a backup or, for Postgres, a point in time.
 3. Pick the environment and host.
 
-5050cloud creates a new service `<name>-restored-YYYYMMDD-HHMM` with a new volume and the source's variables. The original is never touched. The panel shows the time the copy recovered to.
+openrail creates a new service `<name>-restored-YYYYMMDD-HHMM` with a new volume and the source's variables. The original is never touched. The panel shows the time the copy recovered to.
 
 ## Promote
 

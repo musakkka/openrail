@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 // Package api is the REST contract between 5050d and its clients (the web
-// console and the 5050 CLI). It is frozen for v0.1: a change here is a change
+// console and the openrail CLI). It is frozen for v0.1: a change here is a change
 // to docs/SPEC.md first. JSON field names are camelCase. Timestamps are Unix
 // milliseconds (int64). IDs are prefixed strings (see docs/SPEC.md section 6).
 //
@@ -520,7 +520,7 @@ type CreateJoinTokenRequest struct {
 }
 
 type JoinToken struct {
-	Command   string `json:"command"` // curl -fsSL https://5050cloud.com/install.sh | sudo sh -s -- --join <url> --token <t> --roles app
+	Command   string `json:"command"` // curl -fsSL https://openrail.app/install.sh | sudo sh -s -- --join <url> --token <t> --roles app
 	Token     string `json:"token"`   // single use
 	ExpiresAt int64  `json:"expiresAt"`
 }
@@ -906,7 +906,7 @@ type Variable struct {
 
 type VariablesResponse struct {
 	Variables []Variable `json:"variables"`
-	// Provided lists the names 5050cloud injects (PORT, FIFTY_*, RAILWAY_* aliases).
+	// Provided lists the names openrail injects (PORT, FIFTY_*, RAILWAY_* aliases).
 	Provided []string `json:"provided"`
 	// Suggested lists names found in .env.example and similar files in the repo.
 	Suggested []string `json:"suggested,omitempty"`
@@ -1351,7 +1351,7 @@ type ConnectInfo struct {
 	// Variables names the variables holding the URLs (for reveal).
 	PrivateVariable string `json:"privateVariable"`
 	PublicVariable  string `json:"publicVariable,omitempty"`
-	CLICommand      string `json:"cliCommand"` // "5050 connect Postgres"
+	CLICommand      string `json:"cliCommand"` // "openrail connect Postgres"
 }
 
 type DataTable struct {

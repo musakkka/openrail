@@ -16,14 +16,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/core"
-	"github.com/musakkka/5050cloud/internal/cp/core/auth"
-	"github.com/musakkka/5050cloud/internal/cp/core/config"
-	"github.com/musakkka/5050cloud/internal/cp/core/fakeorch"
-	"github.com/musakkka/5050cloud/internal/cp/core/mail"
-	"github.com/musakkka/5050cloud/internal/cp/core/store"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/templates"
+	"github.com/musakkka/openrail/internal/cp/core"
+	"github.com/musakkka/openrail/internal/cp/core/auth"
+	"github.com/musakkka/openrail/internal/cp/core/config"
+	"github.com/musakkka/openrail/internal/cp/core/fakeorch"
+	"github.com/musakkka/openrail/internal/cp/core/mail"
+	"github.com/musakkka/openrail/internal/cp/core/store"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/templates"
 )
 
 type env struct {

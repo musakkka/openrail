@@ -102,7 +102,7 @@ func (n *Net) CheckFirewall(ctx context.Context, now time.Time) []string {
 		if nets, err := d.NetworkList(dctx, network.ListOptions{}); err == nil {
 			for _, nw := range nets {
 				if nw.EnableIPv6 {
-					out = append(out, fmt.Sprintf("Docker network %s has IPv6 turned on. 5050cloud isolates containers over IPv4 only, so turn IPv6 off in Docker.", nw.Name))
+					out = append(out, fmt.Sprintf("Docker network %s has IPv6 turned on. openrail isolates containers over IPv4 only, so turn IPv6 off in Docker.", nw.Name))
 				}
 			}
 		}

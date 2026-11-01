@@ -2,9 +2,9 @@
 
 // Package version holds build metadata set with -ldflags at release time:
 //
-//	-X github.com/musakkka/5050cloud/pkg/version.Version=v0.1.0
-//	-X github.com/musakkka/5050cloud/pkg/version.Commit=<sha>
-//	-X github.com/musakkka/5050cloud/pkg/version.Date=<rfc3339>
+//	-X github.com/musakkka/openrail/pkg/version.Version=v0.1.0
+//	-X github.com/musakkka/openrail/pkg/version.Commit=<sha>
+//	-X github.com/musakkka/openrail/pkg/version.Date=<rfc3339>
 package version
 
 var (

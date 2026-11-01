@@ -24,16 +24,16 @@ run() { # run NAME -- flags... ; installs into $W/NAME
 }
 
 check "signed release, latest version" run latest --release-base "$BASE" --release-pubkey "$KEY"
-check "installed binary reports $VER" sh -c "'$W/latest/5050' version | grep -q '$VER'"
+check "installed binary reports $VER" sh -c "'$W/latest/openrail' version | grep -q '$VER'"
 
 check "explicit version without v" run explicit --release-base "$BASE" --release-pubkey "$KEY" --version "${VER#v}"
-check "explicit version installed" test -x "$W/explicit/5050"
+check "explicit version installed" test -x "$W/explicit/openrail"
 
 check "key from FIFTY_RELEASE_PUBKEY" sh -c "FIFTY_RELEASE_PUBKEY='$KEY' FIFTY_RELEASE_BASE='$BASE' sh '$INST' --dir '$W/envkey' --quiet >/dev/null"
-check "--quiet prints only the path" sh -c "FIFTY_RELEASE_PUBKEY='$KEY' sh '$INST' --release-base '$BASE' --dir '$W/quiet' --quiet | grep -qx '$W/quiet/5050'"
+check "--quiet prints only the path" sh -c "FIFTY_RELEASE_PUBKEY='$KEY' sh '$INST' --release-base '$BASE' --dir '$W/quiet' --quiet | grep -qx '$W/quiet/openrail'"
 
 if run wrongkey --release-base "$BASE" --release-pubkey "$OTHER"; then bad "wrong key is refused"; else ok "wrong key is refused"; fi
-check "wrong key installs nothing" test ! -e "$W/wrongkey/5050"
+check "wrong key installs nothing" test ! -e "$W/wrongkey/openrail"
 
 if run nokey --release-base "$BASE"; then bad "release base without a key is refused"; else ok "release base without a key is refused"; fi
 
@@ -47,19 +47,19 @@ T=$W/tampered
 mkdir -p "$T/$VER"
 cp "$FIXTURE/$VER/"* "$T/$VER/"
 cp "$FIXTURE/latest.txt" "$T/"
-printf 'x' >>"$T/$VER/5050-cli_${VER#v}_${os}_${arch}.tar.gz"
-if run tampered --archive "$T/$VER/5050-cli_${VER#v}_${os}_${arch}.tar.gz" --release-pubkey "$KEY"; then
+printf 'x' >>"$T/$VER/openrail-cli_${VER#v}_${os}_${arch}.tar.gz"
+if run tampered --archive "$T/$VER/openrail-cli_${VER#v}_${os}_${arch}.tar.gz" --release-pubkey "$KEY"; then
 	bad "tampered archive is refused"
 else
 	ok "tampered archive is refused"
 fi
 check "tampered archive message" grep -q "does not match checksums.txt" "$W/tampered.log"
 
-check "local archive" run archive --archive "$FIXTURE/$VER/5050-cli_${VER#v}_${os}_${arch}.tar.gz" --release-pubkey "$KEY"
+check "local archive" run archive --archive "$FIXTURE/$VER/openrail-cli_${VER#v}_${os}_${arch}.tar.gz" --release-pubkey "$KEY"
 check "local archive version detected" grep -q "$VER" "$W/archive.log"
 
 check "railway alias" run alias --release-base "$BASE" --release-pubkey "$KEY" --railway-alias
-check "railway alias is a symlink to 5050" sh -c "[ \"\$(readlink '$W/alias/railway')\" = 5050 ]"
+check "railway alias is a symlink to openrail" sh -c "[ \"\$(readlink '$W/alias/railway')\" = openrail ]"
 
 if sh "$INST" --bogus >/dev/null 2>&1; then bad "unknown flag is refused"; else ok "unknown flag is refused"; fi
 check "--help" sh -c "sh '$INST' --help | grep -q -- '--railway-alias'"

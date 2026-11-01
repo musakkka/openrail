@@ -2,7 +2,7 @@
 
 package core
 
-import "github.com/musakkka/5050cloud/pkg/proto"
+import "github.com/musakkka/openrail/pkg/proto"
 
 // Pinned infrastructure images the runtime manages (docs/SPEC.md 8.1).
 // HostConfig.Images may override any of them (mirrors). Caddy and BuildKit

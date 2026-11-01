@@ -53,7 +53,7 @@ function Toolbar({ title, q, setQ, placeholder, spinning, onRefresh, inputRef }:
 }
 
 function TerminalHint({ engine, name }: { engine: Engine; name: string }) {
-  const cmd = `5050 connect ${name}`;
+  const cmd = `openrail connect ${name}`;
   return (
     <Panel className="mt-8" title={<span className="flex items-center gap-2"><Terminal size={16} className="text-fg-3" />Run queries</span>}
       hint={`Open ${engine.client} against this database through an encrypted tunnel. Nothing is exposed publicly.`}>
@@ -120,7 +120,7 @@ function Tables({ eid, service, engine }: { eid: string; service: Service; engin
           </dl>
           <div className="px-6 pb-6">
             <div className="mb-2 text-caption font-medium text-fg-3">Open in your client</div>
-            <CodeBox text={`5050 connect ${service.config.name}`} compact />
+            <CodeBox text={`openrail connect ${service.config.name}`} compact />
           </div>
         </Sheet>
       )}

@@ -15,7 +15,7 @@ import (
 	"github.com/coder/websocket"
 	"github.com/spf13/cobra"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // stty runs stty against the terminal on stdin (Unix only).

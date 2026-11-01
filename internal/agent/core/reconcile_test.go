@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/agent/core/engine"
-	"github.com/musakkka/5050cloud/internal/agent/core/statecache"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/agent/core/engine"
+	"github.com/musakkka/openrail/internal/agent/core/statecache"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 func TestReconcileCreatesReplica(t *testing.T) {

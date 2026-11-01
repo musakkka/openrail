@@ -1,15 +1,15 @@
 ---
 title: Health checks
-description: A health check tells 5050cloud when a new deployment is ready for traffic and when a running replica should be taken out of routes.
+description: A health check tells openrail when a new deployment is ready for traffic and when a running replica should be taken out of routes.
 ---
 
-A health check tells 5050cloud when a new deployment is ready for traffic and when a running replica should be taken out of routes.
+A health check tells openrail when a new deployment is ready for traffic and when a running replica should be taken out of routes.
 
 ## Set a path
 
 In **Settings > Deploy**, set **Healthcheck path**, for example `/health`. Or set `deploy.healthcheckPath` in `railway.json`.
 
-- With a path, the agent sends `GET` to each replica every 3 seconds, with `Host` set to the service's first domain, `X-Forwarded-Proto: https` and `User-Agent: 5050cloud-healthcheck`. Any 2xx or 3xx passes; redirects are not followed.
+- With a path, the agent sends `GET` to each replica every 3 seconds, with `Host` set to the service's first domain, `X-Forwarded-Proto: https` and `User-Agent: openrail-healthcheck`. Any 2xx or 3xx passes; redirects are not followed.
 - Without a path, the check is a TCP connect to the target port.
 - Workers without a port are healthy once they have run for 10 seconds.
 

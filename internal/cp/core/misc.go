@@ -11,13 +11,13 @@ import (
 
 	"sigs.k8s.io/yaml"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/changes"
-	"github.com/musakkka/5050cloud/internal/cp/core/fail"
-	"github.com/musakkka/5050cloud/internal/cp/core/ids"
-	"github.com/musakkka/5050cloud/internal/cp/core/vars"
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/compose"
-	"github.com/musakkka/5050cloud/pkg/manifest"
+	"github.com/musakkka/openrail/internal/cp/core/changes"
+	"github.com/musakkka/openrail/internal/cp/core/fail"
+	"github.com/musakkka/openrail/internal/cp/core/ids"
+	"github.com/musakkka/openrail/internal/cp/core/vars"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/compose"
+	"github.com/musakkka/openrail/pkg/manifest"
 )
 
 // ---------------------------------------------------------------- recovery key
@@ -42,7 +42,7 @@ func ParseRecoveryKey(k string) ([]byte, error) {
 	}
 	b, err := base32.StdEncoding.DecodeString(s)
 	if err != nil || len(b) != 32 {
-		return nil, fail.Validation("recoveryKey", "This is not a 5050cloud recovery key.")
+		return nil, fail.Validation("recoveryKey", "This is not an openrail recovery key.")
 	}
 	return b, nil
 }

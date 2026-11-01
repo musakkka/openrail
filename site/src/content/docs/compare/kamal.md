@@ -1,13 +1,13 @@
 ---
-title: 5050cloud and Kamal
-description: Kamal deploys containers from your laptop or CI over SSH; 5050cloud is a running platform with a console, databases and backups.
+title: openrail and Kamal
+description: Kamal deploys containers from your laptop or CI over SSH; openrail is a running platform with a console, databases and backups.
 ---
 
-Kamal deploys containers from your laptop or CI over SSH; 5050cloud is a running platform with a console, databases and backups.
+Kamal deploys containers from your laptop or CI over SSH; openrail is a running platform with a console, databases and backups.
 
 Facts as of 2026-10-22, from Kamal's docs.
 
-| | 5050cloud | Kamal |
+| | openrail | Kamal |
 |---|---|---|
 | License | AGPL-3.0 server, MIT CLI | MIT |
 | Web UI | Yes | No |

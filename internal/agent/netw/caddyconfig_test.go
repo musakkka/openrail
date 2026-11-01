@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 var testParams = caddyParams{

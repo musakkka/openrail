@@ -5,7 +5,7 @@ tagline: Publishing platform for blogs and newsletters, backed by MySQL.
 description: >-
   Ghost with its own MySQL. Open /ghost on your domain to create the owner
   account. Set the mail__ variables to send newsletters and sign-in emails.
-docs: https://5050cloud.com/docs/templates/ghost
+docs: https://openrail.app/docs/templates/ghost
 icon: ghost.svg
 category: app
 inputs:

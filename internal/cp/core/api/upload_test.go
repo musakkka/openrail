@@ -5,10 +5,10 @@ package api
 import (
 	"testing"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
-// `5050 up --new` creates an upload service with Deploy Now. It has no
+// `openrail up --new` creates an upload service with Deploy Now. It has no
 // source until the upload arrives, so the create commit must not deploy it
 // (that deployment could only fail with "uploaded source is missing").
 func TestNewUploadServiceDoesNotDeployBeforeTheUpload(t *testing.T) {

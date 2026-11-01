@@ -1,7 +1,7 @@
 #!/bin/sh
 # SPDX-License-Identifier: MIT
 #
-# Runs every packaging test. Needs a 5050cloud checkout to build the
+# Runs every packaging test. Needs an openrail checkout to build the
 # fixture release from (FIFTY_SRC, default the repository root, one level up from this
 # directory), or a ready fixture in FIXTURE.
 #   tests/run.sh                 everything

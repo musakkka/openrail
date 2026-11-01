@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-// Command 5050d is the 5050cloud control plane (docs/SPEC.md 3 and 8.3).
+// Command 5050d is the openrail control plane (docs/SPEC.md 3 and 8.3).
 //
 //	5050d init --public-ip IP [flags]      create config, keys, state and the setup token
 //	5050d serve [--dev]                    run the control plane
@@ -24,12 +24,12 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/config"
-	"github.com/musakkka/5050cloud/internal/upgrade"
-	"github.com/musakkka/5050cloud/pkg/version"
+	"github.com/musakkka/openrail/internal/cp/core/config"
+	"github.com/musakkka/openrail/internal/upgrade"
+	"github.com/musakkka/openrail/pkg/version"
 )
 
-const usage = `5050d is the 5050cloud control plane.
+const usage = `5050d is the openrail control plane.
 
 Usage:
   5050d init [flags]                        create config, keys, state.db and a setup token

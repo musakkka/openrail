@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // GitResolver finds the commit a build checks out. The default asks the
@@ -118,7 +118,7 @@ func (g *httpGit) lsRemote(ctx context.Context, clone, token string) (map[string
 	if err != nil {
 		return nil, "", err
 	}
-	req.Header.Set("User-Agent", "git/2.43.0 (5050cloud)")
+	req.Header.Set("User-Agent", "git/2.43.0 (openrail)")
 	if token != "" {
 		req.SetBasicAuth("x-access-token", token)
 	}

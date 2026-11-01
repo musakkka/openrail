@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-// 5050cloud console design tokens. Values are CSS custom properties defined in src/kit/theme.css
+// openrail console design tokens. Values are CSS custom properties defined in src/kit/theme.css
 // (dark :root, html.light), so every class below follows the theme. Usage notes:
 // the doc comments in src/kit.
 const scale = (name) =>

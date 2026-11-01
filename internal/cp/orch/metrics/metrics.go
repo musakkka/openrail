@@ -28,8 +28,8 @@ import (
 
 	_ "modernc.org/sqlite" // database/sql driver "sqlite"
 
-	"github.com/musakkka/5050cloud/pkg/api"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/api"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Retention and resolution (docs/SPEC.md 6.3).

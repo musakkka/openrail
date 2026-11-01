@@ -22,7 +22,7 @@ cleanup() {
 	kill "$SERVER_PID" 2>/dev/null
 	wait "$SERVER_PID" 2>/dev/null
 	if [ "${BREW_HOST:-}" = 1 ] && command -v brew >/dev/null 2>&1; then
-		brew uninstall --force fifty-cli >/dev/null 2>&1
+		brew uninstall --force openrail-cli >/dev/null 2>&1
 		brew untap "$TAPNAME" >/dev/null 2>&1
 		if [ "${was_dev:-1}" = 0 ]; then brew developer off >/dev/null 2>&1; fi
 	fi
@@ -37,10 +37,10 @@ if sh "$UPD" --version banana --stdout >/dev/null 2>&1; then bad "bad version re
 
 check "render to stdout from local checksums" sh -c "sh '$UPD' --version '$VER' --checksums '$FIXTURE/$VER/checksums.txt' --stdout >'$W/stdout.rb'"
 check "no placeholders left" sh -c "! grep -q '@[A-Z0-9_]*@' '$W/stdout.rb'"
-check "default URL is the GitHub release" grep -q 'url "https://github.com/musakkka/5050cloud/releases/download/v#{version}/5050-cli_#{version}_darwin_arm64.tar.gz"' "$W/stdout.rb"
+check "default URL is the GitHub release" grep -q 'url "https://github.com/musakkka/openrail/releases/download/v#{version}/openrail-cli_#{version}_darwin_arm64.tar.gz"' "$W/stdout.rb"
 check "version filled" grep -q "version \"${VER#v}\"" "$W/stdout.rb"
 for t in darwin_arm64 darwin_amd64 linux_arm64 linux_amd64; do
-	sum=$(awk -v n="5050-cli_${VER#v}_$t.tar.gz" '$2 == n {print $1}' "$FIXTURE/$VER/checksums.txt")
+	sum=$(awk -v n="openrail-cli_${VER#v}_$t.tar.gz" '$2 == n {print $1}' "$FIXTURE/$VER/checksums.txt")
 	check "sha256 for $t" grep -q "sha256 \"$sum\"" "$W/stdout.rb"
 done
 check "--repo changes the URL" sh -c "sh '$UPD' --version '$VER' --checksums '$FIXTURE/$VER/checksums.txt' --repo someone/fork --stdout | grep -q 'github.com/someone/fork/releases'"
@@ -60,9 +60,9 @@ git -C "$TAP" config user.name test
 git -C "$TAP" config user.email test@example.com
 git -C "$TAP" config commit.gpgsign false
 check "write tap and commit (download checksums)" sh "$UPD" --version "$VER" --url-base "$BASE" --tap "$TAP" --commit
-check "formula file" test -f "$TAP/Formula/fifty-cli.rb"
-check "alias 5050" sh -c "[ \"\$(readlink '$TAP/Aliases/5050')\" = ../Formula/fifty-cli.rb ]"
-check "commit made" sh -c "git -C '$TAP' log -1 --format=%s | grep -qx 'fifty-cli ${VER#v}'"
+check "formula file" test -f "$TAP/Formula/openrail-cli.rb"
+check "alias openrail" sh -c "[ \"\$(readlink '$TAP/Aliases/openrail')\" = ../Formula/openrail-cli.rb ]"
+check "commit made" sh -c "git -C '$TAP' log -1 --format=%s | grep -qx 'openrail-cli ${VER#v}'"
 check "second run is a no-op" sh -c "sh '$UPD' --version '$VER' --url-base '$BASE' --tap '$TAP' --commit | grep -q 'nothing to commit'"
 
 if [ "${BREW_HOST:-}" != 1 ] || ! command -v brew >/dev/null 2>&1; then
@@ -70,7 +70,7 @@ if [ "${BREW_HOST:-}" != 1 ] || ! command -v brew >/dev/null 2>&1; then
 	finish; exit $?
 fi
 was_dev=$(brew developer 2>/dev/null | grep -c 'is enabled')
-check "ruby syntax" sh -c "ruby -c '$TAP/Formula/fifty-cli.rb' >/dev/null 2>&1"
+check "ruby syntax" sh -c "ruby -c '$TAP/Formula/openrail-cli.rb' >/dev/null 2>&1"
 
 # Keep Homebrew's trust list for the throwaway tap inside the work directory.
 export XDG_CONFIG_HOME="$W/xdg"
@@ -81,9 +81,9 @@ check "brew tap local" sh -c "HOMEBREW_NO_AUTO_UPDATE=1 brew tap '$TAPNAME' '$TA
 if brew help trust >/dev/null 2>&1; then
 	check "brew trust the test tap" sh -c "brew trust --tap '$TAPNAME' >/dev/null 2>&1"
 fi
-check "brew style" sh -c "HOMEBREW_NO_AUTO_UPDATE=1 brew style '$TAPNAME/fifty-cli' >'$W/style.log' 2>&1 || { cat '$W/style.log'; false; }"
+check "brew style" sh -c "HOMEBREW_NO_AUTO_UPDATE=1 brew style '$TAPNAME/openrail-cli' >'$W/style.log' 2>&1 || { cat '$W/style.log'; false; }"
 # --strict --online would also fetch the GitHub URLs, which do not exist yet.
-if HOMEBREW_NO_AUTO_UPDATE=1 brew audit --formula "$TAPNAME/fifty-cli" >"$W/audit.log" 2>&1; then
+if HOMEBREW_NO_AUTO_UPDATE=1 brew audit --formula "$TAPNAME/openrail-cli" >"$W/audit.log" 2>&1; then
 	ok "brew audit"
 elif grep -q "Command Line Tools" "$W/audit.log"; then
 	echo "skip brew audit (this machine's Command Line Tools are out of date)"
@@ -92,15 +92,15 @@ else
 fi
 
 if [ "${BREW_INSTALL:-1}" = 1 ]; then
-	if HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_ANALYTICS=1 brew install "$TAPNAME/5050" >"$W/install.log" 2>&1; then
-		ok "brew install through the 5050 alias"
-		check "brew test" sh -c "HOMEBREW_NO_AUTO_UPDATE=1 brew test '$TAPNAME/fifty-cli' >'$W/test.log' 2>&1 || { tail -30 '$W/test.log'; false; }"
-		check "installed 5050 runs" sh -c "\"\$(brew --prefix)/opt/fifty-cli/bin/5050\" version | grep -q '$VER'"
-		check "zsh completion installed" sh -c "test -f \"\$(brew --prefix)/opt/fifty-cli/share/zsh/site-functions/_5050\""
+	if HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_ANALYTICS=1 brew install "$TAPNAME/openrail" >"$W/install.log" 2>&1; then
+		ok "brew install through the openrail alias"
+		check "brew test" sh -c "HOMEBREW_NO_AUTO_UPDATE=1 brew test '$TAPNAME/openrail-cli' >'$W/test.log' 2>&1 || { tail -30 '$W/test.log'; false; }"
+		check "installed openrail runs" sh -c "\"\$(brew --prefix)/opt/openrail-cli/bin/openrail\" version | grep -q '$VER'"
+		check "zsh completion installed" sh -c "test -f \"\$(brew --prefix)/opt/openrail-cli/share/zsh/site-functions/_5050\""
 	elif grep -q "Command Line Tools" "$W/install.log"; then
 		echo "skip brew install (this machine's Command Line Tools are out of date; tests/test-tap-linux.sh covers it)"
 	else
-		tail -30 "$W/install.log"; bad "brew install through the 5050 alias"
+		tail -30 "$W/install.log"; bad "brew install through the openrail alias"
 	fi
 fi
 

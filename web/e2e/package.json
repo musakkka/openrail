@@ -1,8 +1,8 @@
 {
-  "name": "@5050cloud/web-e2e",
+  "name": "@openrail/web-e2e",
   "private": true,
   "version": "0.1.0",
-  "description": "Playwright UI suite for the 5050cloud console (docs/SPEC.md 13.8). Runs against a real install.",
+  "description": "Playwright UI suite for the openrail console (docs/SPEC.md 13.8). Runs against a real install.",
   "type": "module",
   "license": "AGPL-3.0-only",
   "scripts": {

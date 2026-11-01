@@ -175,8 +175,8 @@ function detail(d: Deployment): DeploymentDetail {
   return {
     ...d, config: s.config, replicas: d.active ? s.replicas : [],
     variableNames: s.kind === "database" ? ["PGDATA", "POSTGRES_DB", "POSTGRES_PASSWORD", "POSTGRES_USER", "DATABASE_URL"] : ["DATABASE_URL", "NODE_ENV", "PORT", "REDIS_URL", "SESSION_SECRET", "SENTRY_DSN"],
-    source: s.config.source.type === "github" ? { "build.dockerfilePath": "5050.json:4" } : undefined,
-    configFile: s.config.source.type === "github" ? { path: "5050.json", format: "json" } : undefined,
+    source: s.config.source.type === "github" ? { "build.dockerfilePath": "openrail.json:4" } : undefined,
+    configFile: s.config.source.type === "github" ? { path: "openrail.json", format: "json" } : undefined,
   };
 }
 

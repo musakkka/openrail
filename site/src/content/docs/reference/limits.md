@@ -1,9 +1,9 @@
 ---
 title: Limits
-description: The numbers 5050cloud v0.1 is built and tested for.
+description: The numbers openrail v0.1 is built and tested for.
 ---
 
-The numbers 5050cloud v0.1 is built and tested for.
+The numbers openrail v0.1 is built and tested for.
 
 ## Cluster
 
@@ -25,7 +25,7 @@ The numbers 5050cloud v0.1 is built and tested for.
 | Replicas with a volume | 1 |
 | Volumes per service | 1 |
 | Minimum memory limit | 64 MB |
-| Upload size (`5050 up`) | 500 MB |
+| Upload size (`openrail up`) | 500 MB |
 | Build timeout | 30 minutes by default |
 | Pre-deploy timeout | 300 seconds by default, up to 3600 |
 | Health check timeout | 300 seconds by default |

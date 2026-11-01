@@ -1,19 +1,19 @@
 ---
 title: Deploy with the CLI
-description: `5050 up` uploads the current directory, builds it on your hosts and streams the logs until the deploy is live.
+description: `openrail up` uploads the current directory, builds it on your hosts and streams the logs until the deploy is live.
 ---
 
-`5050 up` uploads the current directory, builds it on your hosts and streams the logs until the deploy is live.
+`openrail up` uploads the current directory, builds it on your hosts and streams the logs until the deploy is live.
 
 ## Steps
 
 1. Install the CLI: `curl -fsSL {{GET}} | sh -s -- --cli`.
-2. Log in: `5050 login https://console.example.com`.
-3. In your app's directory, create or link a project: `5050 init -n my-app` or `5050 link`.
-4. Deploy: `5050 up --new` the first time, `5050 up` afterwards.
+2. Log in: `openrail login https://console.example.com`.
+3. In your app's directory, create or link a project: `openrail init -n my-app` or `openrail link`.
+4. Deploy: `openrail up --new` the first time, `openrail up` afterwards.
 
 ```
-$ 5050 up
+$ openrail up
 Uploaded 3.2 MB
 ... build log ...
 ... first deploy log lines ...
@@ -27,9 +27,9 @@ The directory is packed as a gzipped tar, skipping `.git` and files matched by `
 ## From CI
 
 ```sh
-export FIFTY_URL=https://console.example.com
-export FIFTY_TOKEN=5050_xxxxxxxx
-5050 up -c -s api -e production -m "$GIT_COMMIT_MESSAGE"
+export OPENRAIL_URL=https://console.example.com
+export OPENRAIL_TOKEN=5050_xxxxxxxx
+openrail up -c -s api -e production -m "$GIT_COMMIT_MESSAGE"
 ```
 
 `-c` streams the build log and exits non-zero if the build or deploy fails. For CI, create an environment token in the project's **Project Settings**, **Tokens**. See [Set up the CLI](/docs/guides/cli-setup#tokens-for-servers-and-ci).

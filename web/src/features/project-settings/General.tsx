@@ -103,7 +103,7 @@ function TemplateModal({ project, onClose }: { project: T.Project; onClose: () =
     const c = await a.run(() => v1.canvas(env.id));
     if (!c) return;
     const tpl = {
-      kind: "5050cloud.template/v1", name: project.name, description: project.description,
+      kind: "openrail.template/v1", name: project.name, description: project.description,
       services: c.services.map((s) => ({ name: s.config.name, icon: s.config.icon, source: s.config.source, build: s.config.build, deploy: s.config.deploy, networking: s.config.networking, template: s.config.template, templateVersion: s.config.templateVersion })),
     };
     downloadText(`${project.name.replace(/[^a-z0-9-]+/gi, "-").toLowerCase()}.template.json`, JSON.stringify(tpl, null, 2));

@@ -23,8 +23,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/pkg/logfilter"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/logfilter"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 const hourLayout = "2006010215"

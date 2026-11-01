@@ -72,9 +72,9 @@ function AuthHeader() {
   return (
     <header className="relative">
       <div className="mx-auto flex h-[72px] w-full max-w-[1160px] items-center justify-between px-5 md:px-0">
-        <Link to="/" className="flex items-center gap-2.5 rounded-md text-foreground" aria-label="5050cloud home">
+        <Link to="/" className="flex items-center gap-2.5 rounded-md text-foreground" aria-label="openrail home">
           <Logo size={32} />
-          <span className="text-[15px] font-semibold tracking-tight">5050cloud</span>
+          <span className="text-[15px] font-semibold tracking-tight">openrail</span>
         </Link>
         <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
           {HEADER_LINKS.map((l) => (
@@ -122,7 +122,7 @@ function AuthFooter() {
           </p>
           <div className="my-1 hidden h-px w-full bg-line md:block" aria-hidden />
           <p className="text-xs leading-[18px] text-fg-3">
-            &copy; {YEAR} 5050cloud contributors. Released under AGPL-3.0-only.
+            &copy; {YEAR} openrail contributors. Released under AGPL-3.0-only.
           </p>
         </div>
         {FOOTER_COLUMNS.map((col) => (

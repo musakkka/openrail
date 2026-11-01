@@ -6,7 +6,7 @@ description: >-
   Official Redis image with a volume, append-only persistence, a generated
   password and no eviction. With a backup bucket set, a completed RDB file is
   backed up with restic every day.
-docs: https://5050cloud.com/docs/databases/redis
+docs: https://openrail.app/docs/databases/redis
 icon: redis.svg
 category: database
 inputs: []

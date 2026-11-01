@@ -8,8 +8,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/fakeorch"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/core/fakeorch"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // fakeDNS is a resolver whose answers a test sets per name.

@@ -23,7 +23,7 @@ With [SMTP](/docs/guides/smtp) set and an email given, the console says "We emai
 | Action | Owner | Admin | Member | Viewer |
 |---|:-:|:-:|:-:|:-:|
 | View projects, canvas, deployments, logs, metrics | yes | yes | yes | yes |
-| Reveal variables, `5050 run`, shell, connect | yes | yes | yes | no |
+| Reveal variables, `openrail run`, shell, connect | yes | yes | yes | no |
 | Create and change services, variables, domains, volumes; deploy, roll back | yes | yes | yes | no |
 | Delete services, environments, projects; restore and promote databases; wipe volumes | yes | yes | no | no |
 | Hosts, GitHub App, bucket and SMTP settings, members, upgrades, audit log | yes | yes | no | no |

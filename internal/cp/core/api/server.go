@@ -19,10 +19,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/core"
-	"github.com/musakkka/5050cloud/internal/cp/core/auth"
-	"github.com/musakkka/5050cloud/internal/cp/core/fail"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/core"
+	"github.com/musakkka/openrail/internal/cp/core/auth"
+	"github.com/musakkka/openrail/internal/cp/core/fail"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // CookieName is the session cookie. On HTTPS it is SecureCookieName instead: the

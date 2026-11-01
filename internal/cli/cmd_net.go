@@ -10,7 +10,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 func (a *App) findDomain(ctx context.Context, t *Target, name string) (api.Domain, error) {
@@ -57,7 +57,7 @@ func (a *App) printDomain(d api.Domain) error {
 	return nil
 }
 
-// Polling cadence and cap for `5050 domain --wait`.
+// Polling cadence and cap for `openrail domain --wait`.
 var (
 	domainPollEvery = 5 * time.Second
 	domainPollMax   = 5 * time.Minute
@@ -75,7 +75,7 @@ func (a *App) waitDomain(ctx context.Context, t *Target, d api.Domain) (api.Doma
 			a.printf("Waiting: %s (%s)\n", d.Status, d.Message)
 		}
 		if time.Now().After(deadline) {
-			return d, fmt.Errorf("%s is still %s after %s. Run `5050 domain status %s` to look again", d.Domain, d.Status, domainPollMax, d.Domain)
+			return d, fmt.Errorf("%s is still %s after %s. Run `openrail domain status %s` to look again", d.Domain, d.Status, domainPollMax, d.Domain)
 		}
 		select {
 		case <-ctx.Done():

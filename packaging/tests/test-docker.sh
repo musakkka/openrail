@@ -10,7 +10,7 @@ set -u
 FIXTURE=${FIXTURE:?set FIXTURE to a directory made by tests/make-fixture.sh}
 VER=$(cat "$FIXTURE/latest.txt")
 KEY=$(cat "$FIXTURE/test.pub")
-IMAGE=fifty-cli-test:local
+IMAGE=openrail-cli-test:local
 
 if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
 	echo "skip docker tests (no Docker)"
@@ -28,7 +28,7 @@ build() {
 }
 check "image builds from the signed release" build RELEASE_PUBKEY="$KEY"
 [ "$FAIL" -eq 0 ] || cat "$ROOT/.docker.log"
-check "image runs 5050 version" sh -c "docker run --rm '$IMAGE' version | grep -q '$VER'"
+check "image runs openrail version" sh -c "docker run --rm '$IMAGE' version | grep -q '$VER'"
 check "image runs as a non-root user" sh -c "[ \"\$(docker run --rm --entrypoint id '$IMAGE' -u)\" = 10001 ]"
 check "railway alias in the image" sh -c "docker run --rm --entrypoint railway '$IMAGE' --help >/dev/null 2>&1"
 check "default command prints help" sh -c "docker run --rm '$IMAGE' | grep -q 'Usage'"

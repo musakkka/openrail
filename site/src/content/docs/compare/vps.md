@@ -1,9 +1,9 @@
 ---
-title: 5050cloud and a plain VPS
-description: Running apps on a VPS by hand is cheapest in software but costs time; 5050cloud automates the parts that take it.
+title: openrail and a plain VPS
+description: Running apps on a VPS by hand is cheapest in software but costs time; openrail automates the parts that take it.
 ---
 
-Running apps on a VPS by hand is cheapest in software but costs time; 5050cloud automates the parts that take it.
+Running apps on a VPS by hand is cheapest in software but costs time; openrail automates the parts that take it.
 
 ## What you would do by hand
 
@@ -13,7 +13,7 @@ Running apps on a VPS by hand is cheapest in software but costs time; 5050cloud 
 - Wire logs and metrics.
 - Repeat it on every new server and keep it patched.
 
-## What 5050cloud does
+## What openrail does
 
 - One command installs it all with HTTPS by default.
 - Git deploys with health checks, zero-downtime rollouts for services without a volume, and rollbacks that restore variables.

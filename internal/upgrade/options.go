@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
-// Package upgrade downloads, verifies and switches 5050cloud releases with
+// Package upgrade downloads, verifies and switches openrail releases with
 // automatic rollback (docs/SPEC.md 9.16). The control plane switches through
 // a detached helper process; agents switch themselves and revert when the
 // new binary cannot reach the control plane. README.md explains the layout.
@@ -18,14 +18,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/upgrade/minisign"
-	"github.com/musakkka/5050cloud/pkg/version"
+	"github.com/musakkka/openrail/internal/upgrade/minisign"
+	"github.com/musakkka/openrail/pkg/version"
 )
 
 // Default locations on a host (docs/SPEC.md 4.2 and 6.4).
 const (
-	DefaultReleaseBase = "https://github.com/musakkka/5050cloud/releases/download"
-	DefaultLatestURL   = "https://github.com/musakkka/5050cloud/releases/latest/download/latest.txt"
+	DefaultReleaseBase = "https://github.com/musakkka/openrail/releases/download"
+	DefaultLatestURL   = "https://github.com/musakkka/openrail/releases/latest/download/latest.txt"
 	DefaultInstallDir  = "/opt/5050"
 	DefaultDataDir     = "/var/lib/5050"
 	DefaultControlURL  = "http://127.0.0.1:5050"
@@ -42,7 +42,7 @@ var embeddedKeys string
 // defaults above; Defaults fills them.
 type Options struct {
 	// ReleaseBase is where releases are fetched from, default
-	// "https://github.com/musakkka/5050cloud/releases/download". A release
+	// "https://github.com/musakkka/openrail/releases/download". A release
 	// lives at <ReleaseBase>/<tag>/<file>.
 	ReleaseBase string
 	// LatestURL returns the latest stable tag as plain text.

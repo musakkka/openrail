@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Caddy settings (docs/SPEC.md 8.4).

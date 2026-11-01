@@ -25,7 +25,7 @@ export default function Environments({ project, current, onProject, admin }: { p
   return (
     <>
       <section>
-        <SectionHead title="Environments" description={<>Environments keep deployments for each stage of your project apart. <ExternalLink href="https://github.com/5050cloud/5050cloud#environments" className="text-fg-2 underline underline-offset-2 hover:text-foreground">Read the docs</ExternalLink></>} />
+        <SectionHead title="Environments" description={<>Environments keep deployments for each stage of your project apart. <ExternalLink href="https://github.com/openrail/openrail#environments" className="text-fg-2 underline underline-offset-2 hover:text-foreground">Read the docs</ExternalLink></>} />
         <div className="overflow-hidden rounded-lg border border-line">
           {envs.map((e, i) => (
             <div key={e.id} className={cx("group flex h-[60px] items-center gap-3 px-4 transition-colors hover:bg-tint-hover", i > 0 && "border-t border-surface-hover")}>
@@ -77,7 +77,7 @@ function NewEnvironment({ project, onClose, onCreated }: { project: T.Project; o
     <Modal bare width={520} title="New Environment" onClose={onClose}>
       <form onSubmit={submit} className="p-8">
         <h3 className="text-h2 text-foreground">New Environment</h3>
-        <p className="mt-2 text-body text-fg-3">Create an environment to deploy changes in isolation. You can later <b className="font-semibold text-fg-2">sync environments</b> to move changes across. <ExternalLink href="https://github.com/5050cloud/5050cloud#environments" className="underline underline-offset-2 hover:text-foreground">Learn More</ExternalLink></p>
+        <p className="mt-2 text-body text-fg-3">Create an environment to deploy changes in isolation. You can later <b className="font-semibold text-fg-2">sync environments</b> to move changes across. <ExternalLink href="https://github.com/openrail/openrail#environments" className="underline underline-offset-2 hover:text-foreground">Learn More</ExternalLink></p>
         <div className="mt-6">
           <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus placeholder="Environment name" aria-label="Environment name" aria-invalid={!!err || undefined} maxLength={32} />
           <InlineError>{err}</InlineError>

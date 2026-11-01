@@ -18,7 +18,7 @@ The deployment builds or pulls the image and shows **Active** with "Scheduled". 
 - **Exactly once per slot**: a control plane restart at a boundary does not run a slot twice.
 - **Overlap**: `skip` (default) skips a run while the previous one is running; `queue` runs it afterwards.
 - **Timeout**: a run that takes longer is stopped.
-- **Run now** in the Cron tab (or `5050 cron run`) starts a run immediately.
+- **Run now** in the Cron tab (or `openrail cron run`) starts a run immediately.
 
 ## When the control plane is down
 

@@ -28,7 +28,7 @@ export default function ConnectModal({ base, onClose, onOpenNetworking }: { base
   const d = info.data;
   const privVar = d?.privateVariable || eng.privateVar;
   const pubVar = d?.publicVariable || eng.publicVar;
-  const cli = d?.cliCommand || `5050 connect ${name}`;
+  const cli = d?.cliCommand || `openrail connect ${name}`;
 
   const reveal = async (variable: string) => {
     setErr(null);
@@ -105,8 +105,8 @@ export default function ConnectModal({ base, onClose, onOpenNetworking }: { base
                         <div className="font-medium text-foreground">From your machine</div>
                         <p className="text-fg-2">Opens an encrypted tunnel session with no public access needed.</p>
                         <div className="mt-2"><CodeBox text={cli} compact>{cli}</CodeBox></div>
-                        <a href="https://github.com/musakkka/5050cloud/tree/main/docs" target="_blank" rel="noreferrer"
-                          className="mt-1.5 inline-block text-caption font-medium text-foreground underline underline-offset-2 hover:text-accent-text">Install the 5050 CLI</a>
+                        <a href="https://github.com/musakkka/openrail/tree/main/docs" target="_blank" rel="noreferrer"
+                          className="mt-1.5 inline-block text-caption font-medium text-foreground underline underline-offset-2 hover:text-accent-text">Install the openrail CLI</a>
                       </div>
                     </div>
                   </div>

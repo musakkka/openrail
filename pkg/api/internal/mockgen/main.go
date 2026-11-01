@@ -18,7 +18,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 func main() {

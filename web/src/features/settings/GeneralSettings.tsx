@@ -91,7 +91,7 @@ function SmtpForm() {
         </div>
         <Field label="User name"><Input value={s.username} onChange={(e) => setS({ ...s, username: e.target.value })} autoComplete="off" /></Field>
         <Field label="Password" hint="Leave empty to keep the stored password."><Input type="password" value={s.password || ""} onChange={(e) => setS({ ...s, password: e.target.value })} autoComplete="new-password" /></Field>
-        <Field label="From address" error={err("from")}><Input value={s.from} onChange={(e) => setS({ ...s, from: e.target.value })} placeholder="5050cloud <noreply@example.com>" /></Field>
+        <Field label="From address" error={err("from")}><Input value={s.from} onChange={(e) => setS({ ...s, from: e.target.value })} placeholder="openrail <noreply@example.com>" /></Field>
         <SaveRow {...a} />
       </form>
       <div className="mt-6 flex flex-col md:flex-row gap-3 md:items-end">

@@ -20,13 +20,13 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // Source fetching (docs/SPEC.md 8.2 step 1).
 
 const (
-	// maxArchiveBytes is the upload limit for `5050 up` tarballs.
+	// maxArchiveBytes is the upload limit for `openrail up` tarballs.
 	maxArchiveBytes = 500 << 20
 	// maxExtractedBytes bounds what an archive may expand to.
 	maxExtractedBytes = 4 << 30

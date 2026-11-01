@@ -1,7 +1,7 @@
 {
  "measured": "2026-10-23",
- "source": "reference/design/benchmark.md in the 5050cloud repository, from the demo pipeline's make bench",
- "build": "5050cloud 0.1.1",
+ "source": "reference/design/benchmark.md in the openrail repository, from the demo pipeline's make bench",
+ "build": "openrail 0.1.1",
  "vm": "Ubuntu 24.04, 8 vCPU (4 physical cores, 2 threads each, AMD EPYC), 32 GB RAM, one host.",
  "app": "apps/node-cpu: each request counts the primes below LIMIT on Node's main thread",
  "load": "oha 1.16.0 on the same VM through the HTTPS proxy, 32 connections, 15 s warm-up, median of 3 runs of 30 s",

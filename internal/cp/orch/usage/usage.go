@@ -16,7 +16,7 @@ import (
 	"math"
 	"sort"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // Prices are Railway's usage list prices (USD).

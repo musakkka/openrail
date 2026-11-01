@@ -45,7 +45,7 @@ curl -fsSL {{GET}} | sudo sh -s -- --domain apps.example.com --console-domain co
 2. In the console, go to **Settings**, **General** and edit **Console domain**.
 3. Select **Save**. The console asks for a certificate for the new name.
 4. Open the new address.
-5. Run `5050 login https://<new console domain>` on each laptop, and update the console URL in CI secrets.
+5. Run `openrail login https://<new console domain>` on each laptop, and update the console URL in CI secrets.
 
 The old name keeps working for 24 hours, so you can sign in there while you move bookmarks and laptops. A name that a service already uses cannot become the console domain.
 
@@ -62,7 +62,7 @@ New generated domains use the new base domain. Services that already have a gene
 
 ## Certificate notices
 
-**ACME email** in **Settings**, **General** is where the certificate authority sends expiry notices. 5050cloud renews certificates on its own; a notice usually means renewal failed for a domain that no longer points at your host.
+**ACME email** in **Settings**, **General** is where the certificate authority sends expiry notices. openrail renews certificates on its own; a notice usually means renewal failed for a domain that no longer points at your host.
 
 ## What success looks like
 

@@ -1,26 +1,26 @@
 ---
 title: GitHub App
-description: Create a GitHub App for your install so 5050cloud can read private repos and deploy on every push, without copying keys by hand.
+description: Create a GitHub App for your install so openrail can read private repos and deploy on every push, without copying keys by hand.
 ---
 
-Create a GitHub App for your install so 5050cloud can read private repos and deploy on every push, without copying keys by hand.
+Create a GitHub App for your install so openrail can read private repos and deploy on every push, without copying keys by hand.
 
 ## Do you need it
 
-- **Public repos** work without it. 5050cloud checks the branch for new commits every 2 minutes and deploys them.
+- **Public repos** work without it. openrail checks the branch for new commits every 2 minutes and deploys them.
 - **Private repos** need it, and so do deploys that start the moment you push.
 
 ## Before you start
 
 The app's webhook and callback point at your console's address, so set that first. If you plan to move the console to your own domain, do it now: see [Your domains](/docs/guides/console-domain). The console must be reachable from the internet, because GitHub sends every push to it.
 
-You need the **Admin** or **Owner** role in 5050cloud. To create the app under a GitHub organization you must be an owner of that organization.
+You need the **Admin** or **Owner** role in openrail. To create the app under a GitHub organization you must be an owner of that organization.
 
 ## Create the app
 
 1. In the console, go to **Settings**, **GitHub**.
 2. Optional: type the organization's name in **Organization**. Leave it empty to create the app on your own GitHub account.
-3. Select **Connect GitHub**. GitHub opens and shows the app it is about to create, named `5050cloud-<your install's name>`.
+3. Select **Connect GitHub**. GitHub opens and shows the app it is about to create, named `openrail-<your install's name>`.
 4. On GitHub, confirm the name and select **Create GitHub App**.
 5. GitHub sends you back to the console, which stores the app's keys. No key passes through your clipboard.
 

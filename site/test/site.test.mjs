@@ -62,7 +62,7 @@ test('the landing page, /deploy, /install.sh, llms.txt and llms-full.txt are bui
   }
   assert.equal(read('install.sh'), readFileSync(join(ROOT, 'install/install.sh'), 'utf8'));
   const llms = read('llms.txt');
-  for (const slug of REQUIRED) assert.ok(llms.includes(`https://5050cloud.com/${slug}.md`), `llms.txt lists ${slug}`);
+  for (const slug of REQUIRED) assert.ok(llms.includes(`https://openrail.app/${slug}.md`), `llms.txt lists ${slug}`);
   assert.ok(read('llms-full.txt').length > 50000);
 });
 
@@ -72,7 +72,7 @@ test('landing sections follow section 14.1 and the site rules', () => {
   assert.ok(text.includes("Railway's workflow on your own servers"));
   assert.equal((html.match(/<h1[ >]/g) || []).length, 1, 'one h1');
   for (const cmd of [INSTALL, INSTALL_WGET, INSTALL_GUIDED, INSTALL_CLI]) assert.ok(text.includes(cmd), cmd);
-  assert.equal(INSTALL, 'curl -fsSL https://5050cloud.com/install.sh | sudo sh');
+  assert.equal(INSTALL, 'curl -fsSL https://openrail.app/install.sh | sudo sh');
   for (const h of ['The console you already know', 'Install with one command', 'Your domains, with HTTPS', 'What it costs', 'Bring your Railway habits', 'Honest limits', 'Open source, no lock-in', 'Questions', 'Install it on a VM you already pay for']) {
     assert.ok(html.includes(`>${h}</h2>`), h);
   }
@@ -88,7 +88,7 @@ test('landing sections follow section 14.1 and the site rules', () => {
   assert.match(html, /<li class="bar is-vm">[\s\S]*?\$156\.89/);
   // Beta is labelled where the landing page mentions it, and listed under Honest limits.
   assert.match(text, /Beta: replicas spread across several hosts/);
-  for (const b of ['More than one host', 'Replicas spread across hosts', 'Database backups to an S3-compatible bucket', 'Upgrades with 5050 upgrade', 'The Railway project importer']) assert.ok(text.includes(b), `limits list ${b}`);
+  for (const b of ['More than one host', 'Replicas spread across hosts', 'Database backups to an S3-compatible bucket', 'Upgrades with openrail upgrade', 'The Railway project importer']) assert.ok(text.includes(b), `limits list ${b}`);
 });
 
 test('the landing page is built around real product media', () => {
@@ -120,8 +120,8 @@ test('the landing page is built around real product media', () => {
   assert.match(html, /<track kind="chapters" src="media\/hero\.chapters\.vtt"/);
   assert.match(html, /<details class="transcript"><summary>Read the steps<\/summary>/);
   for (const f of ['media/hero.en.vtt', 'media/hero.chapters.vtt']) assert.match(readFileSync(join(OUT, f), 'utf8'), /^WEBVTT\n/, f);
-  // The owner chose the 5050 logo over the text wordmark; the link names the site.
-  assert.match(html, /<a class="brand" href="[^"]*" aria-label="5050cloud home"><svg class="logo"/);
+  // The owner chose the logo over the text wordmark; the link names the site.
+  assert.match(html, /<a class="brand" href="[^"]*" aria-label="openrail home"><svg class="logo"/);
   // The hero recording: muted, looping, inline, with a poster and both formats,
   // and its steps (from the render's chapters) beside it as buttons.
   const allVideos = [...html.matchAll(/<video [^>]*>[\s\S]*?<\/video>/g)].map((m) => m[0]);
@@ -130,7 +130,7 @@ test('the landing page is built around real product media', () => {
   // The full demo: controls, a poster, both formats, captions and chapters.
   const demo = allVideos.filter((v) => v.includes('class="demo-video"'));
   assert.equal(demo.length, 1);
-  for (const want of ['controls', 'poster="demo/', 'demo/5050cloud-demo.webm', 'demo/5050cloud-demo.mp4', '<track kind="captions"', '<track kind="chapters"']) assert.ok(demo[0].includes(want), want);
+  for (const want of ['controls', 'poster="demo/', 'demo/openrail-demo.webm', 'demo/openrail-demo.mp4', '<track kind="captions"', '<track kind="chapters"']) assert.ok(demo[0].includes(want), want);
   assert.ok((html.match(/<button type="button" class="step" data-at="/g) || []).length >= 4, 'hero steps');
   for (const v of videos) {
     for (const want of ['muted', 'loop', 'playsinline', 'poster="media/', 'type="video/webm"', 'type="video/mp4"', 'aria-label="', '<track kind="captions"']) assert.ok(v.includes(want), want);
@@ -151,13 +151,13 @@ test('the demo section appears only for a finished render, never as a placeholde
   assert.equal(demoSection(r, null), '');
   const ready = { ready: true, duration: 90.9, poster: { widths: [960, 1920], ratio: [1920, 1080] }, chapters: [{ start: '3.00', time: '0:03', text: 'Install' }] };
   const video = demoSection(r, ready);
-  for (const want of ['Watch the 91 s demo', '<video', 'controls', 'playsinline', 'muted', 'poster="/demo/poster-1920.webp"', 'src="/demo/5050cloud-demo.webm"', 'src="/demo/5050cloud-demo.mp4"', '<track kind="captions" src="/demo/5050cloud-demo.en.vtt"', '<track kind="chapters"', 'data-at="3.00"']) assert.ok(video.includes(want), want);
+  for (const want of ['Watch the 91 s demo', '<video', 'controls', 'playsinline', 'muted', 'poster="/demo/poster-1920.webp"', 'src="/demo/openrail-demo.webm"', 'src="/demo/openrail-demo.mp4"', '<track kind="captions" src="/demo/openrail-demo.en.vtt"', '<track kind="chapters"', 'data-at="3.00"']) assert.ok(video.includes(want), want);
   assert.doesNotMatch(video, /autoplay/);
   // The build checks for the files: an empty folder means no section.
   assert.equal(findDemo(mkdtempSync(join(tmpdir(), '5050demo-'))).ready, false);
   const html = read('index.html');
   if (findDemo().ready) assert.match(html, /id="demo"/);
-  else assert.doesNotMatch(html, /id="demo"|Watch the \d+ s demo|5050cloud-demo\./);
+  else assert.doesNotMatch(html, /id="demo"|Watch the \d+ s demo|openrail-demo\./);
 });
 
 test('every setup guide opens with its description and ends with a success check and next steps', () => {
@@ -177,19 +177,19 @@ test('the install command is the same on the landing page, the quick start and t
   for (const f of ['index.html', 'docs/quick-start/index.html', 'docs/guides/install/index.html']) {
     assert.ok(textOf(read(f)).includes(INSTALL), f);
   }
-  // Every install command anywhere uses 5050cloud.com/install.sh and nothing else.
+  // Every install command anywhere uses openrail.app/install.sh and nothing else.
   for (const f of files.filter((x) => /\.(html|md|txt)$/.test(x))) {
     const t = readFileSync(f, 'utf8').replace(/<wbr>/g, '').replace(/<[^>]+>/g, '');
-    assert.ok(!t.includes('get.5050cloud.com'), `unresolvable install host in ${f}`);
+    assert.ok(!t.includes('get.openrail.app'), `unresolvable install host in ${f}`);
     for (const m of t.matchAll(/(?:curl|wget)\s+-[a-zA-Z]+\s+(https?:\/\/\S+)/g)) {
-      if (/install/.test(m[1])) assert.ok(m[1].startsWith('https://5050cloud.com/install.sh'), `${f}: ${m[0]}`);
+      if (/install/.test(m[1])) assert.ok(m[1].startsWith('https://openrail.app/install.sh'), `${f}: ${m[0]}`);
     }
   }
 });
 
 test('the custom domains guide documents the full job and links to the one Not yet list', () => {
   const html = read('docs/guides/custom-domains/index.html');
-  for (const want of ['Waiting for DNS', 'Issuing certificate', 'Active', 'Retry certificate', 'CNAME', 'CAA', 'AAAA', 'Cloudflare', '5050 domain certificate retry']) assert.ok(html.includes(want), want);
+  for (const want of ['Waiting for DNS', 'Issuing certificate', 'Active', 'Retry certificate', 'CNAME', 'CAA', 'AAAA', 'Cloudflare', 'openrail domain certificate retry']) assert.ok(html.includes(want), want);
   assert.match(html, /honest-limits\/#not-yet/);
   for (const f of htmlFiles) assert.doesNotMatch(readFileSync(f, 'utf8').replace(/<script[\s\S]*?<\/script>/g, ''), /coming in 0\.1\.1|arrives with release|until 0\.1\.1/i, f);
 });
@@ -258,7 +258,7 @@ test('the prices and the cores figure come from dated data and say only what shi
 });
 
 test('commands do not break inside a flag, and the join command carries no roles', () => {
-  const html = copyBlock('curl -fsSL https://5050cloud.com/install.sh | sudo sh -s -- --join https://console.example.com --token J-...', 'x');
+  const html = copyBlock('curl -fsSL https://openrail.app/install.sh | sudo sh -s -- --join https://console.example.com --token J-...', 'x');
   assert.match(html, /<span class="tok">--token<\/span>/);
   assert.ok(textOf(html).includes('--join https://console.example.com --token J-...'));
   assert.doesNotMatch(read('index.html'), /--token J-\.\.\.[^<]*<\/span>? --roles|--roles<\/span> <span class="tok">app/);

@@ -8,7 +8,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // maxLatencySamples bounds memory per service and window; beyond it the

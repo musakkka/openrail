@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // DB is a *sql.DB or *sql.Tx.

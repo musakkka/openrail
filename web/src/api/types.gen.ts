@@ -71,7 +71,7 @@ export const LabelSkipped = "Skipped";
 // source: types.go
 /*
 Package api is the REST contract between 5050d and its clients (the web
-console and the 5050 CLI). It is frozen for v0.1: a change here is a change
+console and the openrail CLI). It is frozen for v0.1: a change here is a change
 to docs/SPEC.md first. JSON field names are camelCase. Timestamps are Unix
 milliseconds (int64). IDs are prefixed strings (see docs/SPEC.md section 6).
 
@@ -636,7 +636,7 @@ export interface CreateJoinTokenRequest {
   name?: string;
 }
 export interface JoinToken {
-  command: string; // curl -fsSL https://5050cloud.com/install.sh | sudo sh -s -- --join <url> --token <t> --roles app
+  command: string; // curl -fsSL https://openrail.app/install.sh | sudo sh -s -- --join <url> --token <t> --roles app
   token: string; // single use
   expiresAt: number /* int64 */;
 }
@@ -845,7 +845,7 @@ export interface BuildConfig {
   timeoutMin?: number /* int */; // default: the install's build timeout (30)
   /**
    * ConfigPath is the config-as-code file ("railway.json", "infra/5050.yaml");
-   * empty = look for 5050.yaml, 5050.json, railway.json, railway.toml in rootDir.
+   * empty = look for openrail.yaml, openrail.json, railway.json, railway.toml in rootDir.
    */
   configPath?: string;
 }
@@ -1050,7 +1050,7 @@ export interface Variable {
 export interface VariablesResponse {
   variables: Variable[];
   /**
-   * Provided lists the names 5050cloud injects (PORT, FIFTY_*, RAILWAY_* aliases).
+   * Provided lists the names openrail injects (PORT, FIFTY_*, RAILWAY_* aliases).
    */
   provided: string[];
   /**
@@ -1519,7 +1519,7 @@ export interface ConnectInfo {
    */
   privateVariable: string;
   publicVariable?: string;
-  cliCommand: string; // "5050 connect Postgres"
+  cliCommand: string; // "openrail connect Postgres"
 }
 export interface DataTable {
   name: string;

@@ -1,19 +1,19 @@
 # SPDX-License-Identifier: MIT
 #
-# "Deploy with 5050": the GitHub Action for 5050cloud. It installs the 5050
-# CLI and runs `5050 up` with a token, the way Railway's CLI is used in CI
+# "Deploy with openrail": the GitHub Action for openrail. It installs the openrail
+# CLI and runs `openrail up` with a token, the way Railway's CLI is used in CI
 # with RAILWAY_TOKEN. Create an environment token in the console under
 # Project Settings > Tokens and store it as a repository secret.
 #
 #   - uses: actions/checkout@v4.2.2
-#   - uses: musakkka/5050cloud@v0.1.0
+#   - uses: musakkka/openrail@v0.1.0
 #     with:
 #       url: https://console.example.com
-#       token: ${{ secrets.FIFTY_TOKEN }}
+#       token: ${{ secrets.OPENRAIL_TOKEN }}
 #       service: web
-name: Deploy with 5050
-description: Upload the repository to a 5050cloud service with `5050 up` and wait for the deployment.
-author: 5050cloud
+name: Deploy with openrail
+description: Upload the repository to an openrail service with `openrail up` and wait for the deployment.
+author: openrail
 branding:
   icon: upload-cloud
   color: yellow
@@ -23,7 +23,7 @@ inputs:
     description: Environment or account token (5050_...). Pass it from a secret.
     required: true
   url:
-    description: Console URL of your 5050cloud install, for example https://console.example.com.
+    description: Console URL of your openrail install, for example https://console.example.com.
     required: true
   project:
     description: Project name or id. Not needed when the token can see one project.
@@ -62,7 +62,7 @@ inputs:
     required: false
     default: ""
   args:
-    description: Extra arguments passed to `5050 up`, split on spaces.
+    description: Extra arguments passed to `openrail up`, split on spaces.
     required: false
     default: ""
   cli-version:
@@ -72,7 +72,7 @@ inputs:
   cli-repo:
     description: GitHub repository the CLI release is downloaded from.
     required: false
-    default: musakkka/5050cloud
+    default: musakkka/openrail
 
 outputs:
   url:
@@ -85,7 +85,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Install the 5050 CLI
+    - name: Install the openrail CLI
       shell: bash
       env:
         FIFTY_VERSION: ${{ inputs.cli-version }}
@@ -97,15 +97,15 @@ runs:
         if [ -z "$FIFTY_VERSION" ] && [[ "$ACTION_REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
           export FIFTY_VERSION="$ACTION_REF"
         fi
-        dir="$RUNNER_TEMP/5050-cli/bin"
+        dir="$RUNNER_TEMP/openrail-cli/bin"
         sh "$ACTION_PATH/install/install-cli.sh" --dir "$dir" --quiet
         echo "$dir" >> "$GITHUB_PATH"
-    - name: 5050 up
+    - name: openrail up
       id: up
       shell: bash
       env:
-        FIFTY_URL: ${{ inputs.url }}
-        FIFTY_TOKEN: ${{ inputs.token }}
+        OPENRAIL_URL: ${{ inputs.url }}
+        OPENRAIL_TOKEN: ${{ inputs.token }}
         INPUT_PROJECT: ${{ inputs.project }}
         INPUT_ENVIRONMENT: ${{ inputs.environment }}
         INPUT_SERVICE: ${{ inputs.service }}

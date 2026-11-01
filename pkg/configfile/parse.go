@@ -21,7 +21,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"sigs.k8s.io/yaml"
 
-	"github.com/musakkka/5050cloud/pkg/manifest"
+	"github.com/musakkka/openrail/pkg/manifest"
 )
 
 // Formats.
@@ -32,7 +32,8 @@ const (
 )
 
 // Candidates are looked up in this order in the service's root directory.
-var Candidates = []string{"5050.yaml", "5050.json", "railway.json", "railway.toml"}
+// The 5050 names predate the rename and stay valid.
+var Candidates = []string{"openrail.yaml", "openrail.json", "5050.yaml", "5050.json", "railway.json", "railway.toml"}
 
 // Error is a problem with a config file, as one sentence that names the
 // file and, when known, the line.
@@ -60,7 +61,7 @@ type File struct {
 	// "environments.production.deploy.numReplicas") to 1-based lines.
 	Lines map[string]int
 	// ProjectFile is set when a 5050.yaml or 5050.json is a project file
-	// written by `5050 config pull` rather than config as code.
+	// written by `openrail config pull` rather than config as code.
 	ProjectFile bool
 }
 
@@ -135,7 +136,7 @@ func Parse(name string, data []byte) (*File, error) {
 		return nil, &Error{Path: name, Msg: "the top level must be an object with build, deploy or environments."}
 	}
 	base := strings.ToLower(path.Base(name))
-	if strings.HasPrefix(base, "5050.") {
+	if strings.HasPrefix(base, "openrail.") || strings.HasPrefix(base, "5050.") {
 		if _, isProject := obj["services"]; isProject {
 			f.ProjectFile = true
 			return f, nil
@@ -270,7 +271,7 @@ func checkKeys(file string, lines map[string]int, prefix string, obj map[string]
 			if s := suggest(k, names); s != "" {
 				msg += ". Did you mean " + s + "?"
 			} else {
-				msg += ". See the config as code reference for the fields 5050cloud reads."
+				msg += ". See the config as code reference for the fields openrail reads."
 			}
 			return &Error{Path: file, Line: lines[p], Field: p, Msg: msg}
 		}
@@ -423,7 +424,7 @@ func validateBlock(f *File, prefix string, b *manifest.RailwayBuild, d *manifest
 		up := strings.ToUpper(*b.Builder)
 		switch {
 		case up == "HEROKU" || up == "PAKETO":
-			return bad("build.builder", fmt.Sprintf("the %s builder is not available in 5050cloud. Use RAILPACK, NIXPACKS (built with Railpack) or DOCKERFILE.", up))
+			return bad("build.builder", fmt.Sprintf("the %s builder is not available in openrail. Use RAILPACK, NIXPACKS (built with Railpack) or DOCKERFILE.", up))
 		case !builders[up]:
 			return bad("build.builder", fmt.Sprintf("%q is not a builder. Use RAILPACK, NIXPACKS or DOCKERFILE.", *b.Builder))
 		}

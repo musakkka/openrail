@@ -15,9 +15,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/agent/core/engine"
-	"github.com/musakkka/5050cloud/internal/agent/core/sample"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/agent/core/engine"
+	"github.com/musakkka/openrail/internal/agent/core/sample"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // volumeWalkBudget bounds one volume usage walk (8.1).

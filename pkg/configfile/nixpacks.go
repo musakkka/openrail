@@ -11,8 +11,8 @@ import (
 
 	"github.com/BurntSushi/toml"
 
-	"github.com/musakkka/5050cloud/pkg/manifest"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/manifest"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // ParseNixpacks reads nixpacks.toml (9.20.2). Keys we map are kept; every

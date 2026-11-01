@@ -3,7 +3,7 @@
 #
 # Installs the formula with Homebrew on Linux inside the homebrew/brew
 # image: renders a tap for the fixture release, taps it, then runs
-# `brew style`, `brew audit`, `brew install musakkka/tap/5050` (the alias)
+# `brew style`, `brew audit`, `brew install musakkka/tap/openrail` (the alias)
 # and `brew test`. Nothing on this machine's Homebrew is touched.
 #   FIXTURE=DIR tests/test-tap-linux.sh
 set -u
@@ -37,19 +37,19 @@ cp -R /tap /home/linuxbrew/tap
 git config --global --add safe.directory '*'
 brew tap fiftytest/tap /home/linuxbrew/tap
 if brew help trust >/dev/null 2>&1; then brew trust --tap fiftytest/tap >/dev/null; fi
-echo "== style"; brew style fiftytest/tap/fifty-cli
-echo "== audit"; brew audit --strict --formula fiftytest/tap/fifty-cli
-echo "== install"; brew install fiftytest/tap/5050
-echo "== test"; brew test fiftytest/tap/fifty-cli
-echo "== run"; 5050 version
+echo "== style"; brew style fiftytest/tap/openrail-cli
+echo "== audit"; brew audit --strict --formula fiftytest/tap/openrail-cli
+echo "== install"; brew install fiftytest/tap/openrail
+echo "== test"; brew test fiftytest/tap/openrail-cli
+echo "== run"; openrail version
 test -f "$(brew --prefix)/share/zsh/site-functions/_5050"
-test -f "$(brew --prefix)/etc/bash_completion.d/5050"
+test -f "$(brew --prefix)/etc/bash_completion.d/openrail"
 echo "== done"
 EOF
 docker run --rm --add-host host.docker.internal:host-gateway \
 	-v "$TAP:/tap:ro" -v "$W/in-container.sh:/run.sh:ro" "$BREW_IMAGE" bash /run.sh >"$W/brew.log" 2>&1
 rc=$?; [ -n "${VERBOSE:-}" ] && cat "$W/brew.log"
 if [ "$rc" -eq 0 ]; then ok "brew style, audit, install, test on Linux"; else tail -40 "$W/brew.log"; bad "brew style, audit, install, test on Linux"; fi
-check "installed CLI reports $VER" grep -q "5050 $VER" "$W/brew.log"
+check "installed CLI reports $VER" grep -q "openrail $VER" "$W/brew.log"
 
 finish

@@ -26,7 +26,7 @@ func TestDiagnoseFixtures(t *testing.T) {
 		{"dockerfile_missing.log", diagContext{DockerfilePath: "Nope.Dockerfile"}, "No Dockerfile at Nope.Dockerfile. Check the Dockerfile path in Settings > Build."},
 		{"dockerfile_missing.log", diagContext{}, "No Dockerfile at Dockerfile. Check the Dockerfile path in Settings > Build."},
 		{"base_image_not_found.log", diagContext{}, "Image node:99.99.99-nonexistent was not found."},
-		{"base_image_unauthorized.log", diagContext{}, "The registry refused access to ghcr.io/5050cloud-private-nonexistent/app. Add registry credentials in Settings > Source."},
+		{"base_image_unauthorized.log", diagContext{}, "The registry refused access to ghcr.io/openrail-private-nonexistent/app. Add registry credentials in Settings > Source."},
 		{"disk_full.log", diagContext{}, "The build host ran out of disk. Free space or add a data disk."},
 		{"no_start_command.log", diagContext{}, "No start command was found. Set one in Settings > Deploy or add a start script."},
 		{"generic.log", diagContext{}, SentenceGeneric},

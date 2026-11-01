@@ -34,19 +34,32 @@ type Link struct {
 	Service     string `json:"service,omitempty"`
 }
 
-// configPath honours FIFTY_CONFIG (tests, CI) and XDG_CONFIG_HOME.
+// configPath honours OPENRAIL_CONFIG or FIFTY_CONFIG (tests, CI) and XDG_CONFIG_HOME. A login saved
+// under the old 5050 directory is still used until a new one exists.
 func configPath() (string, error) {
-	if p := os.Getenv("FIFTY_CONFIG"); p != "" {
-		return p, nil
+	for _, k := range []string{"OPENRAIL_CONFIG", "FIFTY_CONFIG"} {
+		if p := os.Getenv(k); p != "" {
+			return p, nil
+		}
 	}
-	if x := os.Getenv("XDG_CONFIG_HOME"); x != "" {
-		return filepath.Join(x, "5050", "config.json"), nil
+	base := os.Getenv("XDG_CONFIG_HOME")
+	if base == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("could not find your home directory: %w", err)
+		}
+		base = filepath.Join(home, ".config")
 	}
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf("could not find your home directory: %w", err)
+	p := filepath.Join(base, "openrail", "config.json")
+	if old := filepath.Join(base, "5050", "config.json"); !fileExists(p) && fileExists(old) {
+		return old, nil
 	}
-	return filepath.Join(home, ".config", "5050", "config.json"), nil
+	return p, nil
+}
+
+func fileExists(p string) bool {
+	_, err := os.Stat(p)
+	return err == nil
 }
 
 // LoadConfig reads the config file; a missing file gives an empty config.

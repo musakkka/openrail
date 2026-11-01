@@ -3,7 +3,7 @@
 File formats, frozen for v0.1 (docs/SPEC.md 10, 12, 9.20). MIT licensed.
 
 - `Template`: `templates/<id>/template.yaml`.
-- `ProjectFile`: `5050.yaml` as written by `5050 config pull`.
+- `ProjectFile`: `5050.yaml` as written by `openrail config pull`.
 - `RailwayConfig`: `railway.json`, `railway.toml`, and the config-as-code part
   of `5050.yaml`/`5050.json`; pointer fields tell "set by the file" from
   "not set".

@@ -1,9 +1,9 @@
 ---
 title: Install
-description: Install 5050cloud on a fresh Linux VM with one command, or walk through a guided setup that asks for your domain and email.
+description: Install openrail on a fresh Linux VM with one command, or walk through a guided setup that asks for your domain and email.
 ---
 
-Install 5050cloud on a fresh Linux VM with one command, or walk through a guided setup that asks for your domain and email.
+Install openrail on a fresh Linux VM with one command, or walk through a guided setup that asks for your domain and email.
 
 ## Before you install
 
@@ -66,7 +66,7 @@ Every answer is also a flag and an environment variable named `FIFTY_<FLAG>`, fo
 At the end it prints the console's setup link and where the recovery key is:
 
 ```text
-5050cloud v0.1.0 is ready.
+openrail v0.1.0 is ready.
 
   Open this link to create your account (valid 24 hours, works once):
   https://console-ab12.203-0-113-10.sslip.io/setup?token=...

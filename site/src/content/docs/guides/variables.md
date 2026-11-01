@@ -11,7 +11,7 @@ Set environment variables per service, share them across an environment, and ref
 2. Select **New Variable**, or **Raw Editor** to paste `.env` content.
 3. Select **Deploy** in the banner to apply.
 
-From the CLI: `5050 variables set KEY=value`.
+From the CLI: `openrail variables set KEY=value`.
 
 Names match `[A-Za-z_][A-Za-z0-9_]*` (up to 256 characters). Values are UTF-8, up to 64 KiB, multi-line allowed. Values are stored encrypted and shown only when you reveal them; reveals are audited.
 
@@ -38,7 +38,7 @@ Open **Project Settings > Shared Variables** for the environment. **Share** adds
 
 ## Sealed variables
 
-A sealed variable can never be revealed again. It still reaches builds and deployments, but not `5050 run`, duplication or exports.
+A sealed variable can never be revealed again. It still reaches builds and deployments, but not `openrail run`, duplication or exports.
 
 ## Suggested variables
 
@@ -46,7 +46,7 @@ When a repo has `.env.example`, `.env.sample` or `.env.template` files, their na
 
 ## Heroku
 
-Paste the output of `heroku config --json` or `heroku config -s` into **Import variables from Heroku** in the Variables menu, or run `5050 import heroku-env FILE`.
+Paste the output of `heroku config --json` or `heroku config -s` into **Import variables from Heroku** in the Variables menu, or run `openrail import heroku-env FILE`.
 
 ## Next steps
 

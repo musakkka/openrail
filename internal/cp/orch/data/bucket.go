@@ -15,7 +15,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // BackupKeySource is an optional interface of cpapi.Config. Core owns the
@@ -83,6 +83,7 @@ func deriveBackupKeys(master []byte) (backupKeys, error) {
 	if len(master) < 32 {
 		return backupKeys{}, fmt.Errorf("The master key is %d bytes; it must be 32 bytes to derive backup keys.", len(master))
 	}
+	// These key inputs keep the old name for good: changing them makes existing backups unreadable.
 	walg, err := hkdf.Key(sha256.New, master, nil, "5050cloud wal-g libsodium key v1", 32)
 	if err != nil {
 		return backupKeys{}, err

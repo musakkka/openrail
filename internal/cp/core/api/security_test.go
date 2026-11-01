@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/auth"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/core/auth"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // secOwner sets the install up and returns a signed-in owner client with one

@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"sort"
 
-	"github.com/musakkka/5050cloud/internal/cp/core/vars"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/core/vars"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
 // Plan actions (cpapi.PlanItem.Action).

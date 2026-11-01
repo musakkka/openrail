@@ -9,11 +9,11 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/musakkka/5050cloud/internal/cp/orch/hub"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/cp/orch/hub"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
-// Shell opens an interactive exec in a replica (5050 shell, 5050 ssh and
+// Shell opens an interactive exec in a replica (openrail shell, openrail ssh and
 // the console terminal). rw carries terminal bytes; resizes arrive on resize.
 func (o *Orchestrator) Shell(ctx context.Context, envID, serviceID, replicaID, session string, cmd []string, cols, rows int, rw io.ReadWriter, resize <-chan [2]int) (int, error) {
 	hostID := ""
@@ -85,7 +85,7 @@ func (o *Orchestrator) Shell(ctx context.Context, envID, serviceID, replicaID, s
 	return code, nil
 }
 
-// Tunnel connects rw to a port of a running replica (5050 connect).
+// Tunnel connects rw to a port of a running replica (openrail connect).
 func (o *Orchestrator) Tunnel(ctx context.Context, envID, serviceID string, port int, rw io.ReadWriteCloser) error {
 	defer rw.Close()
 	hostID, replicaID, err := o.activeReplica(ctx, envID, serviceID)

@@ -284,7 +284,7 @@ func fakeGitHub(t *testing.T, limited *bool) *httptest.Server {
 			_, _ = w.Write([]byte(`{"message":"Not Found"}`))
 			return
 		}
-		_, _ = w.Write([]byte(`{"id":42,"slug":"5050cloud-test","name":"5050cloud-test","client_id":"cid","client_secret":"cs","webhook_secret":"ws","pem":"PEM","owner":{"login":"acme"}}`))
+		_, _ = w.Write([]byte(`{"id":42,"slug":"openrail-test","name":"openrail-test","client_id":"cid","client_secret":"cs","webhook_secret":"ws","pem":"PEM","owner":{"login":"acme"}}`))
 	})
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
@@ -370,7 +370,7 @@ func TestClient(t *testing.T) {
 
 func TestManifest(t *testing.T) {
 	m := Manifest("My Install!", "https://console.example.com", "/new")
-	if m["name"] != "5050cloud-my-install" {
+	if m["name"] != "openrail-my-install" {
 		t.Fatalf("name = %v", m["name"])
 	}
 	hook := m["hook_attributes"].(map[string]any)

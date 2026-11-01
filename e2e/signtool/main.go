@@ -18,7 +18,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/upgrade/minisign"
+	"github.com/musakkka/openrail/internal/upgrade/minisign"
 )
 
 func main() {

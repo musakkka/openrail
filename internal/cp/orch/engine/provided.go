@@ -6,12 +6,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/musakkka/5050cloud/internal/cp/cpapi"
-	"github.com/musakkka/5050cloud/internal/cp/orch/routes"
-	"github.com/musakkka/5050cloud/pkg/api"
+	"github.com/musakkka/openrail/internal/cp/cpapi"
+	"github.com/musakkka/openrail/internal/cp/orch/routes"
+	"github.com/musakkka/openrail/pkg/api"
 )
 
-// providedVars are the variables 5050cloud injects for a deployment
+// providedVars are the variables openrail injects for a deployment
 // (docs/SPEC.md 9.3), passed to Config.ResolveVariables; user variables win.
 // Per-replica ones are added by perReplicaVars.
 func providedVars(s cpapi.ServiceSnapshot, depID string, commit *api.Commit, inst api.Install) map[string]string {

@@ -18,7 +18,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 func query(t *testing.T, network, addr, name string, qtype uint16) *dns.Msg {

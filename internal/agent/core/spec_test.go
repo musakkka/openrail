@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/musakkka/5050cloud/internal/agent/assets"
-	"github.com/musakkka/5050cloud/internal/agent/core/engine"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/agent/assets"
+	"github.com/musakkka/openrail/internal/agent/core/engine"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 func TestWrapCluster(t *testing.T) {

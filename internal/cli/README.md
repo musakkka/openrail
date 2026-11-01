@@ -1,9 +1,9 @@
 # internal/cli
 
 The `5050` command line client (docs/SPEC.md section 12). MIT licensed, like
-`cmd/5050`. It imports only `pkg/api`, `pkg/version` and permissive
+`cmd/openrail`. It imports only `pkg/api`, `pkg/version` and permissive
 third-party modules (cobra, coder/websocket, sigs.k8s.io/yaml), so
-`go list -deps ./cmd/5050` never contains an AGPL package.
+`go list -deps ./cmd/openrail` never contains an AGPL package.
 
 ## Design
 
@@ -13,7 +13,7 @@ third-party modules (cobra, coder/websocket, sigs.k8s.io/yaml), so
 | `app.go` | Instance, token and link resolution, numbered pickers, confirmations, commit helper |
 | `config.go` | `~/.config/5050/config.json` (0600): instances, default instance, directory links. `FIFTY_CONFIG` overrides the path |
 | `client.go` | REST client for section 11: JSON calls, raw bodies, SSE streams and WebSockets, bearer token plus `X-5050-CSRF: 1` |
-| `pack.go`, `ignore.go` | `5050 up` archive: tar + gzip, skips `.git`, nested `.gitignore` and `.5050ignore` (gitignore syntax with `!`, `/`, `**`), 500 MB cap |
+| `pack.go`, `ignore.go` | `openrail up` archive: tar + gzip, skips `.git`, nested `.gitignore` and `.5050ignore` (gitignore syntax with `!`, `/`, `**`), 500 MB cap |
 | `railway.go` | Railway verb and flag translation, the "not available" answer, `alias install/remove` |
 | `cmd_*.go` | One file per command group |
 
@@ -24,12 +24,12 @@ default instance. For the token: `FIFTY_TOKEN`, then `RAILWAY_TOKEN` or
 `scale`, `service source`, `volume add`, `environment edit`) commit right away
 unless `--stage`; `--skip-deploys` commits without deploying.
 
-`5050 up` archives the linked directory (or `PATH` with `--path-as-root`),
+`openrail up` archives the linked directory (or `PATH` with `--path-as-root`),
 uploads it, follows the build log stream, polls the deployment until it ends,
 prints the first deploy lines and `Deployed: https://...`, or the diagnosis
 with exit code 1.
 
-`5050 connect` reads `connect-info`, reveals the private URL, listens on
+`openrail connect` reads `connect-info`, reveals the private URL, listens on
 127.0.0.1 and forwards each local connection over the tunnel WebSocket. The
 client gets the rewritten URL; passwords go through `PGPASSWORD`, `MYSQL_PWD`
 and `REDISCLI_AUTH` where the client supports it. Arguments after `--` and

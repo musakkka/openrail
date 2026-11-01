@@ -47,7 +47,7 @@ func TestReadConfigFileRailwayJSON(t *testing.T) {
 		t.Errorf("lines = %v", ov.Lines)
 	}
 	joined := strings.Join(notices, "\n")
-	if !strings.Contains(joined, "railway.json: sleepApplication is not supported in 5050cloud v0.1 and was ignored.") {
+	if !strings.Contains(joined, "railway.json: sleepApplication is not supported in openrail v0.1 and was ignored.") {
 		t.Errorf("notices = %q", notices)
 	}
 	if strings.Contains(joined, sentenceNixpacks) {

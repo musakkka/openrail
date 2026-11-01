@@ -16,7 +16,7 @@ Run any public or private Docker image as a service, with the same variables, do
 From the CLI:
 
 ```sh
-5050 add --image traefik/whoami -v PORT=80
+openrail add --image traefik/whoami -v PORT=80
 ```
 
 ## Private registries

@@ -53,7 +53,7 @@ export default function Dashboard() {
   const projects = useLoad(() => mocksReady.then(() => api.projects(sort)), [sort]);
   const hosts = useLoad<Host[] | undefined>(() => (admin ? mocksReady.then(() => api.hosts()).catch(() => undefined) : Promise.resolve(undefined)), [admin]);
 
-  useEffect(() => { document.title = "Projects | 5050cloud"; return () => { document.title = "5050cloud"; }; }, []);
+  useEffect(() => { document.title = "Projects | openrail"; return () => { document.title = "openrail"; }; }, []);
 
   // keep favourites in step with the palette's star command and other tabs
   useEffect(() => {

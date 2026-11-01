@@ -3,13 +3,13 @@
 // pages use them as {{NAME}} placeholders (see expand below), so a change of
 // repository or install host is a one-line edit here.
 
-export const ORIGIN = 'https://5050cloud.com';
+export const ORIGIN = 'https://openrail.app';
 // The public repository. FIFTY_SITE_REPO overrides it at build time.
-export const REPO = (process.env.FIFTY_SITE_REPO || 'https://github.com/musakkka/5050cloud').replace(/\/$/, '');
+export const REPO = (process.env.FIFTY_SITE_REPO || 'https://github.com/musakkka/openrail').replace(/\/$/, '');
 // The site serves the installer at /install.sh (build.mjs copies install/install.sh).
 export const GET = `${ORIGIN}/install.sh`;
 
-// Every install command on the site uses 5050cloud.com/install.sh and nothing else.
+// Every install command on the site uses openrail.app/install.sh and nothing else.
 export const INSTALL = `curl -fsSL ${GET} | sudo sh`;
 export const INSTALL_WGET = `wget -qO- ${GET} | sudo sh`;
 export const INSTALL_SUDO = INSTALL;

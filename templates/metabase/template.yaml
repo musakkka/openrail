@@ -5,7 +5,7 @@ tagline: Business intelligence and dashboards, with its settings in Postgres.
 description: >-
   Metabase with its application database in Postgres. Add your own data
   sources from the admin settings after the first sign-in.
-docs: https://5050cloud.com/docs/templates/metabase
+docs: https://openrail.app/docs/templates/metabase
 icon: metabase.svg
 category: app
 inputs:

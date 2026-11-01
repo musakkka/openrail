@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 (function () {
-  var KEY = '5050cloud.console';
+  var KEY = 'openrail.console';
   var params = new URLSearchParams(location.search);
   var template = params.get('template') || '';
   var form = document.getElementById('deploy-form');
@@ -11,7 +11,7 @@
   if (!validId) {
     what.textContent = template ? 'That template name is not valid.' : 'This page opens a template in your own console. The link needs ?template=<id>.';
   } else {
-    what.textContent = 'Open the ' + template + ' template in your own 5050cloud console.';
+    what.textContent = 'Open the ' + template + ' template in your own openrail console.';
   }
   function normalise(v) {
     v = (v || '').trim();

@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/musakkka/5050cloud/internal/agent/core/engine"
-	"github.com/musakkka/5050cloud/internal/agent/core/logstore"
-	"github.com/musakkka/5050cloud/pkg/proto"
+	"github.com/musakkka/openrail/internal/agent/core/engine"
+	"github.com/musakkka/openrail/internal/agent/core/logstore"
+	"github.com/musakkka/openrail/pkg/proto"
 )
 
 // earlyExit is how soon after start an exit counts as "right after starting".

@@ -9,7 +9,7 @@ Run several replicas of a service across your hosts and deploy new versions with
 
 ## Set replicas
 
-In **Settings > Scale**, set **Replicas**, or run `5050 scale 2`. Replicas spread across eligible hosts. Public traffic and private DNS pick a random healthy replica.
+In **Settings > Scale**, set **Replicas**, or run `openrail scale 2`. Replicas spread across eligible hosts. Public traffic and private DNS pick a random healthy replica.
 
 ## How a deploy rolls out
 
