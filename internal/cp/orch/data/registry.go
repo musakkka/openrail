@@ -40,9 +40,14 @@ const (
 	keepImagesOverCap = 3
 	registryRepos     = "/var/lib/registry/docker/registry/v2/repositories"
 	registryData      = "/var/lib/registry"
-	registryConfig    = "/etc/docker/registry/config.yml"
-	readOnlyVar       = "REGISTRY_STORAGE_MAINTENANCE_READONLY"
-	defaultCapPct     = 30
+	// registryConfig is where registry 3.x reads its config. The 2.x path
+	// (/etc/docker/registry/config.yml) does not exist in the pinned
+	// registry:3.0.0 image, so garbage-collect exited at once with its usage
+	// text and no blob was ever deleted. It must match the agent's
+	// registryConfigPath (internal/agent/core/registry.go).
+	registryConfig = "/etc/distribution/config.yml"
+	readOnlyVar    = "REGISTRY_STORAGE_MAINTENANCE_READONLY"
+	defaultCapPct  = 30
 	// exitNotFilesystem is what the untag script returns when the registry
 	// stores images in the bucket.
 	exitNotFilesystem = 3
@@ -67,6 +72,22 @@ func (d *Data) registryKeep(ctx context.Context) int {
 // core.DefaultImageRetention.
 const defaultKeep = 2
 
+// keepRetryEvery spaces retries of a collection after a retention change.
+const keepRetryEvery = 10 * time.Minute
+
+// keepRetryDue reports whether a collection for retention keepKey may be
+// attempted now. Only retries of the same value are spaced: a newly changed
+// setting is always tried at once.
+func (d *Data) keepRetryDue(ctx context.Context, keepKey string) bool {
+	last, _ := d.st.stateGet(ctx, "registry_gc_keep_tried")
+	value, at, ok := strings.Cut(last, "@")
+	if !ok || value != keepKey {
+		return true
+	}
+	ms, err := strconv.ParseInt(at, 10, 64)
+	return err != nil || d.now().Sub(time.UnixMilli(ms)) >= keepRetryEvery
+}
+
 // overCapKeep is the retention used while the registry is above its cap. An
 // owner who chose to keep every image is obeyed; the cap then only triggers
 // collection of untagged data.
@@ -83,16 +104,23 @@ func (d *Data) maybeRegistryMaintenance(ctx context.Context) error {
 	keep := d.registryKeep(ctx)
 
 	// A changed setting applies now rather than at the next 04:00, so lowering
-	// it frees disk straight away. The value is recorded before the run, so a
-	// failing collection is retried by the daily one instead of every minute.
+	// it frees disk straight away. The value is recorded only once a
+	// collection succeeds: the first attempt runs as the control plane starts,
+	// often while its agent is still reconnecting, and recording it up front
+	// left that failure in place until the next day. Retries are spaced by
+	// keepRetryEvery so a broken registry does not pause builds every minute.
 	keepKey := strconv.Itoa(keep)
-	if last, _ := d.st.stateGet(ctx, "registry_gc_keep"); last != keepKey {
-		if err := d.st.stateSet(ctx, "registry_gc_keep", keepKey); err != nil {
+	if last, _ := d.st.stateGet(ctx, "registry_gc_keep"); last != keepKey && d.keepRetryDue(ctx, keepKey) {
+		if err := d.st.stateSet(ctx, "registry_gc_keep_tried", keepKey+"@"+strconv.FormatInt(d.now().UnixMilli(), 10)); err != nil {
 			return err
 		}
 		d.background("registry gc (retention changed)", func(bg context.Context) {
 			if err := d.RunRegistryGC(bg, keep); err != nil {
-				d.log.Warn("registry garbage collection after a retention change", "err", err)
+				d.log.Warn("registry garbage collection after a retention change; will retry", "err", err, "in", keepRetryEvery)
+				return
+			}
+			if err := d.st.stateSet(bg, "registry_gc_keep", keepKey); err != nil {
+				d.log.Warn("could not record the applied image retention", "err", err)
 			}
 		})
 		return nil

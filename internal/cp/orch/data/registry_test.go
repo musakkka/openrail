@@ -3,8 +3,10 @@
 package data
 
 import (
+	"errors"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/musakkka/openrail/pkg/proto"
 )
@@ -176,4 +178,94 @@ func TestRetentionChangeCollectsAtOnce(t *testing.T) {
 	if gcRuns() != 2 {
 		t.Fatalf("a changed setting ran %d collections in total, want 2", gcRuns())
 	}
+}
+
+// The first collection after a retention change runs as the control plane
+// starts, often while its agent is still reconnecting (seen on a real host:
+// "Host ... is offline"). A failure must be retried, spaced out, and the
+// setting recorded as applied only once a collection succeeds.
+func TestRetentionChangeRetriesAFailedCollection(t *testing.T) {
+	e := newEnv(t)
+	hostDown := true
+	e.run.OnRegistryJob = func(cmd []string, env map[string]string) (proto.JobResult, error) {
+		if hostDown {
+			return proto.JobResult{}, errors.New("The job could not be sent to host depot-1: Host is offline.")
+		}
+		return proto.JobResult{}, nil
+	}
+	tick := func() {
+		t.Helper()
+		if err := e.d.maybeRegistryMaintenance(e.ctx()); err != nil {
+			t.Fatal(err)
+		}
+		e.wait()
+	}
+	applied := func() string {
+		v, _ := e.d.st.stateGet(e.ctx(), "registry_gc_keep")
+		return v
+	}
+	attempts := func() int {
+		n := 0
+		for _, c := range e.run.Calls() {
+			if strings.HasPrefix(c, "PauseBuilds") {
+				n++
+			}
+		}
+		return n
+	}
+
+	tick()
+	if applied() != "" {
+		t.Fatalf("a failed collection was recorded as applied (%q)", applied())
+	}
+	first := attempts()
+	if first == 0 {
+		t.Fatal("no collection was attempted")
+	}
+
+	e.clock.Add(time.Minute)
+	tick()
+	if attempts() != first {
+		t.Fatal("a failed collection was retried after one minute; retries must be spaced")
+	}
+
+	hostDown = false
+	e.clock.Add(keepRetryEvery)
+	tick()
+	if attempts() == first {
+		t.Fatal("the failed collection was never retried")
+	}
+	if applied() != "2" {
+		t.Fatalf("a successful retry was not recorded (applied %q)", applied())
+	}
+
+	// A new value is tried at once, without waiting for the retry spacing.
+	before := attempts()
+	inst, _ := e.cfg.Install(e.ctx())
+	inst.ImageRetention = 4
+	e.cfg.SetInstall(inst)
+	tick()
+	if attempts() == before {
+		t.Fatal("a newly changed setting waited for the retry spacing")
+	}
+}
+
+// garbage-collect must name the config of the pinned registry:3.0.0 image.
+// With the 2.x path it exits with its usage text, and nothing on disk is ever
+// freed (seen on a real host: a 68 GB registry after months of "weekly GC").
+func TestRegistryGCUsesTheRegistry3ConfigPath(t *testing.T) {
+	e := newEnv(t)
+	if err := e.d.RunRegistryGC(e.ctx(), 2); err != nil {
+		t.Fatal(err)
+	}
+	want := "garbage-collect --delete-untagged /etc/distribution/config.yml"
+	for _, c := range e.run.Calls() {
+		if strings.Contains(c, "garbage-collect") {
+			if !strings.Contains(c, want) {
+				t.Fatalf("garbage-collect ran as %q, want it to contain %q", c, want)
+			}
+			return
+		}
+	}
+	t.Fatal("garbage-collect never ran")
 }

@@ -11,6 +11,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -407,8 +408,9 @@ func TestAgentUpgradeAndRevert(t *testing.T) {
 	if got, _ := linkTarget(o.AgentLink()); got != newDir {
 		t.Fatalf("agent -> %s", got)
 	}
-	if !strings.Contains(fr.all(), "systemctl --no-block restart 5050-agent.service") {
-		t.Fatalf("commands %s", fr.all())
+	// The restart is issued from a transient unit outside the agent's cgroup.
+	if all := fr.all(); !strings.Contains(all, "systemd-run --no-block") || !strings.Contains(all, "systemctl restart 5050-agent.service") {
+		t.Fatalf("commands %s", all)
 	}
 
 	// The new agent starts and never connects: it reverts.
@@ -509,5 +511,69 @@ func TestDefaultsReadReleaseFile(t *testing.T) {
 	}
 	if st, err := Status(o); err != nil || st.State != StateIdle {
 		t.Fatalf("%+v %v", st, err)
+	}
+}
+
+// agentUpgradeWith runs UpgradeAgent from v0.1.0 to v0.2.0 with a runner hook
+// and returns the options and the release directories.
+func agentUpgradeWith(t *testing.T, hook func(cmd string) error) (Options, string, string, error) {
+	t.Helper()
+	pub, sec := keypair(t)
+	rs, _ := newRelease(t, sec, "v0.2.0", map[string]string{"5050-agent": "new"})
+	o := baseOpts(t, rs.URL, pub)
+	o.Run = &fakeRun{hook: hook}
+	oldDir := filepath.Join(o.InstallDir, "releases", "v0.1.0")
+	_ = os.MkdirAll(oldDir, 0o755)
+	if _, err := swapLink(o.CurrentLink(), oldDir); err != nil {
+		t.Fatal(err)
+	}
+	r, err := Resolve(context.Background(), o, "v0.2.0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = UpgradeAgent(context.Background(), o, proto.Upgrade{Version: r.Version, URL: r.URL, SHA256: r.SHA256})
+	return o, oldDir, filepath.Join(o.InstallDir, "releases", "v0.2.0"), err
+}
+
+// Without systemd-run, the systemctl client lives in the agent's cgroup and
+// the restart it asks for kills it. That is success, not failure: before this
+// was understood the agent swapped back to the old binary a moment before
+// systemd restarted it, and no agent upgrade could ever complete (seen on a
+// real host, "systemctl --no-block restart 5050-agent.service failed: signal:
+// killed").
+func TestAgentUpgradeSurvivesBeingKilledByItsOwnRestart(t *testing.T) {
+	o, _, newDir, err := agentUpgradeWith(t, func(cmd string) error {
+		switch {
+		case strings.HasPrefix(cmd, "systemd-run"):
+			return errors.New("systemd-run --no-block failed: exec: \"systemd-run\": executable file not found in $PATH")
+		case strings.HasPrefix(cmd, "systemctl"):
+			return errors.New("systemctl --no-block restart 5050-agent.service failed: signal: killed: ")
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("a restart that killed its own client was reported as a failure: %v", err)
+	}
+	if got, _ := linkTarget(o.AgentLink()); got != newDir {
+		t.Fatalf("agent link went back to %s; it must stay on the new release", got)
+	}
+	if _, err := os.Stat(o.Defaults().pendingPath()); err != nil {
+		t.Fatalf("the pending marker must stay so the watchdog can still revert: %v", err)
+	}
+}
+
+// A restart that genuinely fails still puts the old agent back.
+func TestAgentUpgradeRevertsWhenTheRestartReallyFails(t *testing.T) {
+	o, oldDir, _, err := agentUpgradeWith(t, func(cmd string) error {
+		if strings.HasPrefix(cmd, "systemd-run") || strings.HasPrefix(cmd, "systemctl") {
+			return errors.New(cmd + " failed: exit status 5: Unit 5050-agent.service not found.")
+		}
+		return nil
+	})
+	if err == nil {
+		t.Fatal("a failed restart was reported as success")
+	}
+	if got, _ := linkTarget(o.AgentLink()); got != oldDir {
+		t.Fatalf("agent link is %s, want it back on %s", got, oldDir)
 	}
 }

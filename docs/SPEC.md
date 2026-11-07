@@ -1288,7 +1288,9 @@ attrs   := level, service, replica, deployment, stream, and any parsed JSON fiel
 - **Garbage collection** (daily, 04:00 host time; at once when `imageRetention` changes, including
   the first start of a version that reads it; and when the registry passes its cap, 6.6): the orchestrator pauses the build queue and waits for running pushes to end, switches the
   registry to read-only (`REGISTRY_STORAGE_MAINTENANCE_READONLY`), runs `registry garbage-collect
-  --delete-untagged`, then switches it back and resumes the queue. Pulls keep working throughout.
+  --delete-untagged /etc/distribution/config.yml` (the registry 3.x config path), then switches it
+  back and resumes the queue. After a retention change, the setting counts as applied only once a
+  collection succeeds; failures are retried at most every 10 minutes. Pulls keep working throughout.
   E35 runs GC while a build is queued.
 - **Bucket storage** (Settings > Backups, "Store images in the bucket"): the registry uses its S3
   storage driver against the configured bucket, so images and rollback history survive the loss of
