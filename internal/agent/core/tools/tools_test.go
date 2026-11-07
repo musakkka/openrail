@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -124,6 +125,79 @@ func TestToolDownloads(t *testing.T) {
 	for _, e := range ents {
 		if strings.HasPrefix(e.Name(), ".") {
 			t.Errorf("temporary file left behind: %s", e.Name())
+		}
+	}
+}
+
+// restic ships as a single bzip2 file (restic_<v>_linux_<arch>.bz2, see
+// templates/tools.json). Installing those bytes as is gave containers a
+// "binary" that failed with "Exec format error", so no restic backup (Redis,
+// volumes) ever ran. The fixture was made with the real bzip2 tool.
+func TestSingleFileBzip2DownloadIsDecompressed(t *testing.T) {
+	bz, err := os.ReadFile("testdata/restic_linux_amd64.bz2")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "#!/bin/sh\necho restic 0.19.1\n"
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { _, _ = w.Write(bz) }))
+	defer srv.Close()
+	m := New(t.TempDir(), srv.Client())
+	m.Set([]proto.Tool{{Name: "restic", Version: "v0.19.1", URL: srv.URL + "/restic.bz2", SHA256: sum(bz)}})
+	p, err := m.Path(context.Background(), "restic")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, _ := os.ReadFile(p)
+	if string(got) != want {
+		t.Fatalf("installed %q, want the decompressed binary %q", got, want)
+	}
+	if st, _ := os.Stat(p); st.Mode()&0o111 == 0 {
+		t.Fatalf("installed tool is not executable: %v", st.Mode())
+	}
+}
+
+// A host that already cached the compressed file (any agent before this fix)
+// is healed on the next lookup, without downloading again.
+func TestCachedCompressedToolIsHealed(t *testing.T) {
+	bz, err := os.ReadFile("testdata/restic_linux_amd64.bz2")
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := t.TempDir()
+	dst := filepath.Join(dir, "restic-v0.19.1")
+	if err := os.WriteFile(dst, bz, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(dst+".sha256", []byte(sum(bz)+"\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	var hits atomic.Int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { hits.Add(1) }))
+	defer srv.Close()
+	m := New(dir, srv.Client())
+	m.Set([]proto.Tool{{Name: "restic", Version: "v0.19.1", URL: srv.URL + "/restic.bz2", SHA256: sum(bz)}})
+	p, err := m.Path(context.Background(), "restic")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, _ := os.ReadFile(p)
+	if !strings.HasPrefix(string(got), "#!/bin/sh") {
+		t.Fatalf("cached tool is still compressed: %q", got[:min(len(got), 8)])
+	}
+	if hits.Load() != 0 {
+		t.Fatal("healing a cached tool must not download it again")
+	}
+}
+
+// A plain binary or script is never touched.
+func TestUncompressedSingleFileIsInstalledAsIs(t *testing.T) {
+	for _, b := range [][]byte{[]byte("#!/bin/sh\necho hi\n"), {0x7f, 'E', 'L', 'F', 2, 1, 1}} {
+		f := filepath.Join(t.TempDir(), "x")
+		if err := os.WriteFile(f, b, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if _, changed, err := decompressSingle(f, t.TempDir()); err != nil || changed {
+			t.Fatalf("%q: changed=%v err=%v; an uncompressed file must be left alone", b[:4], changed, err)
 		}
 	}
 }
