@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/musakkka/openrail/pkg/proto"
@@ -75,12 +76,43 @@ func UpgradeAgent(ctx context.Context, o Options, u proto.Upgrade) error {
 		_ = os.Remove(o.pendingPath())
 		return err
 	}
-	if _, err := o.Run.Run(ctx, "systemctl", "--no-block", "restart", AgentUnit); err != nil {
+	if err := restartAgentUnit(ctx, o); err != nil {
 		_, _ = swapLink(o.AgentLink(), prev)
 		_ = os.Remove(o.pendingPath())
 		return err
 	}
 	return nil
+}
+
+// restartAgentUnit restarts the agent's own unit.
+//
+// It cannot simply run `systemctl restart` as a child: the child lives in the
+// agent's cgroup, and stopping the unit kills everything in that cgroup, so
+// the client is often killed before it returns. The agent then read
+// "signal: killed" as a failed restart and swapped the link back, a moment
+// before systemd started it again on the old binary, so no agent upgrade
+// could ever complete. systemd-run issues the restart from a transient unit
+// outside the cgroup. Where it is missing, being killed during the restart
+// is the expected outcome, not a failure: if the new agent really cannot
+// connect, the pending marker's watchdog reverts it (checkPending).
+func restartAgentUnit(ctx context.Context, o Options) error {
+	unit := fmt.Sprintf("5050-agent-restart-%d", o.Now().UnixNano())
+	if _, err := o.Run.Run(ctx, "systemd-run", "--no-block", "--collect", "--quiet", "--unit", unit,
+		"systemctl", "restart", AgentUnit); err == nil {
+		return nil
+	}
+	_, err := o.Run.Run(ctx, "systemctl", "--no-block", "restart", AgentUnit)
+	if err != nil && killedDuringRestart(err) {
+		return nil
+	}
+	return err
+}
+
+// killedDuringRestart reports an error from a client that the restart of its
+// own unit killed.
+func killedDuringRestart(err error) bool {
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "signal: killed") || strings.Contains(msg, "signal: terminated")
 }
 
 // CheckPendingAgentUpgrade is called first thing at agent start. When this
@@ -145,8 +177,7 @@ func revertAgent(ctx context.Context, o Options, p pendingAgent, reason string) 
 	}
 	_ = os.Remove(o.pendingPath())
 	_ = writeJSON(o.revertedPath(), RevertedAgent{Version: p.Version, Reason: reason, At: o.Now().UnixMilli()})
-	_, err := o.Run.Run(ctx, "systemctl", "--no-block", "restart", AgentUnit)
-	return err
+	return restartAgentUnit(ctx, o)
 }
 
 // LastAgentRevert returns the last agent revert, if any, and clears it.
