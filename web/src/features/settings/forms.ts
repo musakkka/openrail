@@ -35,12 +35,23 @@ export function isHttpUrl(s: string): boolean {
 }
 
 // Install > General
-export interface GeneralForm { name: string; baseDomain: string; consoleDomain: string; acmeEmail: string; trustedProxies: string }
+export interface GeneralForm {
+  name: string; baseDomain: string; consoleDomain: string; acmeEmail: string; trustedProxies: string;
+  /** Images kept per service in the registry and on each host. */
+  imageRetention: string;
+  /** Keep every image; sent to the API as imageRetention 0. */
+  keepAllImages: boolean;
+}
+
+export const DEFAULT_IMAGE_RETENTION = 2;
+export const MAX_IMAGE_RETENTION = 100;
 
 export function generalFromInstall(i: T.Install): GeneralForm {
   let consoleDomain = "";
   try { consoleDomain = new URL(i.consoleUrl).host; } catch { consoleDomain = i.consoleUrl; }
-  return { name: i.name, baseDomain: i.baseDomain, consoleDomain, acmeEmail: i.acmeEmail || "", trustedProxies: i.trustedProxies.join("\n") };
+  const keepAllImages = i.imageRetention === 0;
+  const imageRetention = String(keepAllImages || !i.imageRetention ? DEFAULT_IMAGE_RETENTION : i.imageRetention);
+  return { name: i.name, baseDomain: i.baseDomain, consoleDomain, acmeEmail: i.acmeEmail || "", trustedProxies: i.trustedProxies.join("\n"), imageRetention, keepAllImages };
 }
 
 const IP_NAME = /(^|\.)(sslip|nip)\.io\.?$/i;
@@ -56,7 +67,18 @@ export function checkGeneral(f: GeneralForm, isPrivate = false): Errors<keyof Ge
   if (f.acmeEmail.trim() && !isEmail(f.acmeEmail)) e.acmeEmail = "Enter a valid email address.";
   const bad = splitList(f.trustedProxies).filter((c) => !isCIDR(c));
   if (bad.length) e.trustedProxies = `Not an IP range: ${bad.join(", ")}.`;
+  if (!f.keepAllImages) {
+    const n = Number(f.imageRetention.trim());
+    if (!/^\d+$/.test(f.imageRetention.trim()) || n < 1 || n > MAX_IMAGE_RETENTION) {
+      e.imageRetention = `Enter a number from 1 to ${MAX_IMAGE_RETENTION}, or keep every image.`;
+    }
+  }
   return e;
+}
+
+/** The API value: 0 keeps every image. */
+export function retentionValue(f: GeneralForm): number {
+  return f.keepAllImages ? 0 : Number(f.imageRetention.trim());
 }
 
 /** Only the fields that changed, so an unchanged console domain is never re-sent. */
@@ -68,6 +90,7 @@ export function generalPatch(f: GeneralForm, before: GeneralForm): T.UpdateInsta
   if (f.acmeEmail.trim() !== before.acmeEmail) p.acmeEmail = f.acmeEmail.trim();
   const tp = splitList(f.trustedProxies);
   if (tp.join("\n") !== splitList(before.trustedProxies).join("\n")) p.trustedProxies = tp;
+  if (retentionValue(f) !== retentionValue(before)) p.imageRetention = retentionValue(f);
   return p;
 }
 

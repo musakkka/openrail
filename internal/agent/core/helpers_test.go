@@ -344,3 +344,21 @@ func sortedKeys(m map[string][]string) []string {
 	sort.Strings(out)
 	return out
 }
+
+func TestRetentionKeep(t *testing.T) {
+	for _, c := range []struct {
+		setting, keep int
+		all           bool
+	}{
+		{0, 2, false}, // not sent yet: the default
+		{-1, 0, true}, // the install keeps every image
+		{1, 1, false},
+		{2, 2, false},
+		{10, 10, false},
+	} {
+		keep, all := retentionKeep(c.setting)
+		if keep != c.keep || all != c.all {
+			t.Errorf("retentionKeep(%d) = (%d, %v), want (%d, %v)", c.setting, keep, all, c.keep, c.all)
+		}
+	}
+}

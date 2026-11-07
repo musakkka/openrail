@@ -57,6 +57,11 @@ function InstallForm() {
         <Field label="ACME email" error={err("acmeEmail")} hint="Certificate authorities send expiry notices here."><Input type="email" value={f.acmeEmail} onChange={set("acmeEmail")} /></Field>
         <Field label="Trusted proxies" error={err("trustedProxies")} hint="IP ranges whose X-Forwarded-For header is trusted, one per line."><TextArea value={f.trustedProxies} onChange={set("trustedProxies")} />
           <Button type="button" variant="ghost" onClick={() => setF({ ...f, trustedProxies: mergeLines(f.trustedProxies, data.cloudflareRanges || []) })}>Use Cloudflare ranges</Button></Field>
+        <Field label="Images kept per service" error={err("imageRetention")}
+          hint="Older images are removed from the registry and from every host, which frees disk. Rollback is offered only to deployments whose image is still kept; any older one can be redeployed from its commit.">
+          <Input inputMode="numeric" value={f.imageRetention} disabled={f.keepAllImages} onChange={set("imageRetention")} />
+          <Toggle label="Keep every image" checked={f.keepAllImages} onChange={(on) => setF({ ...f, keepAllImages: on })} />
+        </Field>
         <SaveRow {...a} />
       </form>
     </Section>

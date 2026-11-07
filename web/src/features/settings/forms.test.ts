@@ -10,7 +10,7 @@ import {
 
 const install = {
   name: "home", version: "v0.1.0", consoleUrl: "https://console.example.com", baseDomain: "apps.example.com", publicIp: "203.0.113.7",
-  acmeEmail: "ops@example.com", trustedProxies: ["10.0.0.0/8"], registryCapPct: 30, buildTimeoutMin: 30, railwayAliases: true,
+  acmeEmail: "ops@example.com", trustedProxies: ["10.0.0.0/8"], registryCapPct: 30, imageRetention: 2, buildTimeoutMin: 30, railwayAliases: true,
   requireTotp: false, githubApp: false, backupsReady: false, smtpReady: false, readOnly: false,
 } as T.Install;
 
@@ -25,9 +25,26 @@ describe("install general form", () => {
     expect(generalPatch(f, before)).toEqual({ name: "lab", trustedProxies: ["10.0.0.0/8", "2001:db8::/32"] });
   });
   it("rejects bad domains, emails and ranges", () => {
-    const e = checkGeneral({ name: " ", baseDomain: "nodot", consoleDomain: "x y", acmeEmail: "nope", trustedProxies: "10.0.0.0/40\n1.2.3.4" });
-    expect(Object.keys(e).sort()).toEqual(["acmeEmail", "baseDomain", "consoleDomain", "name", "trustedProxies"]);
+    const e = checkGeneral({ name: " ", baseDomain: "nodot", consoleDomain: "x y", acmeEmail: "nope", trustedProxies: "10.0.0.0/40\n1.2.3.4",
+      imageRetention: "0", keepAllImages: false });
+    expect(Object.keys(e).sort()).toEqual(["acmeEmail", "baseDomain", "consoleDomain", "imageRetention", "name", "trustedProxies"]);
     expect(e.trustedProxies).toBe("Not an IP range: 10.0.0.0/40.");
+  });
+  it("reads images kept per service, and 0 as keep every image", () => {
+    expect(generalFromInstall(install)).toMatchObject({ imageRetention: "2", keepAllImages: false });
+    expect(generalFromInstall({ ...install, imageRetention: 0 })).toMatchObject({ imageRetention: "2", keepAllImages: true });
+  });
+  it("sends imageRetention only when it changed, and 0 for keep every image", () => {
+    const before = generalFromInstall(install);
+    expect(generalPatch({ ...before, imageRetention: "5" }, before)).toEqual({ imageRetention: 5 });
+    expect(generalPatch({ ...before, keepAllImages: true }, before)).toEqual({ imageRetention: 0 });
+    expect(generalPatch({ ...before }, before)).toEqual({});
+  });
+  it("bounds images kept per service unless every image is kept", () => {
+    const f = generalFromInstall(install);
+    for (const bad of ["0", "101", "-1", "two", ""]) expect(checkGeneral({ ...f, imageRetention: bad }).imageRetention).toBeDefined();
+    expect(checkGeneral({ ...f, imageRetention: "100" }).imageRetention).toBeUndefined();
+    expect(checkGeneral({ ...f, imageRetention: "junk", keepAllImages: true }).imageRetention).toBeUndefined();
   });
   it("refuses sslip.io and nip.io names on a private host only", () => {
     const f = { ...generalFromInstall(install), baseDomain: "1-2-3-4.sslip.io", consoleDomain: "c.1.2.3.4.nip.io" };

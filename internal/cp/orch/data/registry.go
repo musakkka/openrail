@@ -17,14 +17,16 @@ import (
 
 // Registry retention and garbage collection (docs/SPEC.md 9.6, 6.6, 9.19).
 //
-// Retention keeps the newest 10 images per service (3 while the registry is
-// above its size cap) and never removes an image a live or in-flight
-// deployment uses. It removes tags; garbage collection then deletes the
-// manifests and blobs nothing refers to, including old build cache manifests
-// (the cache tag is overwritten on every build).
+// Retention keeps the newest Install.ImageRetention images per service
+// (default 2; 0 keeps every image; at most 3 while the registry is above its
+// size cap unless every image is kept) and never removes an image a live or
+// in-flight deployment uses. It removes tags; garbage collection then deletes
+// the manifests and blobs nothing refers to, including old build cache
+// manifests (the cache tag is overwritten on every build).
 //
-// Garbage collection runs weekly at 04:00 on Sunday (control host time) and
-// whenever the registry passes its cap: pause the build queue and wait for
+// Garbage collection runs daily at 04:00 (control host time), as soon as the
+// retention setting changes (including the first start of a version that
+// reads it), and whenever the registry passes its cap: pause the build queue and wait for
 // pushes to end, switch the registry to read-only, run
 // `registry garbage-collect --delete-untagged`, switch it back, resume.
 // Pulls keep working throughout.
@@ -35,7 +37,6 @@ import (
 // the defaults).
 
 const (
-	keepImages        = 10
 	keepImagesOverCap = 3
 	registryRepos     = "/var/lib/registry/docker/registry/v2/repositories"
 	registryData      = "/var/lib/registry"
@@ -52,20 +53,61 @@ var liveStatuses = []string{"QUEUED", "WAITING", "BUILDING", "DEPLOYING", "SUCCE
 
 var registryName = regexp.MustCompile(`^[a-z0-9][a-z0-9_.-]{0,127}$`)
 
-// maybeRegistryMaintenance runs the weekly garbage collection and, once an
-// hour, the size cap check.
+// registryKeep is the install's retention setting: images kept per service,
+// 0 for every image.
+func (d *Data) registryKeep(ctx context.Context) int {
+	inst, err := d.cfg.Install(ctx)
+	if err != nil || inst.ImageRetention < 0 {
+		return defaultKeep
+	}
+	return inst.ImageRetention
+}
+
+// defaultKeep applies when the install settings cannot be read. It matches
+// core.DefaultImageRetention.
+const defaultKeep = 2
+
+// overCapKeep is the retention used while the registry is above its cap. An
+// owner who chose to keep every image is obeyed; the cap then only triggers
+// collection of untagged data.
+func overCapKeep(keep int) int {
+	if keep == 0 || keep <= keepImagesOverCap {
+		return keep
+	}
+	return keepImagesOverCap
+}
+
+// maybeRegistryMaintenance runs the daily garbage collection, a collection
+// whenever the retention setting changes, and once an hour the size cap check.
 func (d *Data) maybeRegistryMaintenance(ctx context.Context) error {
+	keep := d.registryKeep(ctx)
+
+	// A changed setting applies now rather than at the next 04:00, so lowering
+	// it frees disk straight away. The value is recorded before the run, so a
+	// failing collection is retried by the daily one instead of every minute.
+	keepKey := strconv.Itoa(keep)
+	if last, _ := d.st.stateGet(ctx, "registry_gc_keep"); last != keepKey {
+		if err := d.st.stateSet(ctx, "registry_gc_keep", keepKey); err != nil {
+			return err
+		}
+		d.background("registry gc (retention changed)", func(bg context.Context) {
+			if err := d.RunRegistryGC(bg, keep); err != nil {
+				d.log.Warn("registry garbage collection after a retention change", "err", err)
+			}
+		})
+		return nil
+	}
+
 	now := d.now().Local()
-	if now.Weekday() == time.Sunday && now.Hour() == 4 {
-		y, w := now.ISOWeek()
-		key := fmt.Sprintf("%d-W%02d", y, w)
-		if last, _ := d.st.stateGet(ctx, "registry_gc_week"); last != key {
-			if err := d.st.stateSet(ctx, "registry_gc_week", key); err != nil {
+	if now.Hour() == 4 {
+		key := now.Format("2006-01-02")
+		if last, _ := d.st.stateGet(ctx, "registry_gc_day"); last != key {
+			if err := d.st.stateSet(ctx, "registry_gc_day", key); err != nil {
 				return err
 			}
 			d.background("registry gc", func(bg context.Context) {
-				if err := d.RunRegistryGC(bg, keepImages); err != nil {
-					d.log.Warn("weekly registry garbage collection", "err", err)
+				if err := d.RunRegistryGC(bg, keep); err != nil {
+					d.log.Warn("daily registry garbage collection", "err", err)
 				}
 			})
 			return nil
@@ -85,9 +127,15 @@ func (d *Data) maybeRegistryMaintenance(ctx context.Context) error {
 	if err != nil || !over {
 		return err
 	}
-	d.log.Warn("registry above its size cap", "usedBytes", used, "capBytes", limit)
+	capKeep := overCapKeep(keep)
+	if capKeep == 0 {
+		d.log.Warn("registry above its size cap, but every image is kept by setting; only untagged data can be collected",
+			"usedBytes", used, "capBytes", limit)
+	} else {
+		d.log.Warn("registry above its size cap", "usedBytes", used, "capBytes", limit, "keep", capKeep)
+	}
 	d.background("registry gc (cap)", func(bg context.Context) {
-		if err := d.RunRegistryGC(bg, keepImagesOverCap); err != nil {
+		if err := d.RunRegistryGC(bg, capKeep); err != nil {
 			d.log.Warn("registry garbage collection above the cap", "err", err)
 		}
 	})
@@ -210,18 +258,19 @@ func untagScript(tags []imageTag) string {
 
 // RunRegistryGC applies registry retention with keep images per service and
 // runs garbage collection with the build queue paused and the registry
-// read-only. Only one runs at a time.
+// read-only. keep 0 removes no image and only collects untagged data. Only
+// one runs at a time.
 func (d *Data) RunRegistryGC(ctx context.Context, keep int) error {
 	if !d.gcMu.TryLock() {
 		return errors.New("A registry garbage collection is already running.")
 	}
 	defer d.gcMu.Unlock()
-	if keep <= 0 {
-		keep = keepImages
-	}
-	tags, err := d.retentionCandidates(ctx, keep)
-	if err != nil {
-		return fmt.Errorf("The images to remove could not be listed: %w", err)
+	var tags []imageTag
+	if keep > 0 {
+		var err error
+		if tags, err = d.retentionCandidates(ctx, keep); err != nil {
+			return fmt.Errorf("The images to remove could not be listed: %w", err)
+		}
 	}
 
 	resume, err := d.run.PauseBuilds(ctx)

@@ -63,7 +63,7 @@ type Config struct {
 func New() *Config {
 	return &Config{
 		install: api.Install{Name: "test", Version: "v0.1.0", ConsoleURL: "https://console.203-0-113-7.sslip.io",
-			BaseDomain: "203-0-113-7.sslip.io", PublicIP: "203.0.113.7", RailwayAliases: true, BuildTimeoutMin: 30, RegistryCapPct: 30},
+			BaseDomain: "203-0-113-7.sslip.io", PublicIP: "203.0.113.7", RailwayAliases: true, BuildTimeoutMin: 30, RegistryCapPct: 30, ImageRetention: 2},
 		projects: map[string]api.Project{}, envs: map[string]api.Environment{}, inst: map[string]*cpapi.ServiceSnapshot{},
 		vars: map[string]map[string]string{}, shared: map[string]map[string]string{}, secrets: map[string][]string{},
 		regcreds: map[string][3]string{}, monitors: map[string]api.Monitor{}, files: map[string]*proto.ConfigOverlay{},
