@@ -210,6 +210,9 @@ func (d *Data) renderService(ctx context.Context, snap cpapi.ServiceSnapshot, t 
 		out.Tools = append(out.Tools, tool)
 		out.Mounts = append(out.Mounts, toolMount(tool))
 	}
+	if len(ts.Tools) > 0 {
+		out.Mounts = append(out.Mounts, caMount())
+	}
 	if ts.Probe != nil {
 		out.Health = append([]string(nil), ts.Probe.Health...)
 		out.Probe = append([]string(nil), ts.Probe.Metrics...)

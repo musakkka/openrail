@@ -447,6 +447,7 @@ func (d *Data) backupJob(ctx context.Context, snap cpapi.ServiceSnapshot, info r
 		Mounts: []proto.Mount{
 			{Kind: "volume", Source: volumeName(snap.Volume.ID), Target: "/data", ReadOnly: true},
 			toolMount("restic"),
+			caMount(),
 		},
 		Files: files, TimeoutSec: backupTimeoutSec, Labels: jobLabels(snap.EnvID, snap.ServiceID, "backup"),
 	}
@@ -713,9 +714,12 @@ func (d *Data) controlJob(ctx context.Context, snap cpapi.ServiceSnapshot, kind,
 	if err != nil {
 		return JobOutcome{Err: err}
 	}
-	mounts := make([]proto.Mount, 0, len(tools))
+	mounts := make([]proto.Mount, 0, len(tools)+1)
 	for _, t := range tools {
 		mounts = append(mounts, toolMount(t))
+	}
+	if len(tools) > 0 {
+		mounts = append(mounts, caMount())
 	}
 	return d.runJob(ctx, host, proto.Job{
 		Kind: kind, Image: image, Cmd: cmd, Env: copyEnv(backupEnv(b, keys, snap.ServiceID, retention), extra),

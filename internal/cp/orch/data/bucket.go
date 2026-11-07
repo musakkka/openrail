@@ -177,6 +177,9 @@ func backupEnv(b api.BackupSettings, keys backupKeys, serviceID string, retentio
 		"WALG_LIBSODIUM_KEY":           keys.walgHex,
 		"WALG_LIBSODIUM_KEY_TRANSFORM": "hex",
 		"WALG_COMPRESSION_METHOD":      "lz4",
-		"RESTIC_PASSWORD":              keys.restic,
+		// WAL-G and restic are Go programs and read their trust roots from
+		// here; database images carry none of their own (caMount).
+		"SSL_CERT_FILE":   caCertsTarget,
+		"RESTIC_PASSWORD": keys.restic,
 	}
 }
