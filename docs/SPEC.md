@@ -1721,6 +1721,13 @@ captured fixture.
 | Volume host lost | "This volume was on a host that is gone. Restore it from a backup." |
 | Major version change | "Major version changes need a dump and restore. Use Upgrade to a new major version in the database panel." |
 
+**TLS for backup tools.** Database images ship without CA certificates, so the
+agent publishes the host's bundle as the asset `ca-certificates.crt` (an empty
+file when the host has none) and every service or job that carries backup tools
+mounts it read-only at `/opt/5050/ca-certificates.crt`, with `SSL_CERT_FILE`
+pointing there in the backup environment. Without it, WAL-G and restic could
+reach only plain-HTTP buckets.
+
 ### 9.19 Disk, log and image retention (WP2a, WP2b, WP3)
 
 Image retention `imageRetention` per service (default 2, 0 keeps every image) both on hosts and

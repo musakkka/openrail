@@ -36,6 +36,20 @@ func toolMount(name string) proto.Mount {
 	return proto.Mount{Kind: "tool", Source: name, Target: toolDir + name, ReadOnly: true}
 }
 
+// The CA bundle the agent publishes as an asset (internal/agent/assets
+// CACertsName and CACertsTarget; the control plane does not import agent
+// packages, so the names are repeated and a test pins them together).
+const (
+	caCertsAsset  = "ca-certificates.crt"
+	caCertsTarget = "/opt/5050/ca-certificates.crt"
+)
+
+// caMount gives WAL-G and restic a CA bundle. Database images ship without
+// ca-certificates, so without it no HTTPS bucket could ever be reached.
+func caMount() proto.Mount {
+	return proto.Mount{Kind: "asset", Source: caCertsAsset, Target: caCertsTarget, ReadOnly: true}
+}
+
 // volumeName is the Docker volume of an openrail volume (docs/SPEC.md 9.12).
 func volumeName(volID string) string { return "5050-" + volID }
 

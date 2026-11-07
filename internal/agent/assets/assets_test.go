@@ -131,3 +131,35 @@ func TestClusterWithLocalNode(t *testing.T) {
 		t.Fatal("cluster.cjs did not stop within 30 s of SIGINT")
 	}
 }
+
+// The CA bundle asset is the host's own bundle, and an empty file (never a
+// missing one) when the host has none, so the container mount still resolves.
+func TestCACertsAssetComesFromTheHost(t *testing.T) {
+	saved := hostCABundles
+	defer func() { hostCABundles = saved }()
+
+	dir := t.TempDir()
+	bundle := filepath.Join(dir, "bundle.crt")
+	if err := os.WriteFile(bundle, []byte("-----BEGIN CERTIFICATE-----\nfake\n-----END CERTIFICATE-----\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	hostCABundles = []string{filepath.Join(dir, "missing.crt"), bundle}
+	paths, err := WriteAll(filepath.Join(dir, "assets"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := os.ReadFile(paths[CACertsName])
+	if err != nil || !strings.Contains(string(got), "fake") {
+		t.Fatalf("CA asset = %q, %v; want the host bundle", got, err)
+	}
+
+	hostCABundles = []string{filepath.Join(dir, "missing.crt")}
+	paths, err = WriteAll(filepath.Join(dir, "assets2"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	st, err := os.Stat(paths[CACertsName])
+	if err != nil || st.Size() != 0 {
+		t.Fatalf("without a host bundle the asset must exist and be empty: %v %v", st, err)
+	}
+}

@@ -379,7 +379,7 @@ func (d *Data) restoreJob(ctx context.Context, rs restoreSpec) JobOutcome {
 			return JobOutcome{Err: err}
 		}
 		job.Image, job.Files, job.Env = image, files, env
-		job.Mounts = []proto.Mount{{Kind: "volume", Source: rs.volume, Target: "/data"}, toolMount("restic")}
+		job.Mounts = []proto.Mount{{Kind: "volume", Source: rs.volume, Target: "/data"}, toolMount("restic"), caMount()}
 		cmd = []string{toolDir + "restore-volume"}
 		if rs.check {
 			cmd = append(cmd, "--check")
