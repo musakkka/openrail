@@ -4,12 +4,16 @@
 // binaries the control plane lists in HostConfig.Tools (railpack, wal-g,
 // restic, litestream) into <DataDir>/tools/<name>-<version>, verifies the
 // SHA-256 of the download, unpacks the binary from a .tar.gz when the tool
-// names a path inside the archive, and returns the local path. A tool is
+// names a path inside the archive, decompresses a single-file .bz2 or .gz
+// download (restic ships as restic_<v>_linux_<arch>.bz2), and returns the
+// local path. A tool is
 // downloaded once per version; concurrent callers share one download.
 package tools
 
 import (
 	"archive/tar"
+	"bytes"
+	"compress/bzip2"
 	"compress/gzip"
 	"context"
 	"crypto/sha256"
@@ -123,6 +127,15 @@ func (m *Manager) fetch(ctx context.Context, t proto.Tool) (string, error) {
 	marker := dst + ".sha256"
 	if b, err := os.ReadFile(marker); err == nil && strings.TrimSpace(string(b)) == want {
 		if st, err := os.Stat(dst); err == nil && st.Mode().IsRegular() {
+			// Agents before single-file decompression installed restic's .bz2
+			// as is, so the cached "binary" failed with "Exec format error"
+			// and every restic backup (Redis, volumes) failed. Heal it here
+			// instead of downloading again: the checksum already matched.
+			if t.Path == "" {
+				if err := decompressInPlace(dst, m.dir); err != nil {
+					return "", fmt.Errorf("could not unpack the cached %s %s: %w", t.Name, t.Version, err)
+				}
+			}
 			return dst, nil
 		}
 	}
@@ -162,6 +175,16 @@ func (m *Manager) fetch(ctx context.Context, t proto.Tool) (string, error) {
 		return "", fmt.Errorf("the download of %s %s has checksum %s but %s was expected; it was discarded", t.Name, t.Version, got, want)
 	}
 	bin := tmp.Name()
+	if t.Path == "" {
+		out, changed, err := decompressSingle(tmp.Name(), m.dir)
+		if err != nil {
+			return "", fmt.Errorf("could not decompress the %s download: %w", t.Name, err)
+		}
+		if changed {
+			defer os.Remove(out)
+			bin = out
+		}
+	}
 	if t.Path != "" {
 		out, err := extract(tmp.Name(), t.Path, m.dir)
 		if err != nil {
@@ -180,6 +203,81 @@ func (m *Manager) fetch(ctx context.Context, t proto.Tool) (string, error) {
 		return "", err
 	}
 	return dst, nil
+}
+
+// compression reports how a single-file download is compressed: "bzip2",
+// "gzip" or "" for a file to install as is (a binary or a script).
+func compression(file string) (string, error) {
+	f, err := os.Open(file)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+	var magic [4]byte
+	n, _ := io.ReadFull(f, magic[:])
+	b := magic[:n]
+	switch {
+	case len(b) >= 4 && bytes.HasPrefix(b, []byte("BZh")) && b[3] >= '1' && b[3] <= '9':
+		return "bzip2", nil
+	case len(b) >= 2 && b[0] == 0x1f && b[1] == 0x8b:
+		return "gzip", nil
+	}
+	return "", nil
+}
+
+// decompressSingle writes the decompressed content of a .bz2 or .gz file to
+// a temporary file in dir. changed is false when the file is not compressed.
+func decompressSingle(file, dir string) (out string, changed bool, err error) {
+	kind, err := compression(file)
+	if err != nil || kind == "" {
+		return "", false, err
+	}
+	f, err := os.Open(file)
+	if err != nil {
+		return "", false, err
+	}
+	defer f.Close()
+	var r io.Reader
+	if kind == "bzip2" {
+		r = bzip2.NewReader(f)
+	} else {
+		gz, err := gzip.NewReader(f)
+		if err != nil {
+			return "", false, err
+		}
+		defer func() { _ = gz.Close() }()
+		r = gz
+	}
+	tmp, err := os.CreateTemp(dir, ".decompress-*")
+	if err != nil {
+		return "", false, err
+	}
+	_, err = io.Copy(tmp, io.LimitReader(r, MaxDownloadBytes))
+	if cerr := tmp.Close(); err == nil {
+		err = cerr
+	}
+	if err != nil {
+		os.Remove(tmp.Name())
+		return "", false, err
+	}
+	return tmp.Name(), true, nil
+}
+
+// decompressInPlace replaces a compressed file with its content, atomically.
+func decompressInPlace(file, dir string) error {
+	out, changed, err := decompressSingle(file, dir)
+	if err != nil || !changed {
+		return err
+	}
+	if err := os.Chmod(out, 0o755); err != nil {
+		os.Remove(out)
+		return err
+	}
+	if err := os.Rename(out, file); err != nil {
+		os.Remove(out)
+		return err
+	}
+	return nil
 }
 
 // extract copies one regular file out of a .tar.gz (or plain .tar) into a
