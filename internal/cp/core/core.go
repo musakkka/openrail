@@ -240,6 +240,21 @@ func (c *Core) putSetting(ctx context.Context, tx *sql.Tx, key string, v any, se
 	return err
 }
 
+// DefaultImageRetention is how many images per service are kept, in the
+// registry and on every host, until the owner changes it (9.19).
+const DefaultImageRetention = 2
+
+// MaxImageRetention bounds the setting; 0 means keep every image.
+const MaxImageRetention = 100
+
+// imageRetention resolves the stored setting.
+func (s installSettings) imageRetention() int {
+	if s.ImageRetention == nil {
+		return DefaultImageRetention
+	}
+	return *s.ImageRetention
+}
+
 // installSettings is the "install" settings row.
 type installSettings struct {
 	Name             string   `json:"name"`
@@ -251,9 +266,13 @@ type installSettings struct {
 	PublicIP         string   `json:"publicIp"`
 	TrustedProxies   []string `json:"trustedProxies"`
 	RegistryCapPct   int      `json:"registryCapPct"`
-	BuildTimeoutMin  int      `json:"buildTimeoutMin"`
-	RequireTOTP      bool     `json:"requireTotp"`
-	AllowPrivate     bool     `json:"allowPrivateDestinations,omitempty"`
+	// ImageRetention is nil until someone sets it, so an install that never
+	// touched it follows DefaultImageRetention, while an explicit 0 (keep
+	// every image) stays distinct from "not set".
+	ImageRetention  *int `json:"imageRetention,omitempty"`
+	BuildTimeoutMin int  `json:"buildTimeoutMin"`
+	RequireTOTP     bool `json:"requireTotp"`
+	AllowPrivate    bool `json:"allowPrivateDestinations,omitempty"`
 	// SetupDone is set once the owner exists.
 	SetupDone bool `json:"setupDone"`
 }
@@ -352,7 +371,7 @@ func (c *Core) Install(ctx context.Context) (api.Install, error) {
 	in := api.Install{
 		Name: s.Name, Version: version.Version, ConsoleURL: c.ConsoleURL(ctx), BaseDomain: s.BaseDomain,
 		PublicIP: s.PublicIP, ACMEEmail: s.ACMEEmail, TrustedProxies: s.TrustedProxies,
-		RegistryCapPct: s.RegistryCapPct, BuildTimeoutMin: s.BuildTimeoutMin,
+		RegistryCapPct: s.RegistryCapPct, ImageRetention: s.imageRetention(), BuildTimeoutMin: s.BuildTimeoutMin,
 		RailwayAliases: c.railwayAliases(ctx, c.st.Reader), RequireTOTP: s.RequireTOTP,
 		ReadOnly: c.st.ReadOnly(), CloudflareRanges: cfranges.All(), Private: c.file.Private,
 	}
@@ -440,6 +459,13 @@ func (c *Core) UpdateInstall(ctx context.Context, a Actor, req api.UpdateInstall
 				return fail.Validation("registryCapPct", "The registry size cap must be between 5 and 90 percent of the disk.")
 			}
 			s.RegistryCapPct = *req.RegistryCapPct
+		}
+		if req.ImageRetention != nil {
+			if *req.ImageRetention < 0 || *req.ImageRetention > MaxImageRetention {
+				return fail.Validation("imageRetention", "Images kept per service must be between 1 and %d, or 0 to keep every image.", MaxImageRetention)
+			}
+			v := *req.ImageRetention
+			s.ImageRetention = &v
 		}
 		if req.BuildTimeoutMin != nil {
 			if *req.BuildTimeoutMin < 1 || *req.BuildTimeoutMin > 240 {

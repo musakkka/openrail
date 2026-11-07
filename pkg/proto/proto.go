@@ -250,7 +250,7 @@ type HostConfig struct {
 	RegistryPull Registry `json:"registryPull"`
 	// RegistryPush is the push credential, set only on hosts with the build role.
 	RegistryPush     *Registry `json:"registryPush,omitempty"`
-	ImageRetention   int       `json:"imageRetention"`   // images kept per service on this host, default 3
+	ImageRetention   int       `json:"imageRetention"`   // images kept per service on this host; 0 means the default (2), -1 keeps every image
 	LogRetentionDays int       `json:"logRetentionDays"` // default 7
 	// LogMaxBytesPerService caps the agent log store per service on this host (default 1 GiB).
 	LogMaxBytesPerService int64 `json:"logMaxBytesPerService"`

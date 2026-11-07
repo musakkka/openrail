@@ -22,7 +22,6 @@ import (
 
 // Defaults placed into every host's HostConfig (docs/SPEC.md 8.1, 9.19).
 const (
-	imageRetention        = 3
 	logRetentionDays      = 7
 	logMaxBytesPerService = 1 << 30
 	logMaxPctFS           = 10
@@ -198,7 +197,7 @@ func (o *Orchestrator) DesiredState(ctx context.Context, hostID string) (proto.D
 		Host: proto.HostConfig{
 			Roles:                 host.Roles,
 			RegistryPull:          proto.Registry{Address: o.registryAddr(host), Username: creds.PullUser, Password: creds.PullPass, Insecure: true},
-			ImageRetention:        imageRetention,
+			ImageRetention:        hostImageRetention(inst.ImageRetention),
 			LogRetentionDays:      logRetentionDays,
 			LogMaxBytesPerService: logMaxBytesPerService,
 			LogMaxPctFS:           logMaxPctFS,
@@ -589,4 +588,14 @@ func (o *Orchestrator) tools(arch string) []proto.Tool {
 		return []proto.Tool{}
 	}
 	return out
+}
+
+// hostImageRetention turns the install setting into HostConfig.ImageRetention.
+// The API uses 0 for "keep every image", but on the wire 0 already means
+// "the agent's default", so keep-all travels as -1.
+func hostImageRetention(setting int) int {
+	if setting == 0 {
+		return -1
+	}
+	return setting
 }

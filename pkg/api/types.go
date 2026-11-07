@@ -349,13 +349,16 @@ type Install struct {
 	TrustedProxies []string `json:"trustedProxies"`
 	// CloudflareRanges is the Cloudflare preset for TrustedProxies.
 	CloudflareRanges []string `json:"cloudflareRanges,omitempty"`
-	RegistryCapPct   int      `json:"registryCapPct"`  // default 30
-	BuildTimeoutMin  int      `json:"buildTimeoutMin"` // default 30
-	RailwayAliases   bool     `json:"railwayAliases"`  // RAILWAY_* provided variables, default true
-	RequireTOTP      bool     `json:"requireTotp"`
-	GitHubApp        bool     `json:"githubApp"` // a GitHub App is connected
-	BackupsReady     bool     `json:"backupsReady"`
-	SMTPReady        bool     `json:"smtpReady"`
+	RegistryCapPct   int      `json:"registryCapPct"` // default 30
+	// ImageRetention is how many images per service are kept, both in the
+	// registry and on each host (9.19). Default 2; 0 keeps every image.
+	ImageRetention  int  `json:"imageRetention"`
+	BuildTimeoutMin int  `json:"buildTimeoutMin"` // default 30
+	RailwayAliases  bool `json:"railwayAliases"`  // RAILWAY_* provided variables, default true
+	RequireTOTP     bool `json:"requireTotp"`
+	GitHubApp       bool `json:"githubApp"` // a GitHub App is connected
+	BackupsReady    bool `json:"backupsReady"`
+	SMTPReady       bool `json:"smtpReady"`
 	// ReadOnly is set while the control host disk is full (6.6).
 	ReadOnly bool `json:"readOnly"`
 	// Restore is set while adopt mode is active after a state restore (9.17.1).
@@ -375,6 +378,7 @@ type UpdateInstallRequest struct {
 	ConsoleDomain   *string   `json:"consoleDomain,omitempty"` // the old one keeps working for 24 hours
 	TrustedProxies  *[]string `json:"trustedProxies,omitempty"`
 	RegistryCapPct  *int      `json:"registryCapPct,omitempty"`
+	ImageRetention  *int      `json:"imageRetention,omitempty"` // 0 keeps every image, else 1 to 100
 	BuildTimeoutMin *int      `json:"buildTimeoutMin,omitempty"`
 	RailwayAliases  *bool     `json:"railwayAliases,omitempty"`
 	RequireTOTP     *bool     `json:"requireTotp,omitempty"`

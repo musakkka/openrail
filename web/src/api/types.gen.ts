@@ -433,6 +433,11 @@ export interface Install {
    */
   cloudflareRanges?: string[];
   registryCapPct: number /* int */; // default 30
+  /**
+   * ImageRetention is how many images per service are kept, both in the
+   * registry and on each host (9.19). Default 2; 0 keeps every image.
+   */
+  imageRetention: number /* int */;
   buildTimeoutMin: number /* int */; // default 30
   railwayAliases: boolean; // RAILWAY_* provided variables, default true
   requireTotp: boolean;
@@ -460,6 +465,7 @@ export interface UpdateInstallRequest {
   consoleDomain?: string; // the old one keeps working for 24 hours
   trustedProxies?: string[];
   registryCapPct?: number /* int */;
+  imageRetention?: number /* int */; // 0 keeps every image, else 1 to 100
   buildTimeoutMin?: number /* int */;
   railwayAliases?: boolean;
   requireTotp?: boolean;
@@ -845,7 +851,7 @@ export interface BuildConfig {
   timeoutMin?: number /* int */; // default: the install's build timeout (30)
   /**
    * ConfigPath is the config-as-code file ("railway.json", "infra/5050.yaml");
-   * empty = look for openrail.yaml, openrail.json, railway.json, railway.toml in rootDir.
+   * empty = look for 5050.yaml, 5050.json, railway.json, railway.toml in rootDir.
    */
   configPath?: string;
 }

@@ -109,7 +109,7 @@ how. "WP" is the owning work package for the server side; the WP8 sub-packages o
 | D8 | Environments | `+ New Environment`, `Duplicate Environment`, `Empty Environment`, `Sync` | Same, plus an egress "quarantine" toggle per environment | WP1 |
 | D9 | Service panel tabs and shortcuts | `Deployments`, `Variables`, `Metrics`, `Settings`; `G D`, `G V`, `G M`, `G S` | Same, plus **Backups**, **Data**, **Cron Runs** where they apply; `Escape` closes | WP1, WP2a |
 | D10 | Deployment status badges | `Initializing`, `Building`, `Deploying`, `Active`, `Success`, `Completed`, `Crashed`, `Failed`, `Removing`, `Removed`, `Skipped` | Same strings and colours everywhere (9.1.1) | WP2a |
-| D11 | Deployment menu | `View logs`, `Restart`, `Redeploy`, `Rollback`, `Remove`, `Abort` | Same; Rollback restores image and variables and does not expire after 24 to 120 hours (keeps last 10 images) | WP2a |
+| D11 | Deployment menu | `View logs`, `Restart`, `Redeploy`, `Rollback`, `Remove`, `Abort` | Same; Rollback restores image and variables and does not expire after 24 to 120 hours (offered while the image is kept: the newest `imageRetention` per service, default 2, Settings > General) | WP2a |
 | D12 | Deployment view | `Details`, `Build Logs`, `Deploy Logs`, `Network` (sub-view `HTTP`) | Same tabs; auto-opens Build Logs on a failed build and Deploy Logs on a crash | WP2a |
 | D13 | Diagnose a failed deploy | AI `Diagnose` | One sentence above the logs, rule based (9.18), no AI needed | WP2a, WP3, WP4 |
 | D14 | Variables | `New Variable`, `Raw Editor`, `Shared Variable`, `Seal`, `Add Reference` | Same; every reveal is audited; suggested variables from `.env*` files | WP1 |
@@ -520,6 +520,19 @@ sections 7 to 11 need, so builders do not have to ask for it:
 - `deps.go` (build tag `deps`, never compiled into a binary) imports every pinned module so
   `go mod tidy` keeps them until real code does; remove a line once a package imports it.
 
+### 5.5 Contract change: image retention setting (2026-11-07)
+
+Hard-coded retention (10 images per service in the registry, 3 on each host) let a busy install
+fill its disk with images nobody would roll back to. Retention becomes one install setting.
+
+| File | Change |
+|---|---|
+| `pkg/api/types.go` | `Install.ImageRetention` (default 2, 0 keeps every image) and `UpdateInstallRequest.ImageRetention` (0, or 1 to 100) |
+| `pkg/proto/proto.go` | `HostConfig.ImageRetention` documents `-1` as "keep every image"; `0` stays "agent default" so older agents fall back safely |
+
+The install row stores the value as optional, so an install that never set it follows the
+default rather than reading as "keep every image".
+
 ---
 
 ## 6. Data model
@@ -647,8 +660,9 @@ host. The rules:
 - **Ballast**: the agent deletes `/var/lib/5050/ballast` at 95% use and raises `disk.critical`;
   it re-creates it once use drops below 85%.
 - **Registry cap**: the registry lives in `/var/lib/5050/registry` with a size cap (default 30% of
-  the filesystem, setting in Settings > General); above it retention drops to 3 images per service
-  and GC runs (9.6).
+  the filesystem, setting in Settings > General); above it retention drops to at most 3 images per
+  service and GC runs (9.6). An owner who keeps every image (`imageRetention` 0) is obeyed: GC then
+  only collects untagged data and the cap is logged as unenforceable.
 - **Log budgets**: 9.19.
 - **Read-only mode**: on `SQLITE_FULL` or under 200 MB free, `5050d` keeps serving reads, refuses
   writes with `unavailable` and the message "The control host disk is full. Free space to continue.",
@@ -831,8 +845,10 @@ pass after that reports `healthy` again. Workers without a port are healthy once
   9.2). `5050d`, the agent and Caddy carry negative `OOMScoreAdjust` so the kernel kills an app
   first. Every app container gets `--memory-swap` equal to `--memory`, so an out-of-memory app is
   killed fast and diagnosed instead of swapping the host.
-- **Image retention and disk**: keep the newest 3 images per service on a host (`ImageRetention`)
-  plus any image a container uses; prune the rest hourly. When `/` or `/data` is above
+- **Image retention and disk**: keep the newest `ImageRetention` images per service on a host
+  (the install's `imageRetention`, default 2; `-1` on the wire keeps every image, `0` means the
+  agent default) plus any image a container uses; prune the rest hourly. Host images are a cache
+  of the registry, so this never removes rollback history. When `/` or `/data` is above
   `DiskPruneAtPct` (80), prune unused images and build cache (`Builder.Prune`) before starting a
   build or pull, and report `disk.high` events at 75% and 85% and `disk.critical` at 95% (the
   ballast goes at 95%, 6.6).
@@ -1264,12 +1280,13 @@ attrs   := level, service, replica, deployment, stream, and any parsed JSON fiel
 | Abort | Cancel a queued or building deployment; stop new replicas of a deploying one; old keeps serving | QUEUED, BUILDING, DEPLOYING |
 | Remove | Stop the active deployment; service shows "No deployment" | SUCCESS, CRASHED |
 
-- **Retention**: the registry keeps the newest 10 images per service (setting) and, for each
+- **Retention**: the registry keeps the newest `imageRetention` images per service (Settings >
+  General, default 2, `0` keeps every image) and, for each
   service, only the build cache ref of its newest build (`<CacheRef>` is overwritten per build and
   older cache manifests are deleted). Rollback to a deployment whose image is gone is not offered;
   Redeploy from its commit is.
-- **Garbage collection** (weekly, 04:00 Sunday host time, and when the registry passes its cap,
-  6.6): the orchestrator pauses the build queue and waits for running pushes to end, switches the
+- **Garbage collection** (daily, 04:00 host time; at once when `imageRetention` changes, including
+  the first start of a version that reads it; and when the registry passes its cap, 6.6): the orchestrator pauses the build queue and waits for running pushes to end, switches the
   registry to read-only (`REGISTRY_STORAGE_MAINTENANCE_READONLY`), runs `registry garbage-collect
   --delete-untagged`, then switches it back and resumes the queue. Pulls keep working throughout.
   E35 runs GC while a build is queued.
@@ -1704,7 +1721,8 @@ captured fixture.
 
 ### 9.19 Disk, log and image retention (WP2a, WP2b, WP3)
 
-Host image retention 3 per service; registry retention 10 images per service plus one cache ref;
+Image retention `imageRetention` per service (default 2, 0 keeps every image) both on hosts and
+in the registry, plus one cache ref;
 registry size cap (6.6); BuildKit cache GC at 20 GB; prune before builds above 80% disk; disk
 alerts at 75% and 85%, ballast at 95% (6.6); Docker json logs capped at 20 MB x 3 per container;
 agent log store 7 days **and** at most 1 GB per service per host and 10% of the filesystem per host

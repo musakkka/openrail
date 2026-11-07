@@ -183,15 +183,40 @@ func (g *diskGuard) beforeBuild(ctx context.Context) {
 	}
 }
 
-// retentionLoop prunes old images every hour (9.19).
+// defaultImageRetention is used until the control plane sends a value.
+const defaultImageRetention = 2
+
+// retentionKeep reads HostConfig.ImageRetention: 0 means the default and a
+// negative value keeps every image (the install setting is "keep all").
+func retentionKeep(setting int) (keep int, all bool) {
+	switch {
+	case setting < 0:
+		return 0, true
+	case setting == 0:
+		return defaultImageRetention, false
+	default:
+		return setting, false
+	}
+}
+
+// retentionLoop prunes old images every hour (9.19). Images on a host are a
+// cache of the registry, so this never removes rollback history; the
+// registry's own retention decides that.
 func (a *Agent) retentionLoop(ctx context.Context) {
 	every(ctx, a.t.retentionEvery, func() {
-		keep := 3
 		a.mu.Lock()
-		if a.desired != nil && a.desired.Host.ImageRetention > 0 {
-			keep = a.desired.Host.ImageRetention
+		setting := 0
+		if a.desired != nil {
+			setting = a.desired.Host.ImageRetention
 		}
 		a.mu.Unlock()
+		keep, all := retentionKeep(setting)
+		if all {
+			if _, err := a.eng.PruneImages(ctx); err != nil {
+				a.log.Warn("could not prune dangling images", "err", err)
+			}
+			return
+		}
 		a.pruneImages(ctx, keep)
 	})
 }
