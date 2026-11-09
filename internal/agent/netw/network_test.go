@@ -58,7 +58,8 @@ func TestNetApplyDockerAndDNS(t *testing.T) {
 		t.Errorf("an unchanged state recreated networks: %v", d.creates[creates:])
 	}
 
-	// MTU change on an empty network: recreated. On a busy one: reported and kept.
+	// MTU change on an empty network: recreated. On a busy one: kept, without
+	// an error, because a second host joining must not fail every apply.
 	nets[0].MTU = 1380
 	d.mu.Lock()
 	q := d.nets["5050-env_quarantine"]
@@ -66,8 +67,7 @@ func TestNetApplyDockerAndDNS(t *testing.T) {
 	d.nets["5050-env_quarantine"] = q
 	d.mu.Unlock()
 	nets[1].MTU = 1380
-	err := n.Apply(ctx, proto.HostConfig{}, proto.Mesh{}, nets, nil)
-	if err == nil || !strings.Contains(err.Error(), "still has 1 containers attached") {
+	if err := n.Apply(ctx, proto.HostConfig{}, proto.Mesh{}, nets, nil); err != nil {
 		t.Fatalf("err = %v", err)
 	}
 	if d.nets["5050-env_prod"].Options[optMTU] != "1380" {
@@ -76,6 +76,27 @@ func TestNetApplyDockerAndDNS(t *testing.T) {
 	if d.nets["5050-env_quarantine"].Options[optMTU] == "1380" {
 		t.Error("a network with containers was recreated")
 	}
+
+	// Any other mismatch on a busy network is still reported.
+	d.mu.Lock()
+	q = d.nets["5050-env_quarantine"]
+	opts := map[string]string{}
+	for k, v := range q.Options {
+		opts[k] = v
+	}
+	opts[optBridgeName] = "f5-other"
+	q.Options = opts
+	d.nets["5050-env_quarantine"] = q
+	d.mu.Unlock()
+	err := n.Apply(ctx, proto.HostConfig{}, proto.Mesh{}, nets, nil)
+	if err == nil || !strings.Contains(err.Error(), "still has 1 containers attached") {
+		t.Fatalf("err = %v", err)
+	}
+	d.mu.Lock()
+	q = d.nets["5050-env_quarantine"]
+	q.Options[optBridgeName] = bridgeName("env_quarantine")
+	d.nets["5050-env_quarantine"] = q
+	d.mu.Unlock()
 
 	// The environment leaves this host: its empty network is removed, the busy one stays.
 	if err := n.Apply(ctx, proto.HostConfig{}, proto.Mesh{}, nil, nil); err != nil {

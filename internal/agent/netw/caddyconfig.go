@@ -23,6 +23,11 @@ const (
 	acmeStagingURL      = "https://acme-staging-v02.api.letsencrypt.org/directory"
 	acmeZeroSSLURL      = "https://acme.zerossl.com/v2/DV90"
 	acmeChallengePrefix = "/.well-known/acme-challenge/"
+	// upstreamIdleConns is how many idle keep-alive connections Caddy keeps
+	// per replica. Caddy's default of 32 makes it close and redial on every
+	// request once more than 32 are in flight to one replica, which is what
+	// collapsed throughput under load.
+	upstreamIdleConns = 1024
 )
 
 // caddyParams are the host-side settings of a rendered config. Paths are the
@@ -134,7 +139,7 @@ func normalizeRoutes(in proto.Ingress) ([]normRoute, []error) {
 	return out, errs
 }
 
-func proxyHandler(r normRoute, p caddyParams, delaySec int, private bool) obj {
+func proxyHandler(r normRoute, p caddyParams, delaySec int, private, trusted bool) obj {
 	h := obj{
 		"handler": "reverse_proxy",
 		"load_balancing": obj{
@@ -142,15 +147,24 @@ func proxyHandler(r normRoute, p caddyParams, delaySec int, private bool) obj {
 			"try_duration":     "5s",
 			"try_interval":     "250ms",
 		},
-		"transport":          obj{"protocol": "http", "dial_timeout": "3s"},
+		"transport": obj{
+			"protocol":     "http",
+			"dial_timeout": "3s",
+			"keep_alive":   obj{"max_idle_conns_per_host": upstreamIdleConns},
+		},
 		"stream_close_delay": fmt.Sprintf("%ds", delaySec),
 		"headers": obj{"request": obj{"set": obj{
 			"X-Real-Ip": []string{"{http.vars.client_ip}"},
+			// Caddy passes unknown headers through, so a request that skips
+			// Cloudflare could otherwise choose this value. Apps read it as
+			// the visitor's address, so it is always overwritten.
+			"Cf-Connecting-Ip": []string{"{http.vars.client_ip}"},
 		}}},
 	}
-	if private {
-		// Caddy would append cloudflared's 127.0.0.1, and the control plane
-		// and most apps read the last entry as the visitor.
+	if private || trusted {
+		// Caddy would append the proxy's address after whatever the client
+		// sent, so the first entry, which the control plane and most apps
+		// read as the visitor, would be the client's own claim.
 		h["headers"].(obj)["request"].(obj)["set"].(obj)["X-Forwarded-For"] = []string{"{http.vars.client_ip}"}
 	}
 	if r.UpstreamName == "" {
@@ -172,6 +186,41 @@ func proxyHandler(r normRoute, p caddyParams, delaySec int, private bool) obj {
 		h["health_checks"] = obj{"passive": obj{"fail_duration": "10s", "max_fails": 2}}
 	}
 	return h
+}
+
+// consoleRelayServer lets the ingress hosts other than the control host reach
+// the console, which listens on loopback only. It is an HTTP hop on purpose:
+// the control plane sees loopback with X-Forwarded-For set, so it reads the
+// visitor's address and never mistakes a mesh host for a local caller.
+func consoleRelayServer(r *proto.ConsoleRelay, delaySec int) (obj, error) {
+	if r == nil {
+		return nil, nil
+	}
+	if _, _, err := net.SplitHostPort(r.Listen); err != nil {
+		return nil, fmt.Errorf("the console relay address %q is not host:port, so other ingress hosts cannot reach the console", r.Listen)
+	}
+	if _, _, err := net.SplitHostPort(r.Target); err != nil {
+		return nil, fmt.Errorf("the console relay target %q is not host:port, so other ingress hosts cannot reach the console", r.Target)
+	}
+	if _, _, err := net.ParseCIDR(r.Trusted); err != nil {
+		return nil, fmt.Errorf("the console relay range %q is not a CIDR, so other ingress hosts cannot reach the console", r.Trusted)
+	}
+	return obj{
+		"listen": []string{r.Listen},
+		"routes": []obj{{"handle": []obj{{
+			"handler":            "reverse_proxy",
+			"upstreams":          []obj{{"dial": r.Target}},
+			"stream_close_delay": fmt.Sprintf("%ds", delaySec),
+			"headers": obj{"request": obj{"set": obj{
+				"X-Forwarded-For": []string{"{http.vars.client_ip}"},
+				"X-Real-Ip":       []string{"{http.vars.client_ip}"},
+			}}},
+		}}, "terminal": true}},
+		"automatic_https":        obj{"disable": true},
+		"trusted_proxies":        obj{"source": "static", "ranges": []string{r.Trusted}},
+		"trusted_proxies_strict": 1,
+		"client_ip_headers":      []string{"X-Forwarded-For"},
+	}, nil
 }
 
 func hostRoute(domains []string, handle ...obj) obj {
@@ -233,6 +282,20 @@ func renderCaddy(p caddyParams, in proto.Ingress) ([]byte, []error) {
 	if delay <= 0 {
 		delay = defaultStreamDelay
 	}
+	trusted := in.TrustedProxies
+	if in.Private {
+		// cloudflared connects over loopback: it is the only client here, and
+		// the Cloudflare edge has already set the visitor's address and scheme.
+		trusted = append([]string{"127.0.0.1/32"}, trusted...)
+	}
+	var trustedRanges []string
+	for _, c := range trusted {
+		if _, _, err := net.ParseCIDR(c); err != nil {
+			errs = append(errs, fmt.Errorf("trusted proxy range %q is not a CIDR and was skipped", c))
+			continue
+		}
+		trustedRanges = append(trustedRanges, c)
+	}
 	var tlsRoutes, httpRoutes []obj
 	var redirect, acmeDomains, internalDomains []string
 	if !in.Private && !in.ACMEPrimary && in.ACMEPrimaryAddr != "" {
@@ -247,7 +310,7 @@ func renderCaddy(p caddyParams, in proto.Ingress) ([]byte, []error) {
 		}
 	}
 	for _, r := range routes {
-		h := proxyHandler(r, p, delay, in.Private)
+		h := proxyHandler(r, p, delay, in.Private, len(trustedRanges) > 0)
 		switch r.tls {
 		case "off", "pending":
 			// "pending" is a custom domain whose DNS does not point here
@@ -291,27 +354,18 @@ func renderCaddy(p caddyParams, in proto.Ingress) ([]byte, []error) {
 		"errors":          unavailableRoutes(),
 	}
 	if in.Private {
-		// cloudflared connects over loopback: it is the only client here, and
-		// the Cloudflare edge has already set the visitor's address and scheme.
 		http["listen"] = []string{"127.0.0.1:" + strconv.Itoa(p.HTTPPort)}
-		in.TrustedProxies = append([]string{"127.0.0.1/32"}, in.TrustedProxies...)
 	}
-	if len(in.TrustedProxies) > 0 {
-		var ranges []string
-		for _, c := range in.TrustedProxies {
-			if _, _, err := net.ParseCIDR(c); err != nil {
-				errs = append(errs, fmt.Errorf("trusted proxy range %q is not a CIDR and was skipped", c))
-				continue
-			}
-			ranges = append(ranges, c)
-		}
-		if len(ranges) > 0 {
-			for _, s := range []obj{https, http} {
-				s["trusted_proxies"] = obj{"source": "static", "ranges": ranges}
-				s["client_ip_headers"] = []string{"X-Forwarded-For"}
-				if in.Private {
-					s["client_ip_headers"] = []string{"Cf-Connecting-Ip", "X-Forwarded-For"}
-				}
+	if len(trustedRanges) > 0 {
+		for _, s := range []obj{https, http} {
+			s["trusted_proxies"] = obj{"source": "static", "ranges": trustedRanges}
+			// Strict: read the list from the right and stop at the first
+			// untrusted address. Proxies append, so anything to its left is
+			// what the client claimed.
+			s["trusted_proxies_strict"] = 1
+			s["client_ip_headers"] = []string{"X-Forwarded-For"}
+			if in.Private {
+				s["client_ip_headers"] = []string{"Cf-Connecting-Ip", "X-Forwarded-For"}
 			}
 		}
 	}
@@ -362,6 +416,11 @@ func renderCaddy(p caddyParams, in proto.Ingress) ([]byte, []error) {
 	servers := obj{"https": https, "http": http}
 	if in.Private {
 		delete(servers, "https")
+	}
+	if relay, err := consoleRelayServer(in.ConsoleRelay, delay); err != nil {
+		errs = append(errs, err)
+	} else if relay != nil {
+		servers["console_relay"] = relay
 	}
 	apps := obj{"http": obj{"servers": servers}}
 	if len(tls) > 0 {

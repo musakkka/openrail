@@ -4,6 +4,7 @@ package engine
 
 import (
 	"context"
+	"net"
 	"net/url"
 	"sort"
 	"strconv"
@@ -33,6 +34,7 @@ const (
 	defaultPort           = 8080
 	registryPort          = "5000"
 	consoleUpstream       = "console"
+	consoleRelayPort      = 5051
 )
 
 // netCache holds the routes computed from every service instance; it is
@@ -408,6 +410,18 @@ func (o *Orchestrator) ingressFor(ctx context.Context, host hub.HostRow, members
 		ip := "127.0.0.1"
 		if host.MeshIndex != 1 {
 			ip = o.plan.MeshAddr(1).String()
+			ing.Console.Port = consoleRelayPort
+			for i := range ing.Routes {
+				if ing.Routes[i].UpstreamName == consoleUpstream {
+					ing.Routes[i].Port = consoleRelayPort
+				}
+			}
+		} else if len(members) >= 2 {
+			ing.ConsoleRelay = &proto.ConsoleRelay{
+				Listen:  net.JoinHostPort(o.plan.MeshAddr(1).String(), strconv.Itoa(consoleRelayPort)),
+				Target:  net.JoinHostPort("127.0.0.1", strconv.Itoa(consolePort(o.o.LocalURL))),
+				Trusted: o.plan.Mesh.String(),
+			}
 		}
 		ing.Upstreams = append(ing.Upstreams, proto.UpstreamSet{Name: consoleUpstream, IPs: []string{ip}})
 	}

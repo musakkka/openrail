@@ -126,6 +126,20 @@ func (w wantNet) matches(n network.Inspect) bool {
 	return true
 }
 
+// onlyMTUDiffers reports whether the MTU is the only setting that is off.
+func (w wantNet) onlyMTUDiffers(n network.Inspect) bool {
+	same := w
+	same.MTU = 0
+	opts := make(map[string]string, len(n.Options))
+	for k, v := range n.Options {
+		if k != optMTU {
+			opts[k] = v
+		}
+	}
+	n.Options = opts
+	return same.matches(n)
+}
+
 // ensureNetworks creates, fixes and removes the bridges labelled as ours.
 // A network that has containers attached is never removed; a mismatch is
 // reported and retried on the next apply.
@@ -149,6 +163,12 @@ func ensureNetworks(ctx context.Context, d dockerAPI, want []wantNet, removeStal
 				continue
 			}
 			if w.matches(insp) {
+				continue
+			}
+			if len(insp.Containers) > 0 && w.onlyMTUDiffers(insp) {
+				// A second host joined and the bridge has running replicas.
+				// TCP is clamped to the path MTU on the mesh, so they keep
+				// working, and the bridge gets the new MTU once it is empty.
 				continue
 			}
 			if len(insp.Containers) > 0 {

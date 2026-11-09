@@ -411,6 +411,8 @@ type Ingress struct {
 	StreamCloseDelaySec int `json:"streamCloseDelaySec"`
 	// TrustedProxies are CIDRs whose X-Forwarded-For Caddy trusts (9.11).
 	TrustedProxies []string `json:"trustedProxies,omitempty"`
+	// ConsoleRelay is set on the control host once the install has 2+ hosts.
+	ConsoleRelay *ConsoleRelay `json:"consoleRelay,omitempty"`
 	// Private: a Cloudflare tunnel terminates TLS. Caddy serves plain HTTP on
 	// loopback only, orders no certificates and runs no TCP proxies.
 	Private bool `json:"private,omitempty"`
@@ -460,6 +462,14 @@ type CertStatus struct {
 type CertDomainState struct {
 	Status string `json:"status"` // "issuing" | "active" | "error"
 	Error  string `json:"error,omitempty"`
+}
+
+// ConsoleRelay is the listener on the control host's Caddy that other ingress
+// hosts reach the console through, because 5050d listens on loopback only.
+type ConsoleRelay struct {
+	Listen  string `json:"listen"`  // "<control mesh ip>:5051"
+	Target  string `json:"target"`  // "127.0.0.1:5050"
+	Trusted string `json:"trusted"` // the mesh CIDR, whose forwarded headers are believed
 }
 
 type TCPProxy struct {
