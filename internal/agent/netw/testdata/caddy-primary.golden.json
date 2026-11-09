@@ -66,6 +66,12 @@
                   "headers": {
                     "request": {
                       "set": {
+                        "Cf-Connecting-Ip": [
+                          "{http.vars.client_ip}"
+                        ],
+                        "X-Forwarded-For": [
+                          "{http.vars.client_ip}"
+                        ],
                         "X-Real-Ip": [
                           "{http.vars.client_ip}"
                         ]
@@ -88,6 +94,9 @@
                   "stream_close_delay": "300s",
                   "transport": {
                     "dial_timeout": "3s",
+                    "keep_alive": {
+                      "max_idle_conns_per_host": 1024
+                    },
                     "protocol": "http"
                   }
                 }
@@ -149,7 +158,8 @@
               "173.245.48.0/20"
             ],
             "source": "static"
-          }
+          },
+          "trusted_proxies_strict": 1
         },
         "https": {
           "automatic_https": {
@@ -209,6 +219,12 @@
                   "headers": {
                     "request": {
                       "set": {
+                        "Cf-Connecting-Ip": [
+                          "{http.vars.client_ip}"
+                        ],
+                        "X-Forwarded-For": [
+                          "{http.vars.client_ip}"
+                        ],
                         "X-Real-Ip": [
                           "{http.vars.client_ip}"
                         ]
@@ -225,6 +241,9 @@
                   "stream_close_delay": "300s",
                   "transport": {
                     "dial_timeout": "3s",
+                    "keep_alive": {
+                      "max_idle_conns_per_host": 1024
+                    },
                     "protocol": "http"
                   }
                 }
@@ -245,6 +264,12 @@
                   "headers": {
                     "request": {
                       "set": {
+                        "Cf-Connecting-Ip": [
+                          "{http.vars.client_ip}"
+                        ],
+                        "X-Forwarded-For": [
+                          "{http.vars.client_ip}"
+                        ],
                         "X-Real-Ip": [
                           "{http.vars.client_ip}"
                         ]
@@ -267,6 +292,9 @@
                   "stream_close_delay": "300s",
                   "transport": {
                     "dial_timeout": "3s",
+                    "keep_alive": {
+                      "max_idle_conns_per_host": 1024
+                    },
                     "protocol": "http"
                   },
                   "upstreams": [
@@ -307,6 +335,12 @@
                   "headers": {
                     "request": {
                       "set": {
+                        "Cf-Connecting-Ip": [
+                          "{http.vars.client_ip}"
+                        ],
+                        "X-Forwarded-For": [
+                          "{http.vars.client_ip}"
+                        ],
                         "X-Real-Ip": [
                           "{http.vars.client_ip}"
                         ]
@@ -329,6 +363,9 @@
                   "stream_close_delay": "300s",
                   "transport": {
                     "dial_timeout": "3s",
+                    "keep_alive": {
+                      "max_idle_conns_per_host": 1024
+                    },
                     "protocol": "http"
                   }
                 }
@@ -364,6 +401,12 @@
                   "headers": {
                     "request": {
                       "set": {
+                        "Cf-Connecting-Ip": [
+                          "{http.vars.client_ip}"
+                        ],
+                        "X-Forwarded-For": [
+                          "{http.vars.client_ip}"
+                        ],
                         "X-Real-Ip": [
                           "{http.vars.client_ip}"
                         ]
@@ -386,6 +429,9 @@
                   "stream_close_delay": "300s",
                   "transport": {
                     "dial_timeout": "3s",
+                    "keep_alive": {
+                      "max_idle_conns_per_host": 1024
+                    },
                     "protocol": "http"
                   }
                 }
@@ -426,7 +472,8 @@
               "173.245.48.0/20"
             ],
             "source": "static"
-          }
+          },
+          "trusted_proxies_strict": 1
         }
       }
     },

@@ -44,6 +44,8 @@ Behind the proxy, every request comes from a Cloudflare address. Tell openrail w
 2. Under **Trusted proxies**, select **Use Cloudflare ranges**. It adds Cloudflare's IPv4 and IPv6 ranges, one per line.
 3. Select **Save**.
 
+openrail reads the list from the right and stops at the first address it does not trust, so a value the visitor put in `X-Forwarded-For` is ignored. It then overwrites `X-Forwarded-For`, `X-Real-Ip` and `Cf-Connecting-Ip` with the visitor's address before the request reaches your app. A request that skips Cloudflare cannot choose those values.
+
 The list is the one openrail ships. Compare it with Cloudflare's page at `https://www.cloudflare.com/ips` now and then, and add any range that is missing.
 
 ## The console behind Cloudflare
@@ -52,7 +54,7 @@ The console works behind the proxy the same way. Joined hosts keep a long-lived 
 
 ## Lock the origin
 
-Optional: in your cloud provider's firewall, allow TCP 80 and 443 only from Cloudflare's ranges. Visitors then cannot skip Cloudflare by calling your IP. Generated `sslip.io` names stop working from outside, since they point straight at your IP.
+In your cloud provider's firewall, allow TCP 80 and 443 only from Cloudflare's ranges. Visitors then cannot skip Cloudflare by calling your IP, and your rate limits and firewall rules at Cloudflare cannot be bypassed. Keep this list up to date. Generated `sslip.io` names stop working from outside, since they point straight at your IP.
 
 ## What success looks like
 

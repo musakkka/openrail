@@ -18,6 +18,8 @@ import (
 	_ "modernc.org/sqlite"
 
 	"github.com/musakkka/openrail/internal/cp/orch/fakeconfig"
+	"github.com/musakkka/openrail/internal/cp/orch/hub"
+	"github.com/musakkka/openrail/internal/cp/orch/routes"
 	"github.com/musakkka/openrail/internal/cp/secretbox"
 	"github.com/musakkka/openrail/pkg/api"
 	"github.com/musakkka/openrail/pkg/proto"
@@ -73,6 +75,11 @@ func TestJoinAndConnect(t *testing.T) {
 	if pj, err := o.CreateJoinToken(ctx, api.CreateJoinTokenRequest{Name: "p"}); err != nil || !strings.HasSuffix(pj.Command, " --private") {
 		t.Errorf("a private install's join command lacks --private: %s, %v", pj.Command, err)
 	}
+	if pj, err := o.CreateJoinToken(ctx, api.CreateJoinTokenRequest{Name: "pi", Roles: []string{"app", "ingress"}}); err != nil ||
+		!strings.HasPrefix(pj.Command, "export FIFTY_TUNNEL_TOKEN=") || !strings.Contains(pj.Command, "| sudo -E sh") {
+		t.Errorf("a private ingress host's join command does not ask for the tunnel token: %s, %v", pj.Command, err)
+	}
+	checkConsoleRelay(ctx, t, o)
 	inst.Private = false
 	cfg.SetInstall(inst)
 	facts := proto.Facts{Version: "0.1.0", Arch: "amd64", OS: "ubuntu 24.04", CPUs: 2, MemBytes: 4 << 30, PublicIP: "203.0.113.7", WireGuard: true}
@@ -142,5 +149,35 @@ func TestJoinAndConnect(t *testing.T) {
 	}
 	if _, n := o.Ready(ctx); n != 1 {
 		t.Fatalf("connected agents = %d, want 1", n)
+	}
+}
+
+func checkConsoleRelay(ctx context.Context, t *testing.T, o *Orchestrator) {
+	t.Helper()
+	inst := api.Install{ConsoleURL: "https://console.example.com"}
+	control := hub.HostRow{ID: "h1", MeshIndex: 1, Roles: []string{"control", "ingress"}}
+	second := hub.HostRow{ID: "h2", MeshIndex: 2, Roles: []string{"app", "ingress"}}
+	both := []hub.HostRow{control, second}
+
+	one, err := o.ingressFor(ctx, control, []hub.HostRow{control}, inst, routes.Output{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if one.ConsoleRelay != nil {
+		t.Error("a single host must not run the relay")
+	}
+	c, err := o.ingressFor(ctx, control, both, inst, routes.Output{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c.ConsoleRelay == nil || c.ConsoleRelay.Listen != o.plan.MeshAddr(1).String()+":5051" {
+		t.Errorf("control relay = %+v", c.ConsoleRelay)
+	}
+	s, err := o.ingressFor(ctx, second, both, inst, routes.Output{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if s.ConsoleRelay != nil || s.Console.Port != consoleRelayPort {
+		t.Errorf("second ingress: relay %+v, console port %d", s.ConsoleRelay, s.Console.Port)
 	}
 }

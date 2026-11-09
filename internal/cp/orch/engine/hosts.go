@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -214,6 +215,10 @@ func (o *Orchestrator) CreateJoinToken(ctx context.Context, req api.CreateJoinTo
 	if inst, err := o.cfg.Install(ctx); err == nil && inst.Private {
 		// Without the flag the new host would keep its ports open.
 		cmd += " --private"
+		if slices.Contains(roles, "ingress") {
+			// Without a tunnel on it, the new host could take no public traffic.
+			cmd = "export FIFTY_TUNNEL_TOKEN='paste the token of your Cloudflare tunnel' && " + strings.Replace(cmd, "| sudo sh", "| sudo -E sh", 1)
+		}
 	}
 	return api.JoinToken{Command: cmd, Token: tok, ExpiresAt: exp}, nil
 }

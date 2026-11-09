@@ -18,6 +18,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -384,5 +385,40 @@ func TestNewIngressDefaults(t *testing.T) {
 	g := NewIngress(IngressOptions{DataDir: "/var/lib/5050"}).(*Ingress)
 	if g.o.AdminSocket != "/var/lib/5050/caddy/admin.sock" || g.o.ResolverAddr != "127.0.0.1:5354" || g.o.HTTPPort != 80 || g.o.HTTPSPort != 443 {
 		t.Errorf("defaults = %+v", g.o)
+	}
+}
+
+// Caddy refuses a whole config when a listener cannot bind, so a relay on a
+// mesh address that is not up yet must not take the routes down with it.
+func TestConsoleRelayWaitsForMeshAddress(t *testing.T) {
+	g, fc, _, _ := newTestIngress(t)
+	up := false
+	g.hasAddr = func(string) bool { return up }
+	in := testIngress()
+	in.ConsoleRelay = &proto.ConsoleRelay{Listen: "100.96.0.1:5051", Target: "127.0.0.1:5050", Trusted: "100.96.0.0/24"}
+	ctx := context.Background()
+	if err := g.Apply(ctx, in, nil); err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(fc.config), "console_relay") {
+		t.Error("the relay was loaded before its address exists")
+	}
+	if fc.loads != 1 {
+		t.Fatalf("the routes were not loaded: %d loads", fc.loads)
+	}
+	up = true
+	if err := g.Apply(ctx, in, nil); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(fc.config), "console_relay") {
+		t.Error("the relay was not added once the address exists")
+	}
+}
+
+func TestCaddyContainerTunesGC(t *testing.T) {
+	g := newIngress(IngressOptions{DataDir: t.TempDir()})
+	cfg, _ := g.containerSpec(CaddyImage)
+	if !slices.Contains(cfg.Env, "GOGC=400") {
+		t.Errorf("env = %v", cfg.Env)
 	}
 }

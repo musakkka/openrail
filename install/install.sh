@@ -1458,6 +1458,9 @@ wait_for() { # wait_for SECONDS COMMAND
 	return 1
 }
 
+# caddy_has_routes: Caddy listens on port 80 only after its real config loads.
+caddy_has_routes() { curl -s -o /dev/null --max-time 3 http://127.0.0.1:80/; }
+
 NOT_CLOSED="Nothing was closed: SSH and every other port are as they were."
 
 # verify_private is the lockout guard. It runs before any port closes.
@@ -1786,6 +1789,11 @@ if [ -n "$JOIN" ]; then
 		step "Closing inbound ports"
 		if [ -n "$TUNNEL_TOKEN" ] || [ -f "$ETC_DIR/tunnel-token" ]; then
 			install_tunnel
+			# Cloudflare sends a share of all traffic to a connected host at
+			# once, so Caddy must have the routes first.
+			sub "Waiting for this host to receive its routes (up to 180 s)"
+			wait_for 180 caddy_has_routes ||
+				die "this host did not receive its routes within 180 s, so the tunnel was not started. $NOT_CLOSED Check that it shows Online in the console and has the ingress role, then run the installer again."
 			tunnel_start
 		fi
 		verify_private

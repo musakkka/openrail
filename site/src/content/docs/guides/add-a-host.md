@@ -62,6 +62,14 @@ For `shop.example.com` with ingress hosts at `203.0.113.10` and `203.0.113.11`:
 
 If the control host goes down, apps on other hosts keep serving through the second ingress host. Deploys, cron and the console wait until the control host is back.
 
+## Private mode and Cloudflare tunnels
+
+On an install in [private mode](/docs/guides/private-mode), the join command for a host with the `ingress` role asks for your tunnel token. Use the token of the tunnel you already have. The new host runs another connector of that tunnel, and the installer starts it only after the host has its routes.
+
+Cloudflare sends each request to the connector closest to it, and it does not split traffic evenly between connectors of one tunnel. A second connector gives you failover, not an even share. The simplest way to use a second VM for capacity is to join it with the role `app`, then redeploy: replicas spread across both hosts, and Caddy on the first host sends requests to all of them. To share ingress as well, use one tunnel per host behind a Cloudflare Load Balancer.
+
+Running replicas do not move when a host joins. Redeploy a service to spread it.
+
 ## Host menu
 
 Each host in **Settings**, **Hosts** has a menu:

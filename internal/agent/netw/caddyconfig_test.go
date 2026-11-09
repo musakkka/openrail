@@ -333,3 +333,85 @@ func TestCaddyPrivate(t *testing.T) {
 		t.Error("a private host must not forward ACME challenges")
 	}
 }
+
+func renderedProxy(t *testing.T, in proto.Ingress) (map[string]any, map[string]any) {
+	t.Helper()
+	b, errs := renderCaddy(testParams, in)
+	if len(errs) != 0 {
+		t.Fatal(errs)
+	}
+	var cfg map[string]any
+	if err := json.Unmarshal(b, &cfg); err != nil {
+		t.Fatal(err)
+	}
+	servers := cfg["apps"].(map[string]any)["http"].(map[string]any)["servers"].(map[string]any)
+	for _, s := range servers {
+		srv := s.(map[string]any)
+		for _, r := range srv["routes"].([]any) {
+			for _, h := range r.(map[string]any)["handle"].([]any) {
+				if m := h.(map[string]any); m["handler"] == "reverse_proxy" {
+					return m, servers
+				}
+			}
+		}
+	}
+	t.Fatal("no reverse_proxy handler rendered")
+	return nil, nil
+}
+
+func TestUpstreamKeepAliveIsRaised(t *testing.T) {
+	h, _ := renderedProxy(t, testIngress())
+	ka := h["transport"].(map[string]any)["keep_alive"].(map[string]any)
+	if ka["max_idle_conns_per_host"] != float64(upstreamIdleConns) {
+		t.Errorf("keep_alive = %v", ka)
+	}
+}
+
+// A request that reaches Caddy without going through Cloudflare must not be
+// able to choose the address apps read.
+func TestClientAddressHeadersAreOverwritten(t *testing.T) {
+	for name, in := range map[string]proto.Ingress{
+		"direct with proxies": testIngress(),
+		"private":             {Private: true, Routes: testIngress().Routes},
+	} {
+		h, servers := renderedProxy(t, in)
+		set := h["headers"].(map[string]any)["request"].(map[string]any)["set"].(map[string]any)
+		for _, k := range []string{"Cf-Connecting-Ip", "X-Forwarded-For", "X-Real-Ip"} {
+			v, _ := set[k].([]any)
+			if len(v) != 1 || v[0] != "{http.vars.client_ip}" {
+				t.Errorf("%s: %s = %v", name, k, set[k])
+			}
+		}
+		if servers["http"].(map[string]any)["trusted_proxies_strict"] != float64(1) {
+			t.Errorf("%s: trusted proxies are not strict", name)
+		}
+	}
+	// With no trusted proxy, Caddy's own X-Forwarded-For handling stays.
+	in := testIngress()
+	in.TrustedProxies = nil
+	h, _ := renderedProxy(t, in)
+	set := h["headers"].(map[string]any)["request"].(map[string]any)["set"].(map[string]any)
+	if _, ok := set["X-Forwarded-For"]; ok {
+		t.Error("X-Forwarded-For is set with no trusted proxy")
+	}
+	if _, ok := set["Cf-Connecting-Ip"]; !ok {
+		t.Error("Cf-Connecting-Ip must be overwritten even with no trusted proxy")
+	}
+}
+
+func TestConsoleRelay(t *testing.T) {
+	in := testIngress()
+	in.ConsoleRelay = &proto.ConsoleRelay{Listen: "100.96.0.1:5051", Target: "127.0.0.1:5050", Trusted: "100.96.0.0/24"}
+	_, servers := renderedProxy(t, in)
+	relay := servers["console_relay"].(map[string]any)
+	if l := relay["listen"].([]any); len(l) != 1 || l[0] != "100.96.0.1:5051" {
+		t.Errorf("listen = %v", l)
+	}
+	if _, ok := relay["logs"]; ok {
+		t.Error("the relay would log each console request twice")
+	}
+	in.ConsoleRelay.Listen = "nonsense"
+	if _, errs := renderCaddy(testParams, in); len(errs) != 1 {
+		t.Errorf("errs = %v", errs)
+	}
+}
